@@ -1303,6 +1303,7 @@ def status():
         "cpu_governor": _get_cpu_governor(),
         "public_site": {"url": "/site/", "active": os.path.exists(_default_site_index)},
         "pin": API_PIN,
+        "local_token": API_TOKEN if (request.remote_addr or "127.0.0.1") in ("127.0.0.1", "::1", "localhost") else None,
     })
 
 

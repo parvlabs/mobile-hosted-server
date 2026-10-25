@@ -55,6 +55,8 @@
     --shadow-btn: 5px 5px 16px rgba(180, 168, 215, 0.25), -5px -5px 16px rgba(255, 255, 255, 0.8), inset 2px 2px 5px rgba(255, 255, 255, 0.9), inset -3px -3px 6px rgba(190, 180, 220, 0.15);
     --border-subtle: rgba(220, 210, 240, 0.6);
     --chart-grid: #F0EEF8;
+    --btn-bg: #FFFFFF;
+    --btn-text: #2E2A3F;
   }
 
   /* ============================================================
@@ -62,29 +64,31 @@
      ============================================================ */
   [data-theme="dark"] {
     --bg-app: #13101C;      /* deep obsidian violet */
-    --bg-raised: #1C182B;   /* sculpted dark clay sheet */
+    --bg-raised: #1D182B;   /* sculpted dark clay sheet */
 
-    --surface-lavender: #392B68;
-    --surface-sky:      #1F3D5C;
-    --surface-mint:     #174D33;
-    --surface-peach:    #5C2E24;
-    --surface-pink:     #522438;
-    --surface-lemon:    #4D3E14;
+    --surface-lavender: #3B2B6D;
+    --surface-sky:      #1F4268;
+    --surface-mint:     #185437;
+    --surface-peach:    #633026;
+    --surface-pink:     #59263C;
+    --surface-lemon:    #544314;
 
-    --action-primary:   #FF7A6B;  /* coral stands out boldly */
+    --action-primary:   #FF7A6B;  /* coral stays luminous */
     --action-on:        #FFFFFF;
     --status-active:    #246E4A;
     --status-pending:   #665018;
     --status-archived:  #43346B;
 
     --text-strong:      #F6F4FD;
-    --text-muted:       #A199B6;
+    --text-muted:       #A59DBA;
 
     --shadow-raised: 8px 8px 24px rgba(6, 4, 12, 0.7), -8px -8px 24px rgba(45, 38, 64, 0.45), inset 3px 3px 6px rgba(60, 50, 82, 0.6), inset -5px -5px 10px rgba(8, 6, 14, 0.6);
     --shadow-input: inset 3px 3px 8px rgba(0, 0, 0, 0.65), inset -3px -3px 8px rgba(40, 34, 56, 0.45);
     --shadow-btn: 5px 5px 16px rgba(0, 0, 0, 0.5), -5px -5px 16px rgba(45, 38, 64, 0.4), inset 2px 2px 4px rgba(60, 50, 82, 0.6), inset -3px -3px 6px rgba(10, 8, 16, 0.5);
     --border-subtle: rgba(45, 38, 64, 0.6);
     --chart-grid: #231E33;
+    --btn-bg: #272138;
+    --btn-text: #F6F4FD;
   }
 
   * {
@@ -198,10 +202,10 @@
     background: var(--action-primary);
     color: var(--action-on);
     font-weight: 700;
-    font-size: 15px;
+    font-size: 14.5px;
     border-radius: var(--r-button);
-    min-height: 48px;
-    padding: 0 22px;
+    min-height: 46px;
+    padding: 0 20px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -214,6 +218,7 @@
       inset 3px 3px 6px rgba(255, 255, 255, 0.5),
       inset -4px -4px 8px rgba(200, 50, 40, 0.30);
     transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
+    white-space: nowrap;
   }
   .clay-btn-primary:active {
     transform: scale(0.97);
@@ -226,13 +231,13 @@
 
   /* Secondary Button */
   .clay-btn {
-    background: var(--bg-raised);
-    color: var(--text-strong);
+    background: var(--btn-bg);
+    color: var(--btn-text);
     font-weight: 700;
-    font-size: 14px;
+    font-size: 13.5px;
     border-radius: var(--r-button);
-    min-height: 44px;
-    padding: 0 18px;
+    min-height: 42px;
+    padding: 0 16px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -241,6 +246,7 @@
     cursor: pointer;
     box-shadow: var(--shadow-btn);
     transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
+    white-space: nowrap;
   }
   .clay-btn:active {
     transform: scale(0.97);
@@ -401,7 +407,7 @@
   }
   .sidebar-nav-item:hover {
     color: var(--text-strong);
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.12);
   }
   .sidebar-nav-item.active {
     background: var(--bg-raised);
@@ -428,7 +434,7 @@
     max-width: 1400px;
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: 24px;
   }
 
   .top-header {
@@ -519,6 +525,19 @@
   }
   .file-name-click.is-dir {
     color: #926CFF;
+  }
+
+  /* Quick System Pulse Bar on Storage Landing */
+  .system-pulse-bar {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 14px 20px;
+    background: var(--bg-raised);
+    border-radius: 20px;
+    box-shadow: var(--shadow-btn);
+    margin-bottom: 22px;
   }
 
   /* Meters in Telemetry */
@@ -664,19 +683,19 @@
     <!-- Navigation List (Default Landing View is Cloud Storage) -->
     <nav class="sidebar-nav">
       <button class="sidebar-nav-item active" id="navStorage" onclick="switchView('Storage')">
-        <span style="font-size: 20px;">📁</span> Cloud Storage
-      </button>
-      <button class="sidebar-nav-item" id="navTelemetry" onclick="switchView('Telemetry')">
-        <span style="font-size: 20px;">📊</span> Telemetry & UPS
+        <span style="font-size: 20px;">📁</span> Cloud Storage & Sharing
       </button>
       <button class="sidebar-nav-item" id="navRemote" onclick="switchView('Remote')">
-        <span style="font-size: 20px;">🌐</span> Remote & Hosting
+        <span style="font-size: 20px;">🌐</span> Remote Access & Hosting
+      </button>
+      <button class="sidebar-nav-item" id="navTelemetry" onclick="switchView('Telemetry')">
+        <span style="font-size: 20px;">📊</span> Hardware & Battery UPS
       </button>
       <button class="sidebar-nav-item" id="navAutomations" onclick="switchView('Automations')">
-        <span style="font-size: 20px;">⏰</span> Tasks & Alerts
+        <span style="font-size: 20px;">⏰</span> Automations & Alerts
       </button>
       <button class="sidebar-nav-item" id="navLogs" onclick="switchView('Logs')">
-        <span style="font-size: 20px;">📜</span> Live Logs
+        <span style="font-size: 20px;">📜</span> Live Audit Logs
       </button>
     </nav>
 
@@ -719,13 +738,13 @@
     <!-- Top View Header -->
     <div class="top-header">
       <div>
-        <h1 style="font-size: 28px; font-weight: 800; letter-spacing: -0.01em;" id="viewTitleText">Cloud Storage & Files</h1>
+        <h1 style="font-size: 28px; font-weight: 800; letter-spacing: -0.01em;" id="viewTitleText">Cloud Storage, File Management & Sharing</h1>
         <p style="color: var(--text-muted); font-weight: 600; font-size: 14px;" id="viewSubtitleText">Private cloud storage hosted directly on your Samsung device</p>
       </div>
       <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
         <span class="clay-chip clay-chip-archived" id="deviceName">Samsung Galaxy</span>
         <span class="clay-chip" style="background:#E2DBFA; color:#321F6B;" id="serverAddress">127.0.0.1</span>
-        <button class="clay-btn clay-btn-sm" id="btnQuickPair" style="background:var(--action-primary); color:#FFF;">📱 Connect Device</button>
+        <button class="clay-btn-primary clay-btn-sm" id="btnQuickPair">📱 Connect Device</button>
       </div>
     </div>
 
@@ -742,6 +761,28 @@
          VIEW 1: CLOUD STORAGE & FILE SHARING (LANDING / MAIN)
          ========================================================== -->
     <div id="viewStorage" class="view-section active">
+
+      <!-- Quick System Pulse Bar (All Key Metrics at a glance on landing) -->
+      <div class="system-pulse-bar">
+        <div style="font-size: 13.5px; font-weight: 800; color: var(--text-muted); margin-right: 4px;">⚡ SYSTEM PULSE:</div>
+        <div class="clay-chip" style="background:var(--surface-mint); cursor:pointer;" onclick="switchView('Telemetry')">
+          CPU: <span id="quickCpu" style="font-weight:800; margin-left:4px;">0%</span>
+        </div>
+        <div class="clay-chip" style="background:var(--surface-lavender); cursor:pointer;" onclick="switchView('Telemetry')">
+          RAM: <span id="quickRam" style="font-weight:800; margin-left:4px;">0%</span>
+        </div>
+        <div class="clay-chip" style="background:var(--surface-peach); cursor:pointer;" onclick="switchView('Telemetry')">
+          UPS: <span id="quickBat" style="font-weight:800; margin-left:4px;">100%</span>
+        </div>
+        <div class="clay-chip badge-offline" id="quickTunnel" style="cursor:pointer;" onclick="switchView('Remote')">
+          Tunnel: Offline
+        </div>
+        <div style="margin-left: auto;">
+          <a href="#" onclick="switchView('Telemetry'); return false;" style="font-size: 13px; font-weight: 700; color: #FF7A6B; text-decoration: none;">
+            Full Telemetry & Graphs →
+          </a>
+        </div>
+      </div>
 
       <!-- Storage Breakdown Card -->
       <div class="clay-card" style="margin-bottom: 24px;">
@@ -790,7 +831,7 @@
             <button class="clay-btn" id="btnNewFolder">➕ Folder</button>
             <button class="clay-btn" id="btnOpenTrash">🗑️ Trash (<span id="trashCountBadge">0</span>)</button>
             <button class="clay-btn" id="btnOpenSharedLinks">🔗 Links (<span id="linksCountBadge">0</span>)</button>
-            <button class="clay-btn" id="btnRefreshFiles">🔄</button>
+            <button class="clay-btn" id="btnRefreshFiles">🔄 Refresh</button>
           </div>
         </div>
 
@@ -924,7 +965,7 @@
             </div>
             <span class="clay-chip badge-offline" id="tunnelBadge">Offline</span>
           </div>
-          <p style="font-size: 13.5px; color: var(--text-muted); font-weight: 600; margin-bottom: 16px;">Zero-config secure global HTTPS access without open ports or static IP.</p>
+          <p style="font-size: 13.5px; color: var(--text-muted); font-weight: 600; margin-bottom: 16px;">Zero-config secure global HTTPS access without port forwarding or exposing your home IP.</p>
 
           <div id="tunnelUrlBox" style="display:none; margin-bottom:16px;">
             <div style="font-size:12px; color:var(--text-muted); font-weight:700;">PUBLIC HTTPS URL:</div>
@@ -1138,7 +1179,7 @@
       <div style="margin: 20px 0; padding-top: 16px; border-top: 1px solid var(--border-subtle);">
         <label style="font-size:13px; font-weight:700; color:var(--text-strong); display:block; margin-bottom:8px;">Connecting from this device? Enter 6-Digit PIN:</label>
         <div style="display:flex; gap:10px; justify-content:center; max-width:320px; margin:0 auto;">
-          <input type="text" id="clientPinInput" class="clay-input" maxlength="6" placeholder="e.g. 482910" style="text-align:center; font-family:var(--font-mono); font-size:18px; font-weight:800; letter-spacing:0.1em; width:100%;">
+          <input type="text" id="clientPinInput" class="clay-input" maxlength="6" placeholder="e.g. 199593" style="text-align:center; font-family:var(--font-mono); font-size:18px; font-weight:800; letter-spacing:0.1em; width:100%;">
           <button class="clay-btn-primary" id="btnSubmitPin" style="white-space:nowrap;">Pair</button>
         </div>
         <div id="pinVerifyStatus" style="font-size:13px; font-weight:700; color:#FF7A6B; margin-top:10px;"></div>
@@ -1360,8 +1401,10 @@
 
 <!-- ============================================================
      JAVASCRIPT LOGIC
-     ============================================================ -->
+     ============================================================ */
+-->
 <script>
+/* Global Config & State */
 const API_BASE_URL = (window.location.port === '5000')
   ? ''
   : `http://${window.location.hostname || 'localhost'}:5000`;
@@ -1375,115 +1418,13 @@ let currentPath = '';
 let chartHistory = { cpu: [], ram: [], traffic: [] };
 
 /* ------------------------------------------------------------
-   Auto Connect from URL (?auth=... or ?token=...)
------------------------------------------------------------- */
-const urlParams = new URLSearchParams(window.location.search);
-const authParam = urlParams.get('auth') || urlParams.get('token');
-if (authParam) {
-  apiToken = authParam.trim();
-  localStorage.setItem('a23_api_token', apiToken);
-  window.history.replaceState({}, document.title, window.location.pathname);
-  setTimeout(() => alert('🎉 Device successfully paired and authenticated via QR code!'), 400);
-}
-
-/* ------------------------------------------------------------
-   Theme System: Light (Clay) & Dark (Obsidian Clay)
------------------------------------------------------------- */
-function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('server_theme', theme);
-  const icon = document.getElementById('themeToggleIcon');
-  const label = document.getElementById('themeToggleText');
-  if (theme === 'dark') {
-    if (icon) icon.textContent = '☀️';
-    if (label) label.textContent = 'Light Theme';
-  } else {
-    if (icon) icon.textContent = '🌙';
-    if (label) label.textContent = 'Dark Theme';
-  }
-  drawTelemetryChart();
-}
-
-function toggleTheme() {
-  const current = document.documentElement.getAttribute('data-theme') || 'light';
-  applyTheme(current === 'dark' ? 'light' : 'dark');
-}
-document.getElementById('btnThemeToggle').addEventListener('click', toggleTheme);
-const savedTheme = localStorage.getItem('server_theme') || 'light';
-applyTheme(savedTheme);
-
-/* ------------------------------------------------------------
-   Tab View Switcher (Sidebar navigation)
------------------------------------------------------------- */
-const viewTitles = {
-  Storage: { title: 'Cloud Storage & Files', subtitle: 'Private cloud storage hosted directly on your Samsung device' },
-  Telemetry: { title: 'Hardware & Battery Telemetry', subtitle: 'Live CPU, RAM, disk, battery temperature, and UPS health' },
-  Remote: { title: 'Remote Access & Web Hosting', subtitle: 'Cloudflare Tunnels, Tailscale Mesh VPN, DuckDNS, and Website hosting' },
-  Automations: { title: 'Automations & Scheduled Tasks', subtitle: 'Cron background supervisor, webhook alerts, and process control' },
-  Logs: { title: 'Live Server Logs', subtitle: 'Real-time audit log viewer and security monitoring' }
-};
-
-function switchView(viewName) {
-  document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-  document.querySelectorAll('.sidebar-nav-item').forEach(btn => btn.classList.remove('active'));
-
-  const targetView = document.getElementById('view' + viewName);
-  const targetNav = document.getElementById('nav' + viewName);
-  if (targetView) targetView.classList.add('active');
-  if (targetNav) targetNav.classList.add('active');
-
-  const meta = viewTitles[viewName] || viewTitles.Storage;
-  document.getElementById('viewTitleText').textContent = meta.title;
-  document.getElementById('viewSubtitleText').textContent = meta.subtitle;
-
-  localStorage.setItem('active_view', viewName);
-  if (viewName === 'Telemetry') {
-    setTimeout(resizeChart, 50);
-  }
-}
-
-/* ------------------------------------------------------------
-   Live Clock
------------------------------------------------------------- */
-function updateClock() {
-  document.getElementById('liveClock').textContent = new Date().toLocaleTimeString();
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-/* ------------------------------------------------------------
-   Token / Auth Helpers
------------------------------------------------------------- */
-function ensureToken() { return !!apiToken; }
-function authHeader() {
-  return apiToken ? { Authorization: `Bearer ${apiToken}` } : {};
-}
-
-/* ------------------------------------------------------------
-   Fetch with Timeout & Auto Auth Injection
------------------------------------------------------------- */
-async function fetchJson(url, options = {}) {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-  try {
-    const headers = { ...authHeader(), ...(options.headers || {}) };
-    const res = await fetch(url, { ...options, headers, signal: controller.signal });
-    clearTimeout(timeoutId);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
-  } catch (err) {
-    clearTimeout(timeoutId);
-    throw err;
-  }
-}
-
-/* ------------------------------------------------------------
-   Real-Time 60s Telemetry Canvas Chart (Clay Styling)
+   Canvas Chart Elements (DECLARED FIRST TO PREVENT REFERENCE ERRORS)
 ------------------------------------------------------------ */
 const chartCanvas = document.getElementById('telemetryChart');
-const ctx = chartCanvas.getContext('2d');
+const ctx = chartCanvas ? chartCanvas.getContext('2d') : null;
 
 function resizeChart() {
+  if (!chartCanvas) return;
   chartCanvas.width = chartCanvas.offsetWidth * window.devicePixelRatio;
   chartCanvas.height = chartCanvas.offsetHeight * window.devicePixelRatio;
 }
@@ -1491,8 +1432,10 @@ window.addEventListener('resize', resizeChart);
 resizeChart();
 
 function drawTelemetryChart() {
+  if (!chartCanvas || !ctx) return;
   const w = chartCanvas.width;
   const h = chartCanvas.height;
+  if (!w || !h) return;
   ctx.clearRect(0, 0, w, h);
 
   const len = chartHistory.cpu.length;
@@ -1534,11 +1477,126 @@ function drawTelemetryChart() {
 }
 
 /* ------------------------------------------------------------
+   Auto Connect from URL (?auth=... or ?token=...)
+------------------------------------------------------------ */
+const urlParams = new URLSearchParams(window.location.search);
+const authParam = urlParams.get('auth') || urlParams.get('token');
+if (authParam) {
+  apiToken = authParam.trim();
+  localStorage.setItem('a23_api_token', apiToken);
+  window.history.replaceState({}, document.title, window.location.pathname);
+  setTimeout(() => alert('Device successfully paired and authenticated via QR code!'), 400);
+}
+
+/* ------------------------------------------------------------
+   Theme System: Light (Clay) & Dark (Obsidian Clay)
+------------------------------------------------------------ */
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('server_theme', theme);
+  const icon = document.getElementById('themeToggleIcon');
+  const label = document.getElementById('themeToggleText');
+  if (theme === 'dark') {
+    if (icon) icon.textContent = '☀️';
+    if (label) label.textContent = 'Light Theme';
+  } else {
+    if (icon) icon.textContent = '🌙';
+    if (label) label.textContent = 'Dark Theme';
+  }
+  drawTelemetryChart();
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+document.getElementById('btnThemeToggle').addEventListener('click', toggleTheme);
+const savedTheme = localStorage.getItem('server_theme') || 'light';
+applyTheme(savedTheme);
+
+/* ------------------------------------------------------------
+   Tab View Switcher (Sidebar navigation)
+------------------------------------------------------------ */
+const viewTitles = {
+  Storage: { title: 'Cloud Storage, File Management & Sharing', subtitle: 'Private cloud storage hosted directly on your Samsung device' },
+  Telemetry: { title: 'Hardware & Battery UPS Telemetry', subtitle: 'Live CPU, RAM, disk, battery temperature, and UPS health' },
+  Remote: { title: 'Remote Access & Web Hosting', subtitle: 'Cloudflare Tunnels, Tailscale Mesh VPN, DuckDNS, and Website hosting' },
+  Automations: { title: 'Automations & Webhook Alerts', subtitle: 'Cron background supervisor, webhook alerts, and process control' },
+  Logs: { title: 'Live Audit Logs', subtitle: 'Real-time audit log viewer and security monitoring' }
+};
+
+function switchView(viewName) {
+  document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+  document.querySelectorAll('.sidebar-nav-item').forEach(btn => btn.classList.remove('active'));
+
+  const targetView = document.getElementById('view' + viewName);
+  const targetNav = document.getElementById('nav' + viewName);
+  if (targetView) targetView.classList.add('active');
+  if (targetNav) targetNav.classList.add('active');
+
+  const meta = viewTitles[viewName] || viewTitles.Storage;
+  document.getElementById('viewTitleText').textContent = meta.title;
+  document.getElementById('viewSubtitleText').textContent = meta.subtitle;
+
+  localStorage.setItem('active_view', viewName);
+  if (viewName === 'Telemetry') {
+    setTimeout(() => {
+      resizeChart();
+      drawTelemetryChart();
+    }, 50);
+  }
+}
+
+/* ------------------------------------------------------------
+   Live Clock
+------------------------------------------------------------ */
+function updateClock() {
+  const el = document.getElementById('liveClock');
+  if (el) el.textContent = new Date().toLocaleTimeString();
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+/* ------------------------------------------------------------
+   Token / Auth Helpers
+------------------------------------------------------------ */
+function ensureToken() { return !!apiToken; }
+function authHeader() {
+  return apiToken ? { Authorization: `Bearer ${apiToken}` } : {};
+}
+
+/* ------------------------------------------------------------
+   Fetch with Timeout & Auto Auth Injection
+------------------------------------------------------------ */
+async function fetchJson(url, options = {}) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    const headers = { ...authHeader(), ...(options.headers || {}) };
+    const res = await fetch(url, { ...options, headers, signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    clearTimeout(timeoutId);
+    throw err;
+  }
+}
+
+/* ------------------------------------------------------------
    Telemetry Data Polling
 ------------------------------------------------------------ */
 async function fetchTelemetry() {
   try {
     const data = await fetchJson(STATUS_ENDPOINT);
+
+    // Auto-pair on localhost if token is missing in browser storage
+    if (data.local_token && !apiToken) {
+      apiToken = data.local_token;
+      localStorage.setItem('a23_api_token', apiToken);
+      loadFiles(currentPath);
+      fetchStorageBreakdown();
+    }
 
     if (data.device) {
       document.getElementById('headerTitle').textContent = data.device;
@@ -1567,12 +1625,16 @@ async function fetchTelemetry() {
     if (data.cpu !== null && data.cpu !== undefined) {
       document.getElementById('cpuValue').textContent = `${data.cpu}%`;
       document.getElementById('cpuFill').style.width = `${data.cpu}%`;
+      const qCpu = document.getElementById('quickCpu');
+      if (qCpu) qCpu.textContent = `${data.cpu}%`;
     }
 
     // Meters: RAM
     if (data.ram !== null && data.ram !== undefined) {
       document.getElementById('ramValue').textContent = `${data.ram}%`;
       document.getElementById('ramFill').style.width = `${data.ram}%`;
+      const qRam = document.getElementById('quickRam');
+      if (qRam) qRam.textContent = `${data.ram}%`;
     }
 
     // Meters: Storage
@@ -1590,6 +1652,8 @@ async function fetchTelemetry() {
       document.getElementById('batteryFill').style.width = `${pct}%`;
       const statusStr = data.battery.plugged ? `Charging (${data.battery.plugged})` : `Discharging (UPS)`;
       document.getElementById('batterySub').textContent = statusStr;
+      const qBat = document.getElementById('quickBat');
+      if (qBat) qBat.textContent = `${pct}% (${data.battery.plugged ? 'Plugged' : 'UPS'})`;
     }
 
     // Battery Guard Banner
@@ -1608,6 +1672,7 @@ async function fetchTelemetry() {
       const tLink = document.getElementById('tunnelLink');
       const btnStart = document.getElementById('btnStartTunnel');
       const btnStop = document.getElementById('btnStopTunnel');
+      const qTunnel = document.getElementById('quickTunnel');
 
       if (data.tunnel.running && data.tunnel.url) {
         tBadge.className = 'clay-chip badge-online';
@@ -1617,12 +1682,20 @@ async function fetchTelemetry() {
         tLink.textContent = data.tunnel.url;
         btnStart.style.display = 'none';
         btnStop.style.display = 'inline-flex';
+        if (qTunnel) {
+          qTunnel.className = 'clay-chip badge-online';
+          qTunnel.textContent = 'Tunnel: Online';
+        }
       } else {
         tBadge.className = 'clay-chip badge-offline';
         tBadge.textContent = 'Offline';
         tBox.style.display = 'none';
         btnStart.style.display = 'inline-flex';
         btnStop.style.display = 'none';
+        if (qTunnel) {
+          qTunnel.className = 'clay-chip badge-offline';
+          qTunnel.textContent = 'Tunnel: Offline';
+        }
       }
     }
 
@@ -1803,15 +1876,48 @@ function isEditableFile(filename) {
   return EDITABLE_EXTENSIONS.includes(filename.slice(idx).toLowerCase());
 }
 
+async function verifyInlinePin() {
+  const pinInput = document.getElementById('inlinePinInput');
+  if (!pinInput) return;
+  const pin = pinInput.value.trim();
+  if (!pin || pin.length < 6) {
+    alert('Please enter your 6-digit PIN.');
+    return;
+  }
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/auth/pin`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Invalid PIN');
+    apiToken = data.token;
+    localStorage.setItem('a23_api_token', apiToken);
+    refreshAll();
+  } catch (err) {
+    alert('Unlock failed: ' + err.message);
+  }
+}
+
 async function loadFiles(path = '') {
   const container = document.getElementById('fileTable');
   if (!ensureToken()) {
     container.innerHTML = `
-      <div style="padding:36px; text-align:center;">
-        <div style="font-size:32px; margin-bottom:8px;">🔒</div>
-        <h4 style="font-size:18px; font-weight:800; margin-bottom:6px;">Connect & Authenticate Device</h4>
-        <p style="color:var(--text-muted); font-size:13.5px; font-weight:600; margin-bottom:16px;">Scan the QR code or enter your 6-digit PIN to manage files.</p>
-        <button class="clay-btn-primary" onclick="openPairModal('pin')">📱 Pair Device with PIN / QR</button>
+      <div class="clay-card" style="text-align: center; padding: 36px 20px; margin: 10px 0;">
+        <div style="font-size: 38px; margin-bottom: 10px;">🔒</div>
+        <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 6px;">Private Cloud Storage Locked</h3>
+        <p style="color: var(--text-muted); font-size: 14px; font-weight: 600; max-width: 440px; margin: 0 auto 20px;">
+          Enter your 6-digit PIN below or scan the QR code to manage and download files.
+        </p>
+        <div style="display: flex; gap: 10px; justify-content: center; max-width: 320px; margin: 0 auto 16px;">
+          <input type="text" id="inlinePinInput" class="clay-input" maxlength="6" placeholder="6-digit PIN" style="text-align: center; font-family: var(--font-mono); font-size: 17px; font-weight: 800; letter-spacing: 0.1em; width: 100%;">
+          <button class="clay-btn-primary" onclick="verifyInlinePin()">Unlock</button>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+          <button class="clay-btn clay-btn-sm" onclick="openPairModal('qr')">📷 Scan QR Code</button>
+          <button class="clay-btn clay-btn-sm" onclick="openPairModal('token')">🔑 Enter Token</button>
+        </div>
       </div>`;
     return;
   }
@@ -1825,7 +1931,12 @@ async function loadFiles(path = '') {
     document.getElementById('fileBreadcrumbs').textContent = currentPath ? `Root / ${currentPath}` : 'Root';
 
     if (!data.entries || data.entries.length === 0) {
-      container.innerHTML = '<div style="padding:28px; text-align:center; color:var(--text-muted); font-weight:600;">Directory is empty.</div>';
+      container.innerHTML = `
+        <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+          <div style="font-size: 38px; margin-bottom: 8px;">📂</div>
+          <h4 style="font-size: 16px; font-weight: 800; color: var(--text-strong); margin-bottom: 4px;">This directory is empty</h4>
+          <p style="font-size: 13.5px; font-weight: 600;">Use the toolbar buttons above to upload files, folders, or ZIP archives.</p>
+        </div>`;
       return;
     }
 
@@ -2599,7 +2710,6 @@ function setPairTab(tab) {
 }
 
 function openPairModal(tab = 'qr') {
-  // Construct direct auto-auth pairing URL for the QR code
   const currentOrigin = window.location.origin;
   const pairUrl = `${currentOrigin}/?auth=${encodeURIComponent(apiToken || '')}`;
 
@@ -2646,7 +2756,7 @@ document.getElementById('btnSubmitPin').addEventListener('click', async () => {
     setTimeout(() => {
       qrModal.classList.remove('open');
       refreshAll();
-    }, 900);
+    }, 700);
   } catch (err) {
     statusEl.textContent = err.message;
   }
