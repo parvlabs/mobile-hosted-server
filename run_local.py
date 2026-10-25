@@ -113,7 +113,7 @@ def main():
                     proc.kill()
                 except Exception:
                     pass
-        print("[✓] All servers stopped cleanly.")
+        print("[OK] All servers stopped cleanly.")
 
 
 if __name__ == "__main__":

@@ -22,13 +22,16 @@ An ultra-lightweight, self-hosted home server and dashboard designed to run seam
 
 ## ✨ Features
 
+### 🎨 Claymorphism UI & Navigation
+* 🏺 **Pure Claymorphism Design System**: Strictly crafted with soft pastel clay surfaces (`#B8A6FF` Lavender, `#9EC9F0` Sky, `#7DD4A8` Mint, `#FFB59E` Peach, `#F5D77A` Lemon), multi-layer colored inset/outset lighting, chunky 28px card radii, and tactile squish-action buttons.
+* 📱 **Left Sidebar Navigation**: Dedicated left sidebar organizing all server functions, with **Cloud Storage & Files** as the clean landing experience, and 1-click switching to Telemetry, Remote Access, Automations, and Live Logs.
+
 ### 📊 Real-Time Telemetry & Visuals
 * 📈 **60-Second Real-Time Telemetry Graph**: Smooth canvas chart displaying real-time CPU %, RAM %, and network traffic over the last minute.
 * 📥 **24-Hour Telemetry History & Export**: Automatic background metrics capture with 1-click export to CSV or JSON for deep performance analysis.
 * 💾 **Disk Space Visual Breakdown & Cache Cleaner**: Interactive multi-color storage bar categorizing Media, Documents, Archives, Code, and Logs with a 1-click temporary cache cleaner.
 * 🔋 **Battery UPS & Health Guard**: Continuous battery level and temperature monitoring with smart advisory alerts to prevent battery swelling during 24/7 wall power.
 * 🛡️ **Android Wake-Lock & Governor Guard**: Real-time CPU governor indicator and 1-click Termux wake-lock toggle to prevent the mobile OS from sleeping or killing server threads.
-* 🌓 **Dark / Light Mode**: Modern responsive interface with an obsidian dark theme, emerald accents, and theme persistence.
 * 📱 **Instant Wi-Fi QR Connect**: Built-in QR code modal to connect mobile devices or laptops on your local network instantly without typing IP addresses.
 
 ### 🌐 Remote Access & Public Hosting
@@ -39,6 +42,7 @@ An ultra-lightweight, self-hosted home server and dashboard designed to run seam
 
 ### 📁 Cloud Storage, File Manager & Sharing
 * 📁 **Web File Manager**: Browse, create folders, download, rename, and delete files safely.
+* 📦 **ZIP Archive Upload & Auto-Extraction**: Upload `.zip` archives with an option to automatically unpack and extract directories into the current folder or save as-is.
 * 📂 **Folder Upload & 1-Click ZIP Download**: Upload nested folder structures directly from your browser, or download entire directories bundled as `.zip` archives.
 * 📝 **In-Browser Text & Code Editor**: View and edit `.txt`, `.py`, `.sh`, `.json`, `.md`, `.html`, `.css`, and `.yaml` files directly from the browser with `Ctrl+S` quick save.
 * 🔗 **Shareable Expiring Download Links**: Generate public download links with custom expiration times (1 hour to 7 days), download counters, and optional password protection.

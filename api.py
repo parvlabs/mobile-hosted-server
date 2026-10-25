@@ -1601,6 +1601,70 @@ def upload_file():
     return jsonify({"message": "uploaded", "name": filename, "path": uploaded_rel})
 
 
+@app.route("/api/files/upload-zip", methods=["POST"])
+@require_token
+def upload_zip():
+    """Uploads a .zip archive, with an option to automatically extract its contents."""
+    rel_path = request.form.get("path", "")
+    extract = request.form.get("extract", "true").lower() in ("true", "1", "yes")
+    try:
+        target_dir = safe_join(FILE_ROOT, rel_path)
+    except ValueError:
+        return jsonify({"error": "Invalid path"}), 400
+    if not os.path.isdir(target_dir):
+        return jsonify({"error": "Target directory not found"}), 404
+    if "file" not in request.files:
+        return jsonify({"error": "No file provided"}), 400
+
+    file = request.files["file"]
+    filename = secure_filename(file.filename or "")
+    if not filename.lower().endswith(".zip"):
+        return jsonify({"error": "Only .zip archive files are accepted"}), 400
+
+    zip_dest = os.path.join(target_dir, filename)
+    try:
+        file.save(zip_dest)
+    except Exception as err:
+        log_event(f"Failed to save zip upload: {err}", level="error")
+        return jsonify({"error": f"Failed to save zip: {err}"}), 500
+
+    extracted_count = 0
+    if extract:
+        try:
+            with zipfile.ZipFile(zip_dest, "r") as zf:
+                for member in zf.infolist():
+                    member_path = member.filename.replace("\\", "/")
+                    parts = [p for p in member_path.split("/") if p not in ("", ".", "..")]
+                    if not parts or ".." in parts:
+                        continue
+                    dest_path = safe_join(target_dir, "/".join(parts))
+                    if member.is_dir():
+                        os.makedirs(dest_path, exist_ok=True)
+                    else:
+                        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+                        with zf.open(member) as source, open(dest_path, "wb") as target:
+                            target.write(source.read())
+                        extracted_count += 1
+            log_event(f"Uploaded and extracted ZIP '{filename}' ({extracted_count} items) into {rel_path or 'root'}")
+            return jsonify({
+                "message": "extracted",
+                "name": filename,
+                "extracted_count": extracted_count,
+                "path": to_relative(zip_dest)
+            })
+        except Exception as err:
+            log_event(f"ZIP extraction error: {err}", level="error")
+            return jsonify({
+                "message": "uploaded_unextracted",
+                "name": filename,
+                "warning": f"Saved ZIP file, but extraction encountered an issue: {err}",
+                "path": to_relative(zip_dest)
+            })
+
+    log_event(f"Uploaded ZIP archive '{filename}' into {rel_path or 'root'}")
+    return jsonify({"message": "uploaded", "name": filename, "path": to_relative(zip_dest)})
+
+
 @app.route("/api/files/create-folder", methods=["POST"])
 @require_token
 def create_folder():
