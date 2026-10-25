@@ -14,6 +14,15 @@ logs/*
 shared/*
 !shared/.gitkeep
 
+# Runtime state & trash
+.trash/
+.shared_links.json
+.cron_tasks.json
+.alerts_config.json
+.ddns_config.json
+.telemetry_history.json
+backups/
+
 # Operating system files
 .DS_Store
 Thumbs.db

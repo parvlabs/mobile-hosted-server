@@ -61,12 +61,16 @@ except ImportError:
     Image = None
     ImageDraw = None
 
+import hashlib
+import urllib.request
+import zipfile
+
 try:
     import qrcode
 except ImportError:
     qrcode = None
 
-from flask import Flask, jsonify, request, send_file, Response
+from flask import Flask, jsonify, request, send_file, send_from_directory, Response
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
@@ -77,11 +81,51 @@ SERVER_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_DIR = os.path.join(SERVER_DIR, "logs")
 TOKEN_FILE = os.path.join(SERVER_DIR, ".token")
 FILE_ROOT = os.path.join(SERVER_DIR, "shared")          # File Manager / media root
+PUBLIC_HTML_DIR = os.path.join(SERVER_DIR, "public_html")
+TRASH_DIR = os.path.join(SERVER_DIR, ".trash")
+BACKUP_DIR = os.path.join(SERVER_DIR, "backups")
+LINKS_FILE = os.path.join(SERVER_DIR, ".shared_links.json")
+TRASH_MANIFEST_FILE = os.path.join(TRASH_DIR, "manifest.json")
+DDNS_FILE = os.path.join(SERVER_DIR, ".ddns_config.json")
+CRON_FILE = os.path.join(SERVER_DIR, ".cron_tasks.json")
+ALERTS_FILE = os.path.join(SERVER_DIR, ".alerts_config.json")
+TELEMETRY_HISTORY_FILE = os.path.join(LOG_DIR, "telemetry_24h.json")
 DASHBOARD_PID_FILE = os.path.join(LOG_DIR, "dashboard.pid")
 
 API_PORT = 5000
 DASHBOARD_PORT = 8080
 SSH_DEFAULT_PORT = 8022
+
+os.makedirs(PUBLIC_HTML_DIR, exist_ok=True)
+os.makedirs(TRASH_DIR, exist_ok=True)
+os.makedirs(BACKUP_DIR, exist_ok=True)
+
+_default_site_index = os.path.join(PUBLIC_HTML_DIR, "index.html")
+if not os.path.exists(_default_site_index):
+    try:
+        with open(_default_site_index, "w", encoding="utf-8") as _f:
+            _f.write("""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mobile Hosted Server — Static Site</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0b0d11; color: #f0f4f8; display: flex; align-items: center; justify-content: center; min-height: 90vh; margin: 0; text-align: center; }
+    .card { background: #141820; border: 1px solid #232a38; border-radius: 12px; padding: 40px; max-width: 520px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+    h1 { color: #00dc82; margin-top: 0; }
+    code { background: #1b212c; padding: 4px 8px; border-radius: 4px; font-family: monospace; color: #38bdf8; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>⚡ Mobile Hosted Site</h1>
+    <p>Your personal static website is live!</p>
+    <p>Drop your custom HTML, CSS, images, and JavaScript into <code>~/server/public_html</code> to publish here.</p>
+  </div>
+</body>
+</html>""")
+    except Exception:
+        pass
 
 # State for Cloudflare Tunnel
 _tunnel_proc = None
@@ -581,6 +625,553 @@ def get_ram_usage():
 
 
 # ================================================================
+# HELPERS: EXTENDED SERVER & CLOUD SERVICES
+# ================================================================
+
+# 1. Shared Download Links
+def _load_links():
+    if not os.path.exists(LINKS_FILE):
+        return {}
+    try:
+        with open(LINKS_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+def _save_links(links):
+    try:
+        with open(LINKS_FILE, "w", encoding="utf-8") as f:
+            json.dump(links, f, indent=2)
+    except Exception as e:
+        log_event(f"Failed to save shared links: {e}", level="error")
+
+def _prune_expired_links():
+    links = _load_links()
+    now = int(time.time())
+    changed = False
+    active = {}
+    for lid, data in links.items():
+        exp = data.get("expires_at", 0)
+        if exp > 0 and exp < now:
+            changed = True
+            continue
+        max_d = data.get("max_downloads", 0)
+        cnt = data.get("downloads", 0)
+        if max_d > 0 and cnt >= max_d:
+            changed = True
+            continue
+        active[lid] = data
+    if changed:
+        _save_links(active)
+    return active
+
+# 2. Trash Manifest
+def _load_trash():
+    if not os.path.exists(TRASH_MANIFEST_FILE):
+        return []
+    try:
+        with open(TRASH_MANIFEST_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return []
+
+def _save_trash(items):
+    try:
+        with open(TRASH_MANIFEST_FILE, "w", encoding="utf-8") as f:
+            json.dump(items, f, indent=2)
+    except Exception as e:
+        log_event(f"Failed to save trash manifest: {e}", level="error")
+
+# 3. Dynamic DNS (DuckDNS / Custom)
+def _load_ddns_config():
+    default_cfg = {
+        "enabled": False,
+        "service": "duckdns",
+        "domain": "",
+        "token": "",
+        "interval_minutes": 30,
+        "last_update": 0,
+        "last_status": "Not configured",
+        "last_ip": ""
+    }
+    if not os.path.exists(DDNS_FILE):
+        return default_cfg
+    try:
+        with open(DDNS_FILE, "r", encoding="utf-8") as f:
+            c = json.load(f)
+            return {**default_cfg, **c}
+    except Exception:
+        return default_cfg
+
+def _save_ddns_config(cfg):
+    try:
+        with open(DDNS_FILE, "w", encoding="utf-8") as f:
+            json.dump(cfg, f, indent=2)
+    except Exception as e:
+        log_event(f"Failed to save DDNS config: {e}", level="error")
+
+def _trigger_ddns_update():
+    cfg = _load_ddns_config()
+    domain = cfg.get("domain", "").strip()
+    tok = cfg.get("token", "").strip()
+    if not domain or not tok:
+        cfg["last_status"] = "Missing domain or token"
+        _save_ddns_config(cfg)
+        return "Missing domain or token"
+
+    try:
+        url = f"https://www.duckdns.org/update?domains={domain}&token={tok}&ip="
+        req = urllib.request.Request(url, headers={"User-Agent": "MobileHostedServer/1.0"})
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            body = resp.read().decode().strip()
+            if body == "OK":
+                cfg["last_status"] = "Success (OK)"
+                cfg["last_update"] = int(time.time())
+                log_event(f"DDNS DuckDNS sync OK: {domain}.duckdns.org")
+            else:
+                cfg["last_status"] = f"Failed ({body})"
+                log_event(f"DDNS sync error: {body}", level="warning")
+    except Exception as err:
+        cfg["last_status"] = f"Network error: {err}"
+        log_event(f"DDNS sync network error: {err}", level="error")
+
+    _save_ddns_config(cfg)
+    return cfg["last_status"]
+
+# 4. Webhook Alerts (Telegram & Discord)
+def _load_alerts_config():
+    default_cfg = {
+        "enabled": False,
+        "discord_webhook": "",
+        "telegram_bot_token": "",
+        "telegram_chat_id": "",
+        "triggers": {
+            "high_temp": True,
+            "max_temp_c": 42.0,
+            "low_battery": True,
+            "low_storage": True,
+            "storage_threshold_pct": 90.0
+        },
+        "last_alerts": {}
+    }
+    if not os.path.exists(ALERTS_FILE):
+        return default_cfg
+    try:
+        with open(ALERTS_FILE, "r", encoding="utf-8") as f:
+            return {**default_cfg, **json.load(f)}
+    except Exception:
+        return default_cfg
+
+def _save_alerts_config(cfg):
+    try:
+        with open(ALERTS_FILE, "w", encoding="utf-8") as f:
+            json.dump(cfg, f, indent=2)
+    except Exception as e:
+        log_event(f"Failed to save alerts config: {e}", level="error")
+
+def _send_notification(title, message):
+    cfg = _load_alerts_config()
+    discord_url = cfg.get("discord_webhook", "").strip()
+    tg_token = cfg.get("telegram_bot_token", "").strip()
+    tg_chat_id = cfg.get("telegram_chat_id", "").strip()
+
+    sent = []
+    # 1. Discord
+    if discord_url.startswith("https://discord.com/api/webhooks/"):
+        try:
+            payload = json.dumps({
+                "content": f"🚨 **{title}**\n{message}\n*Server: {get_device_info_meta()['device_name']}*"
+            }).encode("utf-8")
+            req = urllib.request.Request(discord_url, data=payload, headers={"Content-Type": "application/json", "User-Agent": "MobileHostedServer/1.0"})
+            with urllib.request.urlopen(req, timeout=5) as resp:
+                if resp.status in (200, 204):
+                    sent.append("Discord")
+        except Exception as e:
+            log_event(f"Discord alert failed: {e}", level="warning")
+
+    # 2. Telegram
+    if tg_token and tg_chat_id:
+        try:
+            tg_url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
+            payload = json.dumps({
+                "chat_id": tg_chat_id,
+                "text": f"🚨 *{title}*\n{message}\n\n_Server: {get_device_info_meta()['device_name']}_",
+                "parse_mode": "Markdown"
+            }).encode("utf-8")
+            req = urllib.request.Request(tg_url, data=payload, headers={"Content-Type": "application/json", "User-Agent": "MobileHostedServer/1.0"})
+            with urllib.request.urlopen(req, timeout=5) as resp:
+                if resp.status == 200:
+                    sent.append("Telegram")
+        except Exception as e:
+            log_event(f"Telegram alert failed: {e}", level="warning")
+
+    log_event(f"Alert dispatched: {title} via {', '.join(sent) if sent else 'none'}")
+    return sent
+
+# 5. Storage Breakdown & Cache Cleaning
+def _get_storage_breakdown():
+    categories = {
+        "media": {"bytes": 0, "count": 0, "exts": {".mp4", ".mov", ".mkv", ".webm", ".mp3", ".wav", ".m4a", ".ogg", ".jpg", ".jpeg", ".png", ".gif", ".webp"}},
+        "documents": {"bytes": 0, "count": 0, "exts": {".pdf", ".doc", ".docx", ".txt", ".rtf", ".odt", ".xls", ".xlsx", ".ppt", ".pptx", ".epub", ".md"}},
+        "archives": {"bytes": 0, "count": 0, "exts": {".zip", ".tar", ".gz", ".7z", ".rar", ".bz2", ".xz", ".iso"}},
+        "code": {"bytes": 0, "count": 0, "exts": {".py", ".js", ".html", ".css", ".json", ".sh", ".c", ".cpp", ".java", ".sql", ".xml", ".yaml", ".yml"}},
+        "logs_system": {"bytes": 0, "count": 0, "exts": set()},
+        "other": {"bytes": 0, "count": 0, "exts": set()}
+    }
+
+    # Scan FILE_ROOT
+    for root, _, files in os.walk(FILE_ROOT):
+        for f in files:
+            p = os.path.join(root, f)
+            try:
+                sz = os.path.getsize(p)
+                ext = os.path.splitext(f)[1].lower()
+                matched = False
+                for cat in ("media", "documents", "archives", "code"):
+                    if ext in categories[cat]["exts"]:
+                        categories[cat]["bytes"] += sz
+                        categories[cat]["count"] += 1
+                        matched = True
+                        break
+                if not matched:
+                    categories["other"]["bytes"] += sz
+                    categories["other"]["count"] += 1
+            except Exception:
+                pass
+
+    # Scan LOG_DIR and TRASH_DIR
+    for d in (LOG_DIR, TRASH_DIR):
+        for root, _, files in os.walk(d):
+            for f in files:
+                try:
+                    sz = os.path.getsize(os.path.join(root, f))
+                    categories["logs_system"]["bytes"] += sz
+                    categories["logs_system"]["count"] += 1
+                except Exception:
+                    pass
+
+    total_shared_bytes = sum(c["bytes"] for c in categories.values())
+    return {
+        "categories": {k: {"bytes": v["bytes"], "mb": round(v["bytes"] / 1048576, 2), "count": v["count"]} for k, v in categories.items()},
+        "total_managed_bytes": total_shared_bytes,
+        "total_managed_mb": round(total_shared_bytes / 1048576, 2)
+    }
+
+def _clean_temp_cache():
+    freed = 0
+    # Clean trash
+    manifest = _load_trash()
+    for item in manifest:
+        tp = os.path.join(TRASH_DIR, item.get("trash_name", ""))
+        try:
+            if os.path.isdir(tp):
+                freed += sum(os.path.getsize(os.path.join(dr, fl)) for dr, _, fls in os.walk(tp) for fl in fls)
+                shutil.rmtree(tp, ignore_errors=True)
+            elif os.path.isfile(tp):
+                freed += os.path.getsize(tp)
+                os.remove(tp)
+        except Exception:
+            pass
+    _save_trash([])
+
+    # Clean rotated logs and pycache
+    for root, dirs, files in os.walk(SERVER_DIR):
+        if "__pycache__" in dirs:
+            pyc_p = os.path.join(root, "__pycache__")
+            try:
+                freed += sum(os.path.getsize(os.path.join(dr, fl)) for dr, _, fls in os.walk(pyc_p) for fl in fls)
+                shutil.rmtree(pyc_p, ignore_errors=True)
+            except Exception:
+                pass
+        for f in files:
+            if re.search(r"\.log\.\d+$", f) or f.endswith(".tmp"):
+                p = os.path.join(root, f)
+                try:
+                    freed += os.path.getsize(p)
+                    os.remove(p)
+                except Exception:
+                    pass
+    return freed
+
+# 6. Android Wake-Lock & Governor
+def _get_wake_lock_status():
+    try:
+        if os.path.exists("/sys/power/wake_lock"):
+            with open("/sys/power/wake_lock", "r") as f:
+                content = f.read().strip()
+                if content:
+                    return {"active": True, "details": content}
+    except Exception:
+        pass
+    if find_pid("termux-wake-lock"):
+        return {"active": True, "details": "termux-wake-lock held"}
+    return {"active": False, "details": "No active wake-lock held"}
+
+def _get_cpu_governor():
+    for path in ("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor", "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"):
+        try:
+            if os.path.exists(path):
+                with open(path, "r") as f:
+                    return f.read().strip()
+        except Exception:
+            pass
+    return "balanced"
+
+# 7. Tailscale VPN
+def _get_tailscale_info():
+    ts_bin = shutil.which("tailscale")
+    installed = ts_bin is not None
+    running = False
+    ip = None
+    magic_dns = None
+    online_peers = 0
+
+    if installed:
+        try:
+            p = subprocess.run(["tailscale", "status", "--json"], capture_output=True, text=True, timeout=2)
+            if p.returncode == 0:
+                data = json.loads(p.stdout)
+                running = bool(data.get("BackendState") == "Running")
+                self_node = data.get("Self", {})
+                ips = self_node.get("TailscaleIPs", [])
+                if ips:
+                    ip = ips[0]
+                magic_dns = self_node.get("DNSName", "").rstrip(".")
+                peers = data.get("Peer", {})
+                online_peers = sum(1 for p in peers.values() if p.get("Online"))
+        except Exception:
+            pass
+
+    if not ip and psutil:
+        try:
+            for iface, addrs in psutil.net_if_addrs().items():
+                if "tailscale" in iface.lower() or "tun" in iface.lower():
+                    for a in addrs:
+                        if a.family == socket.AF_INET and a.address.startswith("100."):
+                            ip = a.address
+                            running = True
+                            break
+        except Exception:
+            pass
+
+    return {
+        "installed": installed,
+        "running": running,
+        "ip": ip,
+        "magic_dns": magic_dns,
+        "online_peers": online_peers
+    }
+
+# 8. Scheduled Tasks (Cron)
+DEFAULT_CRON_TASKS = [
+    {
+        "id": "task_auto_backup",
+        "name": "Daily Shared Storage Backup",
+        "action": "backup_shared",
+        "interval_hours": 24,
+        "enabled": False,
+        "last_run": 0
+    },
+    {
+        "id": "task_clean_cache",
+        "name": "Clean Cache & Old Trash",
+        "action": "clean_cache",
+        "interval_hours": 12,
+        "enabled": True,
+        "last_run": 0
+    },
+    {
+        "id": "task_rotate_logs",
+        "name": "Prune Server Logs",
+        "action": "clear_logs",
+        "interval_hours": 48,
+        "enabled": False,
+        "last_run": 0
+    },
+    {
+        "id": "task_ddns_sync",
+        "name": "Auto Sync Dynamic DNS",
+        "action": "ddns_update",
+        "interval_hours": 1,
+        "enabled": False,
+        "last_run": 0
+    }
+]
+
+def _load_cron_tasks():
+    if not os.path.exists(CRON_FILE):
+        return DEFAULT_CRON_TASKS
+    try:
+        with open(CRON_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return DEFAULT_CRON_TASKS
+
+def _save_cron_tasks(tasks):
+    try:
+        with open(CRON_FILE, "w", encoding="utf-8") as f:
+            json.dump(tasks, f, indent=2)
+    except Exception as e:
+        log_event(f"Failed to save cron tasks: {e}", level="error")
+
+def _execute_cron_action(action):
+    if action == "backup_shared":
+        stamp = time.strftime("%Y%m%d_%H%M%S")
+        out_name = f"shared_backup_{stamp}.zip"
+        dest_zip = os.path.join(BACKUP_DIR, out_name)
+        with zipfile.ZipFile(dest_zip, "w", zipfile.ZIP_DEFLATED) as zf:
+            for root, _, files in os.walk(FILE_ROOT):
+                for file in files:
+                    full_p = os.path.join(root, file)
+                    rel_p = os.path.relpath(full_p, FILE_ROOT)
+                    zf.write(full_p, rel_p)
+        log_event(f"Cron: Created backup {out_name}")
+        return f"Backup created: {out_name}"
+    elif action == "clean_cache":
+        freed = _clean_temp_cache()
+        log_event(f"Cron: Cleaned cache ({freed} bytes freed)")
+        return f"Cache cleaned ({round(freed/1048576, 2)} MB freed)"
+    elif action == "clear_logs":
+        srv_log = os.path.join(LOG_DIR, "server.log")
+        if os.path.exists(srv_log):
+            with open(srv_log, "r", encoding="utf-8", errors="ignore") as f:
+                lines = f.readlines()[-200:]
+            with open(srv_log, "w", encoding="utf-8") as f:
+                f.writelines(lines)
+        log_event("Cron: Rotated and truncated server log")
+        return "Logs rotated"
+    elif action == "ddns_update":
+        st = _trigger_ddns_update()
+        return f"DDNS update: {st}"
+    return "Unknown action"
+
+# 9. 24-Hour Telemetry History
+_telemetry_history = []
+
+def _init_telemetry_history():
+    global _telemetry_history
+    if os.path.exists(TELEMETRY_HISTORY_FILE):
+        try:
+            with open(TELEMETRY_HISTORY_FILE, "r", encoding="utf-8") as f:
+                _telemetry_history = json.load(f)
+        except Exception:
+            _telemetry_history = []
+
+def _record_telemetry_snapshot():
+    global _telemetry_history
+    now = int(time.time())
+    try:
+        cpu = get_cpu_usage() or 0
+        ram = get_ram_usage() or 0
+        stor = get_storage_info()
+        stor_pct = 0
+        if stor and stor.get("total_gb") and stor.get("used_gb"):
+            stor_pct = round((stor["used_gb"] / stor["total_gb"]) * 100, 1)
+        bat = get_battery_info()
+        bat_level = bat.get("percentage", 0) or 0
+        bat_temp = bat.get("temperature", 0) or 0
+        snap = {
+            "ts": now,
+            "cpu": cpu,
+            "ram": ram,
+            "storage_pct": stor_pct,
+            "battery": bat_level,
+            "temp_c": bat_temp,
+        }
+        _telemetry_history.append(snap)
+        if len(_telemetry_history) > 1440:
+            _telemetry_history = _telemetry_history[-1440:]
+    except Exception:
+        pass
+
+# 10. Background Supervisor Thread
+def _background_supervisor():
+    _init_telemetry_history()
+    last_60s_run = 0
+    last_5m_save = 0
+
+    while True:
+        try:
+            now = time.time()
+            if now - last_60s_run >= 58:
+                last_60s_run = now
+                _record_telemetry_snapshot()
+
+                if now - last_5m_save >= 300:
+                    last_5m_save = now
+                    try:
+                        with open(TELEMETRY_HISTORY_FILE, "w", encoding="utf-8") as f:
+                            json.dump(_telemetry_history, f)
+                    except Exception:
+                        pass
+
+                tasks = _load_cron_tasks()
+                tasks_changed = False
+                for t in tasks:
+                    if not t.get("enabled"):
+                        continue
+                    int_sec = t.get("interval_hours", 24) * 3600
+                    last_r = t.get("last_run", 0)
+                    if now - last_r >= int_sec:
+                        try:
+                            _execute_cron_action(t.get("action"))
+                            t["last_run"] = int(now)
+                            tasks_changed = True
+                        except Exception as e:
+                            log_event(f"Cron task {t.get('name')} failed: {e}", level="error")
+                if tasks_changed:
+                    _save_cron_tasks(tasks)
+
+                ddns_cfg = _load_ddns_config()
+                if ddns_cfg.get("enabled"):
+                    int_sec = max(5, ddns_cfg.get("interval_minutes", 30)) * 60
+                    if now - ddns_cfg.get("last_update", 0) >= int_sec:
+                        _trigger_ddns_update()
+
+                alerts_cfg = _load_alerts_config()
+                if alerts_cfg.get("enabled"):
+                    triggers = alerts_cfg.get("triggers", {})
+                    last_alerts = alerts_cfg.get("last_alerts", {})
+                    bat = get_battery_info()
+                    temp = bat.get("temperature", 0) or 0
+                    pct = bat.get("percentage", 100) or 100
+                    plugged = bat.get("plugged")
+
+                    if triggers.get("high_temp") and temp >= triggers.get("max_temp_c", 42):
+                        if now - last_alerts.get("temp", 0) > 3600:
+                            _send_notification("High Battery Temperature Alert", f"Battery temperature reached {temp}°C! Unplug charger or cool device to prevent swelling.")
+                            last_alerts["temp"] = int(now)
+                            alerts_cfg["last_alerts"] = last_alerts
+                            _save_alerts_config(alerts_cfg)
+
+                    if triggers.get("low_battery") and pct <= 20 and plugged == "UNPLUGGED":
+                        if now - last_alerts.get("battery", 0) > 3600:
+                            _send_notification("Low Battery Alert", f"Battery is at {pct}% and running on UPS power. Reconnect charger to prevent shutdown.")
+                            last_alerts["battery"] = int(now)
+                            alerts_cfg["last_alerts"] = last_alerts
+                            _save_alerts_config(alerts_cfg)
+
+                    if triggers.get("low_storage"):
+                        stor = get_storage_info()
+                        if stor and stor.get("total_gb") and stor.get("used_gb"):
+                            used_pct = (stor["used_gb"] / stor["total_gb"]) * 100
+                            thresh = triggers.get("storage_threshold_pct", 90)
+                            if used_pct >= thresh and (now - last_alerts.get("storage", 0) > 7200):
+                                _send_notification("Low Disk Storage Alert", f"Server disk usage is at {round(used_pct, 1)}%! Clean storage cache or remove old files.")
+                                last_alerts["storage"] = int(now)
+                                alerts_cfg["last_alerts"] = last_alerts
+                                _save_alerts_config(alerts_cfg)
+
+        except Exception as err:
+            log_event(f"Background supervisor error: {err}", level="error")
+
+        time.sleep(30)
+
+# Start supervisor daemon thread
+threading.Thread(target=_background_supervisor, daemon=True).start()
+
+
+# ================================================================
 # ROUTES: dashboard / status / services / network / server-info
 # ================================================================
 @app.route("/", methods=["GET"])
@@ -662,6 +1253,13 @@ def status():
             "running": tunnel_running,
             "url": _tunnel_url if tunnel_running else None,
         },
+        "tailscale": _get_tailscale_info(),
+        "ddns": _load_ddns_config(),
+        "trash_count": len(_load_trash()),
+        "links_count": len(_prune_expired_links()),
+        "wake_lock": _get_wake_lock_status(),
+        "cpu_governor": _get_cpu_governor(),
+        "public_site": {"url": "/site/", "active": os.path.exists(_default_site_index)},
     })
 
 
@@ -1062,6 +1660,7 @@ def rename_item():
 def delete_item():
     data = request.get_json(silent=True) or {}
     rel_path = data.get("path", "")
+    permanent = bool(data.get("permanent") or request.args.get("permanent") == "true")
     if not rel_path:
         return jsonify({"error": "Path required"}), 400
     try:
@@ -1073,15 +1672,491 @@ def delete_item():
     if not os.path.exists(target):
         return jsonify({"error": "Not found"}), 404
     try:
-        if os.path.isdir(target):
-            shutil.rmtree(target)
+        if permanent:
+            if os.path.isdir(target):
+                shutil.rmtree(target)
+            else:
+                os.remove(target)
+            log_event(f"Permanently deleted: {rel_path}")
+            return jsonify({"message": "permanently_deleted"})
         else:
-            os.remove(target)
+            trash_id = secrets.token_hex(6)
+            base_name = os.path.basename(target)
+            trash_name = f"{trash_id}_{base_name}"
+            dest = os.path.join(TRASH_DIR, trash_name)
+            is_dir = os.path.isdir(target)
+            sz = 0
+            if is_dir:
+                sz = sum(os.path.getsize(os.path.join(dr, fl)) for dr, _, fls in os.walk(target) for fl in fls)
+            else:
+                sz = os.path.getsize(target)
+            shutil.move(target, dest)
+            items = _load_trash()
+            items.append({
+                "id": trash_id,
+                "name": base_name,
+                "trash_name": trash_name,
+                "original_path": rel_path,
+                "is_dir": is_dir,
+                "size": sz,
+                "deleted_at": int(time.time())
+            })
+            _save_trash(items)
+            log_event(f"Moved to trash: {rel_path} (ID: {trash_id})")
+            return jsonify({"message": "moved_to_trash", "trash_id": trash_id})
     except Exception as err:
         log_event(f"Delete failed: {err}", level="error")
         return jsonify({"error": "Delete failed"}), 500
-    log_event(f"Deleted: {rel_path}")
-    return jsonify({"message": "deleted"})
+
+
+# ================================================================
+# ROUTES: TEXT EDITOR & ZIP DOWNLOAD
+# ================================================================
+@app.route("/api/files/content", methods=["GET"])
+@require_token
+def get_file_content():
+    rel_path = request.args.get("path", "")
+    try:
+        target = safe_join(FILE_ROOT, rel_path)
+    except ValueError:
+        return jsonify({"error": "Invalid path"}), 400
+    if not os.path.isfile(target):
+        return jsonify({"error": "File not found"}), 404
+    sz = os.path.getsize(target)
+    if sz > 4 * 1024 * 1024:
+        return jsonify({"error": "File too large to edit in browser (max 4 MB)"}), 400
+    try:
+        with open(target, "r", encoding="utf-8", errors="replace") as f:
+            content = f.read()
+    except Exception as err:
+        return jsonify({"error": f"Failed to read file: {err}"}), 500
+    filename = os.path.basename(target)
+    ext = os.path.splitext(filename)[1].lower()
+    return jsonify({"path": rel_path, "name": filename, "ext": ext, "size": sz, "content": content})
+
+
+@app.route("/api/files/save", methods=["POST"])
+@require_token
+def save_file_content():
+    data = request.get_json(silent=True) or {}
+    rel_path = data.get("path", "")
+    content = data.get("content", "")
+    try:
+        target = safe_join(FILE_ROOT, rel_path)
+    except ValueError:
+        return jsonify({"error": "Invalid path"}), 400
+    if not os.path.isfile(target):
+        return jsonify({"error": "File not found"}), 404
+    try:
+        with open(target, "w", encoding="utf-8") as f:
+            f.write(content)
+        log_event(f"Saved file edit: {rel_path} ({len(content)} chars)")
+    except Exception as err:
+        log_event(f"Failed to save file {rel_path}: {err}", level="error")
+        return jsonify({"error": f"Could not save file: {err}"}), 500
+    return jsonify({"status": "saved", "size": len(content.encode("utf-8"))})
+
+
+@app.route("/api/files/zip", methods=["GET"])
+@require_token
+def download_folder_zip():
+    rel_path = request.args.get("path", "")
+    try:
+        target = safe_join(FILE_ROOT, rel_path)
+    except ValueError:
+        return jsonify({"error": "Invalid path"}), 400
+    if not os.path.exists(target):
+        return jsonify({"error": "Not found"}), 404
+
+    base_name = os.path.basename(target.rstrip("/\\")) or "shared_files"
+    mem_buf = io.BytesIO()
+    with zipfile.ZipFile(mem_buf, "w", zipfile.ZIP_DEFLATED) as zf:
+        if os.path.isdir(target):
+            for root, _, files in os.walk(target):
+                for f in files:
+                    full_p = os.path.join(root, f)
+                    arc_p = os.path.relpath(full_p, target)
+                    zf.write(full_p, arc_p)
+        else:
+            zf.write(target, os.path.basename(target))
+
+    mem_buf.seek(0)
+    log_event(f"Downloaded ZIP archive for: {rel_path or 'root'}")
+    return send_file(
+        mem_buf,
+        mimetype="application/zip",
+        as_attachment=True,
+        download_name=f"{base_name}.zip"
+    )
+
+
+# ================================================================
+# ROUTES: SHAREABLE DOWNLOAD LINKS
+# ================================================================
+@app.route("/api/links/create", methods=["POST"])
+@require_token
+def create_share_link():
+    data = request.get_json(silent=True) or {}
+    rel_path = data.get("path", "")
+    expires_in_hours = int(data.get("expires_in_hours", 24))
+    pwd = (data.get("password") or "").strip()
+    max_d = int(data.get("max_downloads", 0))
+
+    try:
+        target = safe_join(FILE_ROOT, rel_path)
+    except ValueError:
+        return jsonify({"error": "Invalid path"}), 400
+    if not os.path.isfile(target):
+        return jsonify({"error": "File not found"}), 404
+
+    link_id = secrets.token_urlsafe(12)
+    now = int(time.time())
+    expires_at = (now + expires_in_hours * 3600) if expires_in_hours > 0 else 0
+    pwd_hash = hashlib.sha256(pwd.encode("utf-8")).hexdigest() if pwd else None
+
+    links = _load_links()
+    links[link_id] = {
+        "id": link_id,
+        "path": rel_path,
+        "filename": os.path.basename(target),
+        "created_at": now,
+        "expires_at": expires_at,
+        "has_password": bool(pwd),
+        "password_hash": pwd_hash,
+        "downloads": 0,
+        "max_downloads": max_d
+    }
+    _save_links(links)
+    log_event(f"Created shared link {link_id} for {rel_path}")
+    return jsonify({
+        "link_id": link_id,
+        "share_url": f"/api/share/{link_id}",
+        "expires_at": expires_at,
+        "has_password": bool(pwd)
+    })
+
+
+@app.route("/api/links", methods=["GET"])
+@require_token
+def list_share_links():
+    active = _prune_expired_links()
+    result = []
+    for lid, d in active.items():
+        result.append({
+            "id": lid,
+            "path": d["path"],
+            "filename": d.get("filename", os.path.basename(d["path"])),
+            "created_at": d.get("created_at"),
+            "expires_at": d.get("expires_at"),
+            "has_password": d.get("has_password", False),
+            "downloads": d.get("downloads", 0),
+            "max_downloads": d.get("max_downloads", 0),
+            "share_url": f"/api/share/{lid}"
+        })
+    result.sort(key=lambda x: x["created_at"], reverse=True)
+    return jsonify({"links": result})
+
+
+@app.route("/api/links/<link_id>", methods=["DELETE"])
+@require_token
+def delete_share_link(link_id):
+    links = _load_links()
+    if link_id in links:
+        del links[link_id]
+        _save_links(links)
+        log_event(f"Revoked shared link: {link_id}")
+        return jsonify({"message": "Link revoked"})
+    return jsonify({"error": "Link not found"}), 404
+
+
+@app.route("/api/share/<link_id>", methods=["GET"])
+def public_share_access(link_id):
+    links = _prune_expired_links()
+    link = links.get(link_id)
+    if not link:
+        return "<h3>Shared link expired or does not exist.</h3>", 404
+
+    if link.get("has_password"):
+        client_pwd = request.headers.get("X-Share-Password") or request.args.get("pwd", "")
+        client_hash = hashlib.sha256(client_pwd.encode("utf-8")).hexdigest()
+        if client_hash != link.get("password_hash"):
+            return jsonify({"password_required": True, "error": "Password required or incorrect"}), 401
+
+    try:
+        target = safe_join(FILE_ROOT, link["path"])
+    except ValueError:
+        return "Invalid path", 400
+    if not os.path.isfile(target):
+        return "File not found", 404
+
+    link["downloads"] = link.get("downloads", 0) + 1
+    _save_links(links)
+    log_event(f"Shared link download: {link_id} -> {link['path']}")
+    return send_file(target, as_attachment=True, download_name=link.get("filename", os.path.basename(target)))
+
+
+# ================================================================
+# ROUTES: TRASH BIN (SAFE DELETE & RESTORE)
+# ================================================================
+@app.route("/api/trash", methods=["GET"])
+@require_token
+def list_trash():
+    items = _load_trash()
+    valid_items = []
+    total_size = 0
+    for it in items:
+        tp = os.path.join(TRASH_DIR, it.get("trash_name", ""))
+        if os.path.exists(tp):
+            it["exists"] = True
+            total_size += it.get("size", 0)
+            valid_items.append(it)
+    return jsonify({"items": valid_items, "total_size_bytes": total_size, "total_size_mb": round(total_size / 1048576, 2)})
+
+
+@app.route("/api/trash/restore", methods=["POST"])
+@require_token
+def restore_trash_item():
+    data = request.get_json(silent=True) or {}
+    item_id = data.get("id")
+    items = _load_trash()
+    target_item = None
+    remaining = []
+    for it in items:
+        if it.get("id") == item_id:
+            target_item = it
+        else:
+            remaining.append(it)
+
+    if not target_item:
+        return jsonify({"error": "Trash item not found"}), 404
+
+    src = os.path.join(TRASH_DIR, target_item["trash_name"])
+    if not os.path.exists(src):
+        _save_trash(remaining)
+        return jsonify({"error": "Trash file missing"}), 404
+
+    orig_rel = target_item.get("original_path", "")
+    try:
+        dest = safe_join(FILE_ROOT, orig_rel)
+    except ValueError:
+        dest = os.path.join(FILE_ROOT, os.path.basename(orig_rel))
+
+    os.makedirs(os.path.dirname(dest), exist_ok=True)
+    if os.path.exists(dest):
+        base, ext = os.path.splitext(dest)
+        dest = f"{base}_restored_{int(time.time())}{ext}"
+
+    try:
+        shutil.move(src, dest)
+        _save_trash(remaining)
+        log_event(f"Restored trash item: {orig_rel}")
+        return jsonify({"status": "restored", "path": to_relative(dest)})
+    except Exception as err:
+        return jsonify({"error": f"Failed to restore: {err}"}), 500
+
+
+@app.route("/api/trash/empty", methods=["DELETE"])
+@require_token
+def empty_trash():
+    freed = _clean_temp_cache()
+    log_event(f"Trash emptied ({round(freed/1048576, 2)} MB freed)")
+    return jsonify({"status": "emptied", "freed_bytes": freed, "freed_mb": round(freed / 1048576, 2)})
+
+
+# ================================================================
+# ROUTES: STORAGE ANALYZER & CLEAN CACHE
+# ================================================================
+@app.route("/api/storage/breakdown", methods=["GET"])
+@require_token
+def storage_breakdown_route():
+    data = _get_storage_breakdown()
+    return jsonify(data)
+
+
+@app.route("/api/storage/clean-cache", methods=["POST"])
+@require_token
+def clean_cache_route():
+    freed = _clean_temp_cache()
+    return jsonify({"status": "cleaned", "freed_bytes": freed, "freed_mb": round(freed / 1048576, 2)})
+
+
+# ================================================================
+# ROUTES: TAILSCALE, DDNS, POWER & TELEMETRY EXPORT
+# ================================================================
+@app.route("/api/tailscale/status", methods=["GET"])
+def tailscale_status_route():
+    return jsonify(_get_tailscale_info())
+
+
+@app.route("/api/ddns/config", methods=["GET", "POST"])
+@require_token
+def ddns_config_route():
+    if request.method == "POST":
+        data = request.get_json(silent=True) or {}
+        cfg = _load_ddns_config()
+        cfg["enabled"] = bool(data.get("enabled", cfg.get("enabled")))
+        if "domain" in data:
+            cfg["domain"] = data["domain"].strip()
+        if "token" in data:
+            cfg["token"] = data["token"].strip()
+        if "interval_minutes" in data:
+            cfg["interval_minutes"] = max(5, int(data["interval_minutes"]))
+        _save_ddns_config(cfg)
+        log_event("Updated DDNS configuration")
+        return jsonify({"status": "saved", "config": cfg})
+    return jsonify(_load_ddns_config())
+
+
+@app.route("/api/ddns/update", methods=["POST"])
+@require_token
+def ddns_update_manual_route():
+    res = _trigger_ddns_update()
+    return jsonify({"status": res})
+
+
+@app.route("/api/power/status", methods=["GET"])
+def power_status_route():
+    wl = _get_wake_lock_status()
+    gov = _get_cpu_governor()
+    bat = get_battery_info()
+    return jsonify({
+        "wake_lock": wl,
+        "cpu_governor": gov,
+        "battery": bat,
+        "thermal_c": bat.get("temperature", 0)
+    })
+
+
+@app.route("/api/power/wakelock", methods=["POST"])
+@require_token
+def power_wakelock_route():
+    data = request.get_json(silent=True) or {}
+    action = data.get("action", "acquire")
+    if action == "acquire":
+        try:
+            subprocess.run(["termux-wake-lock"], timeout=2)
+            log_event("Acquired Android wake-lock via Termux API")
+        except Exception:
+            pass
+        return jsonify({"status": "acquired", "active": True})
+    else:
+        try:
+            subprocess.run(["termux-wake-unlock"], timeout=2)
+            log_event("Released Android wake-lock via Termux API")
+        except Exception:
+            pass
+        return jsonify({"status": "released", "active": False})
+
+
+@app.route("/api/telemetry/export", methods=["GET"])
+@require_token
+def telemetry_export_route():
+    fmt = request.args.get("format", "csv").lower()
+    global _telemetry_history
+    if fmt == "json":
+        buf = io.BytesIO(json.dumps(_telemetry_history, indent=2).encode("utf-8"))
+        buf.seek(0)
+        return send_file(buf, mimetype="application/json", as_attachment=True, download_name="telemetry_24h.json")
+
+    lines = ["timestamp,datetime,cpu_pct,ram_pct,storage_pct,battery_pct,temp_c"]
+    for s in _telemetry_history:
+        ts = s.get("ts", 0)
+        dt = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ts))
+        lines.append(f"{ts},{dt},{s.get('cpu', 0)},{s.get('ram', 0)},{s.get('storage_pct', 0)},{s.get('battery', 0)},{s.get('temp_c', 0)}")
+    csv_bytes = "\n".join(lines).encode("utf-8")
+    buf = io.BytesIO(csv_bytes)
+    buf.seek(0)
+    return send_file(buf, mimetype="text/csv", as_attachment=True, download_name="telemetry_24h.csv")
+
+
+# ================================================================
+# ROUTES: CRON SCHEDULER & WEBHOOK ALERTS
+# ================================================================
+@app.route("/api/cron", methods=["GET"])
+@require_token
+def cron_list_route():
+    tasks = _load_cron_tasks()
+    return jsonify({"tasks": tasks})
+
+
+@app.route("/api/cron/save", methods=["POST"])
+@require_token
+def cron_save_route():
+    data = request.get_json(silent=True) or {}
+    task_id = data.get("id")
+    tasks = _load_cron_tasks()
+    found = False
+    for t in tasks:
+        if t["id"] == task_id:
+            if "enabled" in data:
+                t["enabled"] = bool(data["enabled"])
+            if "interval_hours" in data:
+                t["interval_hours"] = max(1, int(data["interval_hours"]))
+            found = True
+            break
+    if not found and task_id:
+        tasks.append(data)
+    _save_cron_tasks(tasks)
+    return jsonify({"status": "saved", "tasks": tasks})
+
+
+@app.route("/api/cron/run/<task_id>", methods=["POST"])
+@require_token
+def cron_run_route(task_id):
+    tasks = _load_cron_tasks()
+    for t in tasks:
+        if t["id"] == task_id:
+            res = _execute_cron_action(t.get("action"))
+            t["last_run"] = int(time.time())
+            _save_cron_tasks(tasks)
+            return jsonify({"status": "executed", "result": res})
+    return jsonify({"error": "Task not found"}), 404
+
+
+@app.route("/api/alerts/config", methods=["GET", "POST"])
+@require_token
+def alerts_config_route():
+    if request.method == "POST":
+        data = request.get_json(silent=True) or {}
+        cfg = _load_alerts_config()
+        if "enabled" in data:
+            cfg["enabled"] = bool(data["enabled"])
+        if "discord_webhook" in data:
+            cfg["discord_webhook"] = data["discord_webhook"].strip()
+        if "telegram_bot_token" in data:
+            cfg["telegram_bot_token"] = data["telegram_bot_token"].strip()
+        if "telegram_chat_id" in data:
+            cfg["telegram_chat_id"] = data["telegram_chat_id"].strip()
+        if "triggers" in data and isinstance(data["triggers"], dict):
+            cfg["triggers"] = {**cfg.get("triggers", {}), **data["triggers"]}
+        _save_alerts_config(cfg)
+        log_event("Alerts configuration updated")
+        return jsonify({"status": "saved", "config": cfg})
+    return jsonify(_load_alerts_config())
+
+
+@app.route("/api/alerts/test", methods=["POST"])
+@require_token
+def alerts_test_route():
+    sent = _send_notification("Test Alert Notification", "This is a test notification from your Mobile Hosted Server dashboard. Webhook alerts are working correctly!")
+    if not sent:
+        return jsonify({"error": "Failed to send test alert. Check webhook URL or bot credentials."}), 400
+    return jsonify({"status": "sent", "channels": sent})
+
+
+# ================================================================
+# ROUTES: STATIC SITE HOSTING (~/server/public_html)
+# ================================================================
+@app.route("/site/", defaults={"subpath": "index.html"}, methods=["GET"])
+@app.route("/site/<path:subpath>", methods=["GET"])
+def serve_static_site(subpath):
+    try:
+        full_path = safe_join(PUBLIC_HTML_DIR, subpath)
+    except ValueError:
+        return "Invalid path", 400
+    if os.path.isdir(full_path):
+        subpath = os.path.join(subpath, "index.html").replace("\\", "/")
+    return send_from_directory(PUBLIC_HTML_DIR, subpath)
 
 
 # ================================================================

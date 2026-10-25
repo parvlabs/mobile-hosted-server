@@ -24,18 +24,31 @@ An ultra-lightweight, self-hosted home server and dashboard designed to run seam
 
 ### 📊 Real-Time Telemetry & Visuals
 * 📈 **60-Second Real-Time Telemetry Graph**: Smooth canvas chart displaying real-time CPU %, RAM %, and network traffic over the last minute.
+* 📥 **24-Hour Telemetry History & Export**: Automatic background metrics capture with 1-click export to CSV or JSON for deep performance analysis.
+* 💾 **Disk Space Visual Breakdown & Cache Cleaner**: Interactive multi-color storage bar categorizing Media, Documents, Archives, Code, and Logs with a 1-click temporary cache cleaner.
 * 🔋 **Battery UPS & Health Guard**: Continuous battery level and temperature monitoring with smart advisory alerts to prevent battery swelling during 24/7 wall power.
+* 🛡️ **Android Wake-Lock & Governor Guard**: Real-time CPU governor indicator and 1-click Termux wake-lock toggle to prevent the mobile OS from sleeping or killing server threads.
 * 🌓 **Dark / Light Mode**: Modern responsive interface with an obsidian dark theme, emerald accents, and theme persistence.
 * 📱 **Instant Wi-Fi QR Connect**: Built-in QR code modal to connect mobile devices or laptops on your local network instantly without typing IP addresses.
-* 🌐 **Zero-Config Remote Access**: 1-click Cloudflare Tunnel (`cloudflared`) to access your server globally over HTTPS without port forwarding or exposing your home IP.
 
-### 📁 Cloud Storage & File Manager
+### 🌐 Remote Access & Public Hosting
+* 🌐 **Zero-Config Cloudflare Tunnel**: 1-click Cloudflare Tunnel (`cloudflared`) to access your server globally over HTTPS without port forwarding or exposing your home IP.
+* 🦎 **Tailscale Mesh VPN Integration**: Node indicator showing peer IP and MagicDNS address for encrypted zero-trust private mesh networking across all your devices.
+* 🔄 **DuckDNS Dynamic DNS (DDNS) Updater**: Built-in background dynamic DNS auto-updater with configurable sync intervals, domain token support, and manual sync triggers.
+* 🌍 **Static Website & Webhook Hosting**: Built-in static website directory (`public_html/`) automatically served at `/site/` for lightweight websites, documentation, or webhook receivers.
+
+### 📁 Cloud Storage, File Manager & Sharing
 * 📁 **Web File Manager**: Browse, create folders, download, rename, and delete files safely.
-* 📂 **Folder Upload**: Upload entire directories with nested hierarchies preserved.
+* 📂 **Folder Upload & 1-Click ZIP Download**: Upload nested folder structures directly from your browser, or download entire directories bundled as `.zip` archives.
+* 📝 **In-Browser Text & Code Editor**: View and edit `.txt`, `.py`, `.sh`, `.json`, `.md`, `.html`, `.css`, and `.yaml` files directly from the browser with `Ctrl+S` quick save.
+* 🔗 **Shareable Expiring Download Links**: Generate public download links with custom expiration times (1 hour to 7 days), download counters, and optional password protection.
+* 🗑️ **Safe Trash Bin**: Accidental deletion protection; files are safely moved to `.trash/` with 1-click restoration and storage reclamation.
 * 🎬 **In-line Media Preview**: Stream videos, music, and view photos directly inside the browser.
 * 🛡️ **Sandboxed Storage**: Access is strictly isolated to `~/server/shared/`, preventing directory traversal escapes (`../`).
 
-### ⚙️ Server Management & Security
+### ⚙️ Automation, Alerts & Security
+* ⏰ **Web Scheduled Tasks (Cron Jobs)**: Background supervisor executing recurring maintenance, backup, and health checks with interval controls, enable/disable toggles, and manual execution triggers.
+* 🔔 **Discord & Telegram Webhook Alerts**: Automatic push notifications delivered to your Discord channel or Telegram chat on critical hardware triggers (high battery temperature, low battery, low storage).
 * ⚡ **Services Grid**: Real-time status monitoring and PID tracking for Web, API, and SSH services.
 * 🔄 **Server Controls**: Safe 1-click start, stop, and restart controls for core services.
 * 📜 **Live Audit Log Viewer**: Real-time server and access logs with auto-refresh and secure log-clearing.
@@ -99,8 +112,9 @@ An ultra-lightweight, self-hosted home server and dashboard designed to run seam
 
 ```text
 mobile-hosted-server/
-├── api.py              # Flask backend REST API (telemetry, storage, services, logs)
-├── index.html          # Frontend web dashboard (telemetry chart, file manager, tunnel)
+├── api.py              # Flask backend REST API (telemetry, storage, services, logs, cron, DDNS)
+├── index.html          # Modern frontend dashboard (telemetry chart, file manager, editor, modals)
+├── public_html/        # Hosted static website served at /site/ (starter template included)
 ├── run_local.py        # Cross-platform runner for Windows / macOS / Linux
 ├── start-local.bat     # One-click Windows batch launcher
 ├── start-all.sh        # Background launcher for Termux / Linux
