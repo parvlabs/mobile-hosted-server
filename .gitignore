@@ -5,6 +5,7 @@ __pycache__/
 
 # Security & Credentials (never commit secrets)
 .token
+.pin
 .env
 *.env.local
 

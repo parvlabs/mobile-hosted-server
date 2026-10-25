@@ -22,9 +22,12 @@ An ultra-lightweight, self-hosted home server and dashboard designed to run seam
 
 ## ✨ Features
 
-### 🎨 Claymorphism UI & Navigation
+### 🎨 Claymorphism UI, Themes & Fast Connect
 * 🏺 **Pure Claymorphism Design System**: Strictly crafted with soft pastel clay surfaces (`#B8A6FF` Lavender, `#9EC9F0` Sky, `#7DD4A8` Mint, `#FFB59E` Peach, `#F5D77A` Lemon), multi-layer colored inset/outset lighting, chunky 28px card radii, and tactile squish-action buttons.
+* 🌓 **Dual Claymorphism Themes (Light & Dark)**: 1-click sidebar switcher between **Clay Light** (`#F7F5FB` pastel clay) and **Midnight Obsidian Clay** (`#13101C` sculpted dark clay with luminous glow), with persistent theme preference.
 * 📱 **Left Sidebar Navigation**: Dedicated left sidebar organizing all server functions, with **Cloud Storage & Files** as the clean landing experience, and 1-click switching to Telemetry, Remote Access, Automations, and Live Logs.
+* 📷 **1-Tap QR Connect**: Point any phone or tablet camera at the QR code to open the dashboard and authenticate instantly with zero typing.
+* 🔢 **Human-Friendly 6-Digit PIN Pairing**: Pair new devices using a simple 6-digit PIN code (e.g. `199 593`) instead of memorizing or copying long 32-character tokens.
 
 ### 📊 Real-Time Telemetry & Visuals
 * 📈 **60-Second Real-Time Telemetry Graph**: Smooth canvas chart displaying real-time CPU %, RAM %, and network traffic over the last minute.

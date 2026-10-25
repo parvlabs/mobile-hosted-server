@@ -80,6 +80,7 @@ from werkzeug.utils import secure_filename
 SERVER_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_DIR = os.path.join(SERVER_DIR, "logs")
 TOKEN_FILE = os.path.join(SERVER_DIR, ".token")
+PIN_FILE = os.path.join(SERVER_DIR, ".pin")
 FILE_ROOT = os.path.join(SERVER_DIR, "shared")          # File Manager / media root
 PUBLIC_HTML_DIR = os.path.join(SERVER_DIR, "public_html")
 TRASH_DIR = os.path.join(SERVER_DIR, ".trash")
@@ -213,7 +214,7 @@ def log_event(message, level="info"):
 
 
 # ================================================================
-# AUTH — per-install token, Authorization: Bearer header
+# AUTH — per-install token & 6-digit PIN, Authorization: Bearer
 # ================================================================
 def load_or_create_token():
     if os.path.exists(TOKEN_FILE):
@@ -234,7 +235,27 @@ def load_or_create_token():
     return tok
 
 
+def load_or_create_pin():
+    if os.path.exists(PIN_FILE):
+        try:
+            with open(PIN_FILE) as f:
+                pin = f.read().strip()
+                if pin and len(pin) == 6 and pin.isdigit():
+                    return pin
+        except Exception:
+            pass
+    pin = f"{secrets.randbelow(900000) + 100000}"
+    try:
+        with open(PIN_FILE, "w") as f:
+            f.write(pin)
+        os.chmod(PIN_FILE, 0o600)
+    except Exception as err:
+        print(f"[pin] could not persist pin file: {err}")
+    return pin
+
+
 API_TOKEN = load_or_create_token()
+API_PIN = load_or_create_pin()
 
 # ================================================================
 # SECURITY: Brute-Force Rate Limiter & Constant-Time Auth
@@ -277,7 +298,10 @@ def require_token(f):
             return jsonify({"error": "Too many failed attempts. Temporarily locked out for 5 minutes."}), 429
 
         token = extract_token()
-        if not token or not API_TOKEN or not secrets.compare_digest(token, API_TOKEN):
+        is_token_ok = bool(token and API_TOKEN and secrets.compare_digest(token, API_TOKEN))
+        is_pin_ok = bool(token and API_PIN and secrets.compare_digest(token, API_PIN))
+
+        if not (is_token_ok or is_pin_ok):
             record_failed_attempt(client_ip)
             return jsonify({"error": "unauthorized"}), 401
         return f(*args, **kwargs)
@@ -315,6 +339,24 @@ def apply_security_headers_and_log(response):
     except Exception:
         pass
     return response
+
+
+@app.route("/api/auth/pin", methods=["POST"])
+def auth_pin():
+    """Validates 6-digit PIN and returns full API token for zero-friction client login."""
+    client_ip = request.remote_addr or "127.0.0.1"
+    if is_ip_banned(client_ip):
+        return jsonify({"error": "Too many failed attempts. Temporarily locked out for 5 minutes."}), 429
+
+    data = request.get_json(silent=True) or {}
+    pin = str(data.get("pin", "")).strip().replace(" ", "").replace("-", "")
+
+    if pin and API_PIN and secrets.compare_digest(pin, API_PIN):
+        log_event(f"Successful 6-digit PIN authentication from {client_ip}")
+        return jsonify({"success": True, "token": API_TOKEN})
+
+    record_failed_attempt(client_ip)
+    return jsonify({"error": "Invalid 6-digit PIN"}), 401
 
 
 @app.errorhandler(413)
@@ -1260,6 +1302,7 @@ def status():
         "wake_lock": _get_wake_lock_status(),
         "cpu_governor": _get_cpu_governor(),
         "public_site": {"url": "/site/", "active": os.path.exists(_default_site_index)},
+        "pin": API_PIN,
     })
 
 

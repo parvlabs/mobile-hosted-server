@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -14,7 +14,7 @@
   /* ============================================================
      CLAYMORPHISM DESIGN SYSTEM (CLAYMORPHISM.md SPEC VERBATIM)
      ============================================================ */
-  :root {
+  :root, [data-theme="light"] {
     /* Backgrounds */
     --bg-app: #F7F5FB;      /* tinted near-white, never pure #FFF */
     --bg-raised: #FFFFFF;   /* only for floating sheets over --bg-app */
@@ -48,12 +48,50 @@
     /* Fonts */
     --font-sans: 'Nunito', 'Outfit', system-ui, -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
+
+    /* Base Shadows (Light Clay) */
+    --shadow-raised: 8px 8px 24px rgba(185, 172, 220, 0.28), -8px -8px 24px rgba(255, 255, 255, 0.9), inset 4px 4px 8px rgba(255, 255, 255, 0.95), inset -6px -6px 12px rgba(190, 180, 225, 0.16);
+    --shadow-input: inset 3px 3px 8px rgba(170, 158, 205, 0.22), inset -3px -3px 8px #FFFFFF;
+    --shadow-btn: 5px 5px 16px rgba(180, 168, 215, 0.25), -5px -5px 16px rgba(255, 255, 255, 0.8), inset 2px 2px 5px rgba(255, 255, 255, 0.9), inset -3px -3px 6px rgba(190, 180, 220, 0.15);
+    --border-subtle: rgba(220, 210, 240, 0.6);
+    --chart-grid: #F0EEF8;
+  }
+
+  /* ============================================================
+     DARK THEME (MIDNIGHT / OBSIDIAN CLAYMORPHISM)
+     ============================================================ */
+  [data-theme="dark"] {
+    --bg-app: #13101C;      /* deep obsidian violet */
+    --bg-raised: #1C182B;   /* sculpted dark clay sheet */
+
+    --surface-lavender: #392B68;
+    --surface-sky:      #1F3D5C;
+    --surface-mint:     #174D33;
+    --surface-peach:    #5C2E24;
+    --surface-pink:     #522438;
+    --surface-lemon:    #4D3E14;
+
+    --action-primary:   #FF7A6B;  /* coral stands out boldly */
+    --action-on:        #FFFFFF;
+    --status-active:    #246E4A;
+    --status-pending:   #665018;
+    --status-archived:  #43346B;
+
+    --text-strong:      #F6F4FD;
+    --text-muted:       #A199B6;
+
+    --shadow-raised: 8px 8px 24px rgba(6, 4, 12, 0.7), -8px -8px 24px rgba(45, 38, 64, 0.45), inset 3px 3px 6px rgba(60, 50, 82, 0.6), inset -5px -5px 10px rgba(8, 6, 14, 0.6);
+    --shadow-input: inset 3px 3px 8px rgba(0, 0, 0, 0.65), inset -3px -3px 8px rgba(40, 34, 56, 0.45);
+    --shadow-btn: 5px 5px 16px rgba(0, 0, 0, 0.5), -5px -5px 16px rgba(45, 38, 64, 0.4), inset 2px 2px 4px rgba(60, 50, 82, 0.6), inset -3px -3px 6px rgba(10, 8, 16, 0.5);
+    --border-subtle: rgba(45, 38, 64, 0.6);
+    --chart-grid: #231E33;
   }
 
   * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   }
 
   body {
@@ -68,24 +106,18 @@
   }
 
   /* ============================================================
-     CLAY SHADOW RECIPES (EVERY SHADOW KEYED TO ITS OWN HUE)
+     CLAY SHADOW RECIPES
      ============================================================ */
-
-  /* White Raised Card */
   .clay-card {
     background: var(--bg-raised);
     border-radius: var(--r-card);
     padding: 24px 28px;
-    box-shadow:
-      8px 8px 24px rgba(185, 172, 220, 0.28),
-      -8px -8px 24px rgba(255, 255, 255, 0.9),
-      inset 4px 4px 8px rgba(255, 255, 255, 0.95),
-      inset -6px -6px 12px rgba(190, 180, 225, 0.16);
+    box-shadow: var(--shadow-raised);
     border: none;
     position: relative;
   }
 
-  /* Saturated & Pastel Clay Surfaces */
+  /* Saturated Surfaces */
   .clay-surface-lavender {
     background: var(--surface-lavender);
     color: var(--text-strong);
@@ -96,6 +128,9 @@
       -8px -8px 24px rgba(255, 255, 255, 0.6),
       inset 4px 4px 8px rgba(255, 255, 255, 0.5),
       inset -6px -6px 12px rgba(135, 108, 240, 0.30);
+  }
+  [data-theme="dark"] .clay-surface-lavender {
+    box-shadow: 8px 8px 24px rgba(6, 4, 12, 0.7), -8px -8px 24px rgba(70, 52, 118, 0.35), inset 3px 3px 6px rgba(88, 68, 148, 0.45), inset -5px -5px 10px rgba(12, 8, 24, 0.6);
   }
 
   .clay-surface-sky {
@@ -109,6 +144,9 @@
       inset 4px 4px 8px rgba(255, 255, 255, 0.5),
       inset -6px -6px 12px rgba(105, 160, 215, 0.30);
   }
+  [data-theme="dark"] .clay-surface-sky {
+    box-shadow: 8px 8px 24px rgba(6, 4, 12, 0.7), -8px -8px 24px rgba(40, 78, 115, 0.35), inset 3px 3px 6px rgba(55, 105, 155, 0.45), inset -5px -5px 10px rgba(6, 15, 24, 0.6);
+  }
 
   .clay-surface-mint {
     background: var(--surface-mint);
@@ -120,6 +158,9 @@
       -8px -8px 24px rgba(255, 255, 255, 0.6),
       inset 4px 4px 8px rgba(255, 255, 255, 0.5),
       inset -6px -6px 12px rgba(75, 175, 125, 0.30);
+  }
+  [data-theme="dark"] .clay-surface-mint {
+    box-shadow: 8px 8px 24px rgba(6, 4, 12, 0.7), -8px -8px 24px rgba(32, 92, 63, 0.35), inset 3px 3px 6px rgba(45, 125, 85, 0.45), inset -5px -5px 10px rgba(4, 18, 12, 0.6);
   }
 
   .clay-surface-peach {
@@ -133,6 +174,9 @@
       inset 4px 4px 8px rgba(255, 255, 255, 0.5),
       inset -6px -6px 12px rgba(235, 135, 110, 0.30);
   }
+  [data-theme="dark"] .clay-surface-peach {
+    box-shadow: 8px 8px 24px rgba(6, 4, 12, 0.7), -8px -8px 24px rgba(110, 52, 40, 0.35), inset 3px 3px 6px rgba(145, 70, 55, 0.45), inset -5px -5px 10px rgba(22, 10, 8, 0.6);
+  }
 
   .clay-surface-lemon {
     background: var(--surface-lemon);
@@ -145,20 +189,11 @@
       inset 4px 4px 8px rgba(255, 255, 255, 0.5),
       inset -6px -6px 12px rgba(215, 175, 60, 0.30);
   }
-
-  .clay-surface-pink {
-    background: var(--surface-pink);
-    color: var(--text-strong);
-    border-radius: var(--r-card);
-    padding: 24px 28px;
-    box-shadow:
-      8px 8px 24px rgba(215, 125, 165, 0.35),
-      -8px -8px 24px rgba(255, 255, 255, 0.6),
-      inset 4px 4px 8px rgba(255, 255, 255, 0.5),
-      inset -6px -6px 12px rgba(215, 125, 165, 0.30);
+  [data-theme="dark"] .clay-surface-lemon {
+    box-shadow: 8px 8px 24px rgba(6, 4, 12, 0.7), -8px -8px 24px rgba(100, 80, 25, 0.35), inset 3px 3px 6px rgba(135, 110, 35, 0.45), inset -5px -5px 10px rgba(18, 14, 4, 0.6);
   }
 
-  /* Primary Action Button (Coral Hero CTA) */
+  /* Primary Button (Coral Hero CTA) */
   .clay-btn-primary {
     background: var(--action-primary);
     color: var(--action-on);
@@ -189,7 +224,7 @@
       inset -2px -2px 4px rgba(200, 50, 40, 0.30);
   }
 
-  /* Secondary Button (Clay White) */
+  /* Secondary Button */
   .clay-btn {
     background: var(--bg-raised);
     color: var(--text-strong);
@@ -204,29 +239,18 @@
     gap: 8px;
     border: none;
     cursor: pointer;
-    box-shadow:
-      5px 5px 16px rgba(180, 168, 215, 0.25),
-      -5px -5px 16px rgba(255, 255, 255, 0.8),
-      inset 2px 2px 5px rgba(255, 255, 255, 0.9),
-      inset -3px -3px 6px rgba(190, 180, 220, 0.15);
+    box-shadow: var(--shadow-btn);
     transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
   }
   .clay-btn:active {
     transform: scale(0.97);
-    box-shadow:
-      2px 2px 8px rgba(180, 168, 215, 0.22),
-      -2px -2px 8px rgba(255, 255, 255, 0.8),
-      inset 1px 1px 3px rgba(255, 255, 255, 0.9),
-      inset -2px -2px 4px rgba(190, 180, 220, 0.15);
   }
-
   .clay-btn-sm {
     min-height: 36px;
     padding: 0 14px;
     font-size: 13px;
     border-radius: 14px;
   }
-
   .clay-btn-danger {
     color: #D32F2F;
     background: #FFE8E8;
@@ -236,8 +260,13 @@
       inset 2px 2px 4px rgba(255, 255, 255, 0.9),
       inset -2px -2px 4px rgba(220, 70, 70, 0.15);
   }
+  [data-theme="dark"] .clay-btn-danger {
+    background: #4E1E1E;
+    color: #FFA4A4;
+    box-shadow: 4px 4px 14px rgba(0, 0, 0, 0.5), -4px -4px 14px rgba(80, 30, 30, 0.3), inset 2px 2px 4px rgba(120, 40, 40, 0.4), inset -2px -2px 4px rgba(10, 4, 4, 0.5);
+  }
 
-  /* Clay Inputs (Pressed-inward well) */
+  /* Clay Inputs */
   .clay-input {
     background: var(--bg-app);
     border-radius: var(--r-input);
@@ -247,18 +276,15 @@
     font-size: 14px;
     color: var(--text-strong);
     outline: none;
-    box-shadow:
-      inset 3px 3px 8px rgba(170, 158, 205, 0.22),
-      inset -3px -3px 8px #FFFFFF;
-    transition: box-shadow 0.15s ease;
+    box-shadow: var(--shadow-input);
   }
   .clay-input:focus {
     box-shadow:
       inset 3px 3px 8px rgba(140, 108, 255, 0.35),
-      inset -3px -3px 8px #FFFFFF;
+      inset -3px -3px 8px rgba(255, 255, 255, 0.1);
   }
 
-  /* Clay Status Chips / Pills (Fully round 999px) */
+  /* Clay Status Chips / Pills */
   .clay-chip {
     border-radius: var(--r-chip);
     padding: 6px 14px;
@@ -278,6 +304,10 @@
       inset 2px 2px 4px rgba(255, 255, 255, 0.5),
       inset -2px -2px 4px rgba(75, 175, 125, 0.22);
   }
+  [data-theme="dark"] .badge-online, [data-theme="dark"] .clay-chip-active {
+    color: #B2F2D2;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5), -3px -3px 10px rgba(45, 120, 80, 0.3);
+  }
   .badge-offline, .clay-chip-pending {
     background: var(--surface-lemon);
     color: #5D4507;
@@ -287,23 +317,16 @@
       inset 2px 2px 4px rgba(255, 255, 255, 0.5),
       inset -2px -2px 4px rgba(215, 175, 60, 0.22);
   }
+  [data-theme="dark"] .badge-offline, [data-theme="dark"] .clay-chip-pending {
+    color: #FFE699;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5), -3px -3px 10px rgba(110, 90, 30, 0.3);
+  }
   .clay-chip-archived {
     background: var(--status-archived);
     color: #38246E;
-    box-shadow:
-      3px 3px 10px rgba(150, 125, 220, 0.28),
-      -3px -3px 10px rgba(255, 255, 255, 0.6),
-      inset 2px 2px 4px rgba(255, 255, 255, 0.5),
-      inset -2px -2px 4px rgba(150, 125, 220, 0.22);
   }
-  .clay-chip-coral {
-    background: #FFD4CE;
-    color: #B32818;
-    box-shadow:
-      3px 3px 10px rgba(225, 75, 60, 0.24),
-      -3px -3px 10px rgba(255, 255, 255, 0.6),
-      inset 2px 2px 4px rgba(255, 255, 255, 0.5),
-      inset -2px -2px 4px rgba(225, 75, 60, 0.18);
+  [data-theme="dark"] .clay-chip-archived {
+    color: #E2DAFC;
   }
 
   /* Squircle App-Icon Tile */
@@ -321,6 +344,9 @@
       -5px -5px 14px rgba(255, 255, 255, 0.8),
       inset 2px 2px 4px rgba(255, 255, 255, 0.9),
       inset -3px -3px 6px rgba(190, 180, 220, 0.16);
+  }
+  [data-theme="dark"] .clay-icon-tile {
+    box-shadow: 5px 5px 14px rgba(0, 0, 0, 0.5), -5px -5px 14px rgba(45, 38, 64, 0.4);
   }
 
   /* ============================================================
@@ -340,7 +366,7 @@
     flex-direction: column;
     gap: 20px;
     flex-shrink: 0;
-    border-right: 1px solid rgba(220, 210, 240, 0.6);
+    border-right: 1px solid var(--border-subtle);
   }
 
   .sidebar-header {
@@ -375,16 +401,12 @@
   }
   .sidebar-nav-item:hover {
     color: var(--text-strong);
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.3);
   }
   .sidebar-nav-item.active {
     background: var(--bg-raised);
     color: var(--text-strong);
-    box-shadow:
-      6px 6px 18px rgba(180, 168, 215, 0.28),
-      -6px -6px 18px rgba(255, 255, 255, 0.85),
-      inset 3px 3px 6px rgba(255, 255, 255, 0.95),
-      inset -4px -4px 8px rgba(190, 180, 220, 0.16);
+    box-shadow: var(--shadow-raised);
   }
   .sidebar-nav-item:active {
     transform: scale(0.97);
@@ -395,7 +417,7 @@
     flex-direction: column;
     gap: 14px;
     padding-top: 14px;
-    border-top: 1px solid rgba(220, 210, 240, 0.6);
+    border-top: 1px solid var(--border-subtle);
   }
 
   /* Main Area */
@@ -446,7 +468,7 @@
   }
   @media (max-width: 820px) {
     .app-shell { flex-direction: column; }
-    .app-sidebar { width: 100%; border-right: none; border-bottom: 1px solid rgba(220, 210, 240, 0.6); }
+    .app-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-subtle); }
     .app-main { padding: 20px 16px; }
     .grid-4 { grid-template-columns: 1fr; }
   }
@@ -459,9 +481,7 @@
     background: var(--bg-app);
     overflow: hidden;
     margin: 16px 0;
-    box-shadow:
-      inset 2px 2px 5px rgba(170, 158, 205, 0.25),
-      inset -2px -2px 5px #FFFFFF;
+    box-shadow: var(--shadow-input);
   }
   .storage-seg {
     height: 100%;
@@ -483,11 +503,7 @@
     margin-bottom: 10px;
     border-radius: var(--r-button);
     background: var(--bg-raised);
-    box-shadow:
-      4px 4px 12px rgba(185, 172, 220, 0.16),
-      -4px -4px 12px rgba(255, 255, 255, 0.7),
-      inset 2px 2px 4px rgba(255, 255, 255, 0.9),
-      inset -2px -2px 4px rgba(190, 180, 220, 0.08);
+    box-shadow: var(--shadow-btn);
     transition: transform 0.12s;
   }
   .file-row-clay:hover {
@@ -502,19 +518,20 @@
     gap: 10px;
   }
   .file-name-click.is-dir {
-    color: #6C44D3;
+    color: #926CFF;
   }
 
   /* Meters in Telemetry */
   .meter-track-clay {
     height: 14px;
     border-radius: var(--r-chip);
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.4);
     overflow: hidden;
     margin: 10px 0;
-    box-shadow:
-      inset 2px 2px 4px rgba(0, 0, 0, 0.1),
-      inset -2px -2px 4px rgba(255, 255, 255, 0.6);
+    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.15), inset -2px -2px 4px rgba(255, 255, 255, 0.5);
+  }
+  [data-theme="dark"] .meter-track-clay {
+    background: rgba(0, 0, 0, 0.35);
   }
   .meter-fill-clay {
     height: 100%;
@@ -527,8 +544,8 @@
   .modal-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(46, 42, 63, 0.45);
-    backdrop-filter: blur(6px);
+    background: rgba(18, 14, 28, 0.6);
+    backdrop-filter: blur(8px);
     display: none;
     align-items: center;
     justify-content: center;
@@ -553,8 +570,28 @@
     max-height: 90vh;
     overflow-y: auto;
   }
+  [data-theme="dark"] .modal-clay-sheet {
+    box-shadow: 12px 12px 36px rgba(0, 0, 0, 0.8), -12px -12px 36px rgba(45, 38, 64, 0.4), inset 3px 3px 6px rgba(60, 50, 82, 0.6), inset -5px -5px 10px rgba(8, 6, 14, 0.6);
+  }
   .modal-clay-sheet.wide {
     max-width: 860px;
+  }
+
+  /* Pin Code Box */
+  .pin-display-box {
+    background: var(--bg-app);
+    padding: 16px 24px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    color: #FF7A6B;
+    box-shadow: var(--shadow-input);
+    margin: 12px 0;
   }
 
   /* Toggle Switches */
@@ -564,9 +601,7 @@
     height: 30px;
     border-radius: 999px;
     background: var(--bg-app);
-    box-shadow:
-      inset 2px 2px 6px rgba(170, 158, 205, 0.3),
-      inset -2px -2px 6px #FFFFFF;
+    box-shadow: var(--shadow-input);
     position: relative;
     cursor: pointer;
     outline: none;
@@ -579,7 +614,7 @@
     width: 24px; height: 24px;
     border-radius: 50%;
     background: #FFFFFF;
-    box-shadow: 2px 2px 6px rgba(180, 168, 215, 0.4);
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
     transition: transform 0.2s;
   }
   .clay-toggle:checked {
@@ -600,11 +635,11 @@
     padding: 10px 14px;
     color: var(--text-muted);
     font-weight: 700;
-    border-bottom: 2px solid rgba(220, 210, 240, 0.6);
+    border-bottom: 2px solid var(--border-subtle);
   }
   .clay-table td {
     padding: 12px 14px;
-    border-bottom: 1px solid rgba(220, 210, 240, 0.4);
+    border-bottom: 1px solid var(--border-subtle);
   }
   </style>
 </head>
@@ -626,7 +661,7 @@
       </div>
     </div>
 
-    <!-- Navigation List (Landing view is Cloud Storage & Files) -->
+    <!-- Navigation List (Default Landing View is Cloud Storage) -->
     <nav class="sidebar-nav">
       <button class="sidebar-nav-item active" id="navStorage" onclick="switchView('Storage')">
         <span style="font-size: 20px;">📁</span> Cloud Storage
@@ -645,8 +680,13 @@
       </button>
     </nav>
 
-    <!-- Sidebar Footer -->
+    <!-- Sidebar Footer with Theme Toggle & Pair Options -->
     <div class="sidebar-footer">
+      <!-- 🌓 Theme Switcher -->
+      <button class="clay-btn clay-btn-sm" id="btnThemeToggle" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <span id="themeToggleIcon">🌙</span> <span id="themeToggleText">Dark Theme</span>
+      </button>
+
       <div style="display:flex; justify-content:space-between; align-items:center; font-size:12.5px;">
         <span style="color:var(--text-muted); font-weight:600;">Server Uptime</span>
         <span class="clay-chip clay-chip-archived" id="serverUptime">0h 0m</span>
@@ -656,15 +696,15 @@
         <span style="font-weight:700; color:var(--text-strong);" id="liveClock">--:--:--</span>
       </div>
 
+      <!-- Quick Action Buttons -->
       <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 4px;">
-        <button class="clay-btn clay-btn-sm" id="btnSettings">⚙️ Token</button>
-        <button class="clay-btn clay-btn-sm" id="btnQR">📱 QR</button>
+        <button class="clay-btn clay-btn-sm" id="btnQR" title="Pair phone or laptop via QR code or 6-digit PIN">📱 Pair</button>
+        <button class="clay-btn clay-btn-sm" id="btnSettings" title="Manage Security Token">⚙️ Token</button>
         <button class="clay-btn clay-btn-sm" id="btnAlerts">🔔 Alerts</button>
         <button class="clay-btn clay-btn-sm" id="btnRefresh">🔄 Sync</button>
       </div>
 
-      <!-- Hidden or theme compatibility elements -->
-      <button id="btnThemeToggle" style="display:none;"></button>
+      <!-- Compatibility hooks -->
       <div id="pollIndicator" style="display:none;"></div>
       <div id="sshStatusBadge" style="display:none;"></div>
       <div id="serverPort" style="display:none;">5000</div>
@@ -682,9 +722,10 @@
         <h1 style="font-size: 28px; font-weight: 800; letter-spacing: -0.01em;" id="viewTitleText">Cloud Storage & Files</h1>
         <p style="color: var(--text-muted); font-weight: 600; font-size: 14px;" id="viewSubtitleText">Private cloud storage hosted directly on your Samsung device</p>
       </div>
-      <div style="display: flex; gap: 12px; align-items: center;">
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
         <span class="clay-chip clay-chip-archived" id="deviceName">Samsung Galaxy</span>
         <span class="clay-chip" style="background:#E2DBFA; color:#321F6B;" id="serverAddress">127.0.0.1</span>
+        <button class="clay-btn clay-btn-sm" id="btnQuickPair" style="background:var(--action-primary); color:#FFF;">📱 Connect Device</button>
       </div>
     </div>
 
@@ -759,7 +800,7 @@
         <input type="file" id="zipUploadInput" accept=".zip" style="display:none">
 
         <!-- Upload progress toast -->
-        <div id="uploadProgress" style="font-weight:700; color:#B32818; margin-bottom:12px; font-size:13.5px;"></div>
+        <div id="uploadProgress" style="font-weight:700; color:#FF7A6B; margin-bottom:12px; font-size:13.5px;"></div>
 
         <!-- File List Table -->
         <div id="fileTable" style="margin-top: 14px;">
@@ -829,7 +870,7 @@
           <button class="clay-btn clay-btn-sm" id="btnExportTelemetry">📥 Export 24h (CSV)</button>
         </div>
 
-        <div style="background: #FFFFFF; border-radius: 20px; padding: 14px; box-shadow: inset 2px 2px 6px rgba(170,158,205,0.2), inset -2px -2px 6px #FFFFFF;">
+        <div style="background: var(--bg-raised); border-radius: 20px; padding: 14px; box-shadow: var(--shadow-input);">
           <canvas id="telemetryChart" style="width: 100%; height: 220px; display: block;"></canvas>
         </div>
       </div>
@@ -1051,7 +1092,7 @@
           </div>
         </div>
 
-        <pre id="logView" style="background: #231F33; color: #F7F5FB; font-family: var(--font-mono); font-size: 12.5px; padding: 20px; border-radius: var(--r-card); height: 420px; overflow-y: auto; line-height: 1.6; box-shadow: inset 3px 3px 10px rgba(0,0,0,0.5);"></pre>
+        <pre id="logView" style="background: #14111E; color: #F7F5FB; font-family: var(--font-mono); font-size: 12.5px; padding: 20px; border-radius: var(--r-card); height: 420px; overflow-y: auto; line-height: 1.6; box-shadow: inset 3px 3px 10px rgba(0,0,0,0.6);"></pre>
       </div>
     </div>
 
@@ -1062,18 +1103,57 @@
      CLAY MODALS (L2 FLOATING SHEETS OVER --bg-app)
      ============================================================ -->
 
-<!-- 1. QR Connect Modal -->
+<!-- 1. Universal Pair & QR Modal (Connect by QR or 6-Digit PIN) -->
 <div class="modal-overlay" id="qrModal">
   <div class="modal-clay-sheet" style="text-align: center;">
-    <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 8px;">📱 Connect to Phone Server</h3>
-    <p style="color: var(--text-muted); font-size: 13.5px; font-weight: 600; margin-bottom: 20px;">Scan from another phone or laptop on the same Wi-Fi network</p>
-    <div style="display:flex; justify-content:center; margin-bottom:20px;">
-      <img id="qrModalImg" src="" alt="QR" style="border-radius:20px; padding:12px; background:#FFF; box-shadow: 4px 4px 16px rgba(180,168,215,0.3); width:200px; height:200px;">
+    <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 6px;">📱 Connect Device</h3>
+    <p style="color: var(--text-muted); font-size: 13.5px; font-weight: 600; margin-bottom: 18px;">Pair your phone, laptop, or tablet in seconds</p>
+    
+    <!-- Tab Controls: QR Code vs 6-Digit PIN -->
+    <div style="display:flex; justify-content:center; gap:8px; margin-bottom:20px;">
+      <button class="clay-btn clay-btn-sm" id="tabBtnQR" onclick="setPairTab('qr')" style="background:var(--action-primary); color:#FFF;">📷 Scan QR</button>
+      <button class="clay-btn clay-btn-sm" id="tabBtnPIN" onclick="setPairTab('pin')">🔢 6-Digit PIN</button>
+      <button class="clay-btn clay-btn-sm" id="tabBtnToken" onclick="setPairTab('token')">🔑 Token</button>
     </div>
-    <div style="font-family:var(--font-mono); font-size:13px; color:var(--text-strong); word-break:break-all; margin-bottom:20px;" id="qrUrlText"></div>
-    <div style="display: flex; gap: 10px; justify-content: center;">
-      <button class="clay-btn-primary" id="btnCopyQRUrl">Copy Link</button>
-      <button class="clay-btn" id="btnCloseQR">Close</button>
+
+    <!-- Section 1: QR Code Auto-Auth -->
+    <div id="pairSectionQR">
+      <div style="display:flex; justify-content:center; margin-bottom:14px;">
+        <img id="qrModalImg" src="" alt="QR" style="border-radius:24px; padding:12px; background:#FFF; box-shadow: 4px 4px 16px rgba(180,168,215,0.3); width:190px; height:190px;">
+      </div>
+      <p style="font-size: 12.5px; color: var(--text-muted); font-weight: 600; margin-bottom: 14px;">Point camera to automatically authenticate with 0 typing</p>
+      <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-strong); word-break:break-all; margin-bottom:18px;" id="qrUrlText"></div>
+      <div style="display: flex; gap: 10px; justify-content: center;">
+        <button class="clay-btn-primary" id="btnCopyQRUrl">📋 Copy Connect Link</button>
+        <button class="clay-btn" id="btnCloseQR">Close</button>
+      </div>
+    </div>
+
+    <!-- Section 2: 6-Digit PIN Code -->
+    <div id="pairSectionPIN" style="display:none;">
+      <p style="font-size: 13.5px; font-weight: 700; color: var(--text-muted);">HOST SERVER PIN:</p>
+      <div class="pin-display-box" id="pinDisplayBox">------</div>
+      <p style="font-size: 12.5px; color: var(--text-muted); font-weight: 600; margin-bottom: 18px;">Use this 6-digit PIN on any device connecting to this phone server.</p>
+
+      <div style="margin: 20px 0; padding-top: 16px; border-top: 1px solid var(--border-subtle);">
+        <label style="font-size:13px; font-weight:700; color:var(--text-strong); display:block; margin-bottom:8px;">Connecting from this device? Enter 6-Digit PIN:</label>
+        <div style="display:flex; gap:10px; justify-content:center; max-width:320px; margin:0 auto;">
+          <input type="text" id="clientPinInput" class="clay-input" maxlength="6" placeholder="e.g. 482910" style="text-align:center; font-family:var(--font-mono); font-size:18px; font-weight:800; letter-spacing:0.1em; width:100%;">
+          <button class="clay-btn-primary" id="btnSubmitPin" style="white-space:nowrap;">Pair</button>
+        </div>
+        <div id="pinVerifyStatus" style="font-size:13px; font-weight:700; color:#FF7A6B; margin-top:10px;"></div>
+      </div>
+      <button class="clay-btn" onclick="document.getElementById('qrModal').classList.remove('open')">Close</button>
+    </div>
+
+    <!-- Section 3: Manual Token -->
+    <div id="pairSectionToken" style="display:none; text-align:left;">
+      <label style="font-size:13px; font-weight:700; color:var(--text-strong); display:block; margin-bottom:6px;">API Security Token:</label>
+      <input type="text" id="manualTokenInput" class="clay-input" placeholder="Paste full token here..." style="width:100%; margin-bottom:14px; font-family:var(--font-mono); font-size:13px;">
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button class="clay-btn" onclick="document.getElementById('qrModal').classList.remove('open')">Cancel</button>
+        <button class="clay-btn-primary" id="btnSaveManualToken">Save Token</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1124,7 +1204,7 @@
       </div>
     </div>
 
-    <div id="shareResultBox" style="display:none; margin-bottom:20px; background:#F0EEFA; padding:14px; border-radius:18px;">
+    <div id="shareResultBox" style="display:none; margin-bottom:20px; background:var(--bg-app); padding:14px; border-radius:18px; box-shadow:var(--shadow-input);">
       <div style="font-size:12px; color:var(--text-muted); font-weight:700;">SHAREABLE URL:</div>
       <div style="font-family:var(--font-mono); font-size:12.5px; color:#FF7A6B; word-break:break-all; font-weight:700; margin:6px 0;" id="shareGeneratedUrl"></div>
       <button class="clay-btn clay-btn-sm" id="btnCopyShareUrl">📋 Copy URL</button>
@@ -1290,8 +1370,47 @@ const REFRESH_INTERVAL_MS = 5000;
 const FETCH_TIMEOUT_MS = 4000;
 
 let apiToken = localStorage.getItem('a23_api_token') || '';
+let serverPin = '';
 let currentPath = '';
 let chartHistory = { cpu: [], ram: [], traffic: [] };
+
+/* ------------------------------------------------------------
+   Auto Connect from URL (?auth=... or ?token=...)
+------------------------------------------------------------ */
+const urlParams = new URLSearchParams(window.location.search);
+const authParam = urlParams.get('auth') || urlParams.get('token');
+if (authParam) {
+  apiToken = authParam.trim();
+  localStorage.setItem('a23_api_token', apiToken);
+  window.history.replaceState({}, document.title, window.location.pathname);
+  setTimeout(() => alert('🎉 Device successfully paired and authenticated via QR code!'), 400);
+}
+
+/* ------------------------------------------------------------
+   Theme System: Light (Clay) & Dark (Obsidian Clay)
+------------------------------------------------------------ */
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('server_theme', theme);
+  const icon = document.getElementById('themeToggleIcon');
+  const label = document.getElementById('themeToggleText');
+  if (theme === 'dark') {
+    if (icon) icon.textContent = '☀️';
+    if (label) label.textContent = 'Light Theme';
+  } else {
+    if (icon) icon.textContent = '🌙';
+    if (label) label.textContent = 'Dark Theme';
+  }
+  drawTelemetryChart();
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+document.getElementById('btnThemeToggle').addEventListener('click', toggleTheme);
+const savedTheme = localStorage.getItem('server_theme') || 'light';
+applyTheme(savedTheme);
 
 /* ------------------------------------------------------------
    Tab View Switcher (Sidebar navigation)
@@ -1336,19 +1455,9 @@ updateClock();
    Token / Auth Helpers
 ------------------------------------------------------------ */
 function ensureToken() { return !!apiToken; }
-function promptForToken() {
-  const value = prompt('Enter the API Access Token (found in terminal or .token):', apiToken || '');
-  if (value !== null && value.trim() !== '') {
-    apiToken = value.trim();
-    localStorage.setItem('a23_api_token', apiToken);
-    return true;
-  }
-  return false;
-}
 function authHeader() {
   return apiToken ? { Authorization: `Bearer ${apiToken}` } : {};
 }
-document.getElementById('btnSettings').addEventListener('click', () => promptForToken());
 
 /* ------------------------------------------------------------
    Fetch with Timeout & Auto Auth Injection
@@ -1390,9 +1499,10 @@ function drawTelemetryChart() {
   if (len < 2) return;
 
   const step = w / 12;
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
   // Grid lines
-  ctx.strokeStyle = '#F0EEF8';
+  ctx.strokeStyle = isDark ? '#262038' : '#F0EEF8';
   ctx.lineWidth = 1.5;
   for (let y = 0.25; y <= 1; y += 0.25) {
     ctx.beginPath();
@@ -1437,6 +1547,13 @@ async function fetchTelemetry() {
     if (data.os_version) document.getElementById('osVersion').textContent = data.os_version;
     if (data.arch) document.getElementById('deviceArch').textContent = data.arch;
     if (data.network) document.getElementById('serverAddress').textContent = data.network;
+
+    // PIN code support
+    if (data.pin) {
+      serverPin = data.pin;
+      const formattedPin = `${data.pin.slice(0, 3)} ${data.pin.slice(3)}`;
+      document.getElementById('pinDisplayBox').textContent = formattedPin;
+    }
 
     // Uptime
     if (data.uptime_seconds !== undefined) {
@@ -1614,7 +1731,10 @@ async function fetchServices() {
 }
 
 async function triggerControl(action) {
-  if (!ensureToken() && !promptForToken()) return;
+  if (!ensureToken()) {
+    openPairModal('pin');
+    return;
+  }
   const service = document.getElementById('controlServiceSelect').value;
   const statusEl = document.getElementById('controlStatus');
   statusEl.textContent = `Triggering ${action}...`;
@@ -1639,7 +1759,10 @@ document.getElementById('btnControlRestart').addEventListener('click', () => tri
    Cloudflare Tunnel Controls
 ------------------------------------------------------------ */
 document.getElementById('btnStartTunnel').addEventListener('click', async () => {
-  if (!ensureToken() && !promptForToken()) return;
+  if (!ensureToken()) {
+    openPairModal('pin');
+    return;
+  }
   try {
     const res = await fetch(`${API_BASE_URL}/api/tunnel/start`, {
       method: 'POST',
@@ -1654,7 +1777,10 @@ document.getElementById('btnStartTunnel').addEventListener('click', async () => 
 });
 
 document.getElementById('btnStopTunnel').addEventListener('click', async () => {
-  if (!ensureToken() && !promptForToken()) return;
+  if (!ensureToken()) {
+    openPairModal('pin');
+    return;
+  }
   try {
     await fetch(`${API_BASE_URL}/api/tunnel/stop`, {
       method: 'POST',
@@ -1680,7 +1806,13 @@ function isEditableFile(filename) {
 async function loadFiles(path = '') {
   const container = document.getElementById('fileTable');
   if (!ensureToken()) {
-    container.innerHTML = '<div style="padding:28px; text-align:center; color:var(--text-muted); font-weight:600;">Enter your API Security Token in Settings to view and manage files.</div>';
+    container.innerHTML = `
+      <div style="padding:36px; text-align:center;">
+        <div style="font-size:32px; margin-bottom:8px;">🔒</div>
+        <h4 style="font-size:18px; font-weight:800; margin-bottom:6px;">Connect & Authenticate Device</h4>
+        <p style="color:var(--text-muted); font-size:13.5px; font-weight:600; margin-bottom:16px;">Scan the QR code or enter your 6-digit PIN to manage files.</p>
+        <button class="clay-btn-primary" onclick="openPairModal('pin')">📱 Pair Device with PIN / QR</button>
+      </div>`;
     return;
   }
   try {
@@ -1777,7 +1909,7 @@ async function loadFiles(path = '') {
     });
 
   } catch (err) {
-    container.innerHTML = `<div style="padding:28px; text-align:center; color:#B32818; font-weight:700;">Error loading files: ${err.message}</div>`;
+    container.innerHTML = `<div style="padding:28px; text-align:center; color:#FF7A6B; font-weight:700;">Error loading files: ${err.message}</div>`;
   }
 }
 
@@ -1787,7 +1919,7 @@ document.getElementById('btnRefreshFiles').addEventListener('click', () => loadF
    Upload Single File
 ------------------------------------------------------------ */
 document.getElementById('btnUploadFile').addEventListener('click', () => {
-  if (!ensureToken() && !promptForToken()) return;
+  if (!ensureToken()) { openPairModal('pin'); return; }
   document.getElementById('fileUploadInput').click();
 });
 document.getElementById('fileUploadInput').addEventListener('change', async (e) => {
@@ -1817,7 +1949,7 @@ document.getElementById('fileUploadInput').addEventListener('change', async (e) 
    Upload Folder
 ------------------------------------------------------------ */
 document.getElementById('btnUploadFolder').addEventListener('click', () => {
-  if (!ensureToken() && !promptForToken()) return;
+  if (!ensureToken()) { openPairModal('pin'); return; }
   document.getElementById('folderUploadInput').click();
 });
 document.getElementById('folderUploadInput').addEventListener('change', async (e) => {
@@ -1851,16 +1983,13 @@ document.getElementById('folderUploadInput').addEventListener('change', async (e
    Upload ZIP Archive (with Auto-Extract option)
 ------------------------------------------------------------ */
 document.getElementById('btnUploadZip').addEventListener('click', () => {
-  if (!ensureToken() && !promptForToken()) return;
+  if (!ensureToken()) { openPairModal('pin'); return; }
   document.getElementById('zipUploadInput').click();
 });
 document.getElementById('zipUploadInput').addEventListener('change', async (e) => {
   const file = e.target.files[0];
   if (!file) return;
-  const shouldExtract = confirm(`Extract "${file.name}" automatically into current directory?
-
-- Click [OK] to extract all folder/files.
-- Click [Cancel] to upload as a single .zip file.`);
+  const shouldExtract = confirm(`Extract "${file.name}" automatically into current directory?\n\n- Click [OK] to extract all folder/files.\n- Click [Cancel] to upload as a single .zip file.`);
   const formData = new FormData();
   formData.append('file', file);
   formData.append('path', currentPath);
@@ -1899,7 +2028,7 @@ document.getElementById('btnDownloadZip').addEventListener('click', () => {
 });
 
 document.getElementById('btnNewFolder').addEventListener('click', async () => {
-  if (!ensureToken() && !promptForToken()) return;
+  if (!ensureToken()) { openPairModal('pin'); return; }
   const name = prompt('New folder name:');
   if (!name || !name.trim()) return;
   try {
@@ -1924,7 +2053,7 @@ const editorFileName = document.getElementById('editorFileName');
 const editorCharCount = document.getElementById('editorCharCount');
 
 async function openEditor(relPath) {
-  if (!ensureToken() && !promptForToken()) return;
+  if (!ensureToken()) { openPairModal('pin'); return; }
   try {
     const res = await fetch(`${API_BASE_URL}/api/files/content?path=${encodeURIComponent(relPath)}`, {
       headers: authHeader()
@@ -1993,7 +2122,7 @@ function openShareModal(relPath) {
 
 document.getElementById('btnCloseShareModal').addEventListener('click', () => shareModal.classList.remove('open'));
 document.getElementById('btnCreateShareLink').addEventListener('click', async () => {
-  if (!ensureToken() && !promptForToken()) return;
+  if (!ensureToken()) { openPairModal('pin'); return; }
   const expireSec = parseInt(document.getElementById('shareExpireSelect').value, 10);
   const password = document.getElementById('sharePassInput').value.trim();
   const maxDl = parseInt(document.getElementById('shareMaxDownloads').value, 10) || 0;
@@ -2074,7 +2203,7 @@ async function loadSharedLinks() {
       tbody.appendChild(tr);
     });
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="5" style="color:#B32818; padding:16px;">Error: ${err.message}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" style="color:#FF7A6B; padding:16px;">Error: ${err.message}</td></tr>`;
   }
 }
 
@@ -2124,12 +2253,12 @@ async function loadTrashItems() {
       tbody.appendChild(tr);
     });
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="4" style="color:#B32818; padding:16px;">Error: ${err.message}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4" style="color:#FF7A6B; padding:16px;">Error: ${err.message}</td></tr>`;
   }
 }
 
 document.getElementById('btnEmptyTrash').addEventListener('click', async () => {
-  if (!ensureToken() && !promptForToken()) return;
+  if (!ensureToken()) { openPairModal('pin'); return; }
   if (!confirm('Permanently empty trash bin? This cannot be undone.')) return;
   try {
     const res = await fetch(`${API_BASE_URL}/api/trash/empty`, {
@@ -2185,7 +2314,7 @@ async function fetchStorageBreakdown() {
 }
 
 document.getElementById('btnCleanCache').addEventListener('click', async () => {
-  if (!ensureToken() && !promptForToken()) return;
+  if (!ensureToken()) { openPairModal('pin'); return; }
   if (!confirm('Clean temporary cache files (*.tmp, *.log.*, .cache)?')) return;
   try {
     const res = await fetch(`${API_BASE_URL}/api/storage/clean-cache`, {
@@ -2205,7 +2334,7 @@ document.getElementById('btnCleanCache').addEventListener('click', async () => {
    Android Power Guard & Wake-Lock
 ------------------------------------------------------------ */
 document.getElementById('btnToggleWakeLock').addEventListener('click', async () => {
-  if (!ensureToken() && !promptForToken()) return;
+  if (!ensureToken()) { openPairModal('pin'); return; }
   try {
     const statusData = await fetchJson(STATUS_ENDPOINT);
     const nextAction = statusData.wake_lock ? 'release' : 'acquire';
@@ -2249,7 +2378,7 @@ document.getElementById('btnOpenDDNSModal').addEventListener('click', async () =
 document.getElementById('btnCloseDDNSModal').addEventListener('click', () => ddnsModal.classList.remove('open'));
 
 document.getElementById('btnSaveDDNS').addEventListener('click', async () => {
-  if (!ensureToken() && !promptForToken()) return;
+  if (!ensureToken()) { openPairModal('pin'); return; }
   try {
     await fetch(`${API_BASE_URL}/api/ddns/config`, {
       method: 'POST',
@@ -2270,7 +2399,7 @@ document.getElementById('btnSaveDDNS').addEventListener('click', async () => {
 });
 
 document.getElementById('btnSyncDDNSNow').addEventListener('click', async () => {
-  if (!ensureToken() && !promptForToken()) return;
+  if (!ensureToken()) { openPairModal('pin'); return; }
   document.getElementById('ddnsStatusMsg').textContent = 'Syncing DuckDNS...';
   try {
     const res = await fetch(`${API_BASE_URL}/api/ddns/update`, {
@@ -2321,7 +2450,7 @@ async function loadCronTasks() {
         });
       });
       tr.querySelector('[data-action="run-cron"]').addEventListener('click', async () => {
-        if (!ensureToken() && !promptForToken()) return;
+        if (!ensureToken()) { openPairModal('pin'); return; }
         try {
           const res = await fetch(`${API_BASE_URL}/api/cron/run/${task.id}`, {
             method: 'POST',
@@ -2371,7 +2500,7 @@ document.getElementById('btnAlerts').addEventListener('click', async () => {
 document.getElementById('btnCloseAlertsModal').addEventListener('click', () => alertsModal.classList.remove('open'));
 
 document.getElementById('btnSaveAlerts').addEventListener('click', async () => {
-  if (!ensureToken() && !promptForToken()) return;
+  if (!ensureToken()) { openPairModal('pin'); return; }
   try {
     const payload = {
       discord: {
@@ -2402,7 +2531,7 @@ document.getElementById('btnSaveAlerts').addEventListener('click', async () => {
 });
 
 document.getElementById('btnTestAlertNotification').addEventListener('click', async () => {
-  if (!ensureToken() && !promptForToken()) return;
+  if (!ensureToken()) { openPairModal('pin'); return; }
   document.getElementById('alertsStatusMsg').textContent = 'Sending test notification...';
   try {
     const res = await fetch(`${API_BASE_URL}/api/alerts/test`, {
@@ -2434,7 +2563,7 @@ async function fetchLogs() {
 document.getElementById('btnRefreshLogs').addEventListener('click', fetchLogs);
 document.getElementById('logFileSelect').addEventListener('change', fetchLogs);
 document.getElementById('btnClearLogs').addEventListener('click', async () => {
-  if (!ensureToken() && !promptForToken()) return;
+  if (!ensureToken()) { openPairModal('pin'); return; }
   const file = document.getElementById('logFileSelect').value;
   if (!confirm(`Clear log file "${file}"?`)) return;
   await fetch(`${API_BASE_URL}/api/logs/clear`, {
@@ -2452,19 +2581,87 @@ setInterval(() => {
 }, 3000);
 
 /* ------------------------------------------------------------
-   QR Connect Modal
+   Universal Pair & Connect Modal (QR Code & 6-Digit PIN)
 ------------------------------------------------------------ */
 const qrModal = document.getElementById('qrModal');
-document.getElementById('btnQR').addEventListener('click', () => {
-  const currentUrl = window.location.href;
-  document.getElementById('qrModalImg').src = `${API_BASE_URL}/api/qrcode?data=${encodeURIComponent(currentUrl)}`;
-  document.getElementById('qrUrlText').textContent = currentUrl;
+
+function setPairTab(tab) {
+  document.getElementById('pairSectionQR').style.display = tab === 'qr' ? 'block' : 'none';
+  document.getElementById('pairSectionPIN').style.display = tab === 'pin' ? 'block' : 'none';
+  document.getElementById('pairSectionToken').style.display = tab === 'token' ? 'block' : 'none';
+
+  document.getElementById('tabBtnQR').style.background = tab === 'qr' ? 'var(--action-primary)' : 'var(--bg-raised)';
+  document.getElementById('tabBtnQR').style.color = tab === 'qr' ? '#FFF' : 'var(--text-strong)';
+  document.getElementById('tabBtnPIN').style.background = tab === 'pin' ? 'var(--action-primary)' : 'var(--bg-raised)';
+  document.getElementById('tabBtnPIN').style.color = tab === 'pin' ? '#FFF' : 'var(--text-strong)';
+  document.getElementById('tabBtnToken').style.background = tab === 'token' ? 'var(--action-primary)' : 'var(--bg-raised)';
+  document.getElementById('tabBtnToken').style.color = tab === 'token' ? '#FFF' : 'var(--text-strong)';
+}
+
+function openPairModal(tab = 'qr') {
+  // Construct direct auto-auth pairing URL for the QR code
+  const currentOrigin = window.location.origin;
+  const pairUrl = `${currentOrigin}/?auth=${encodeURIComponent(apiToken || '')}`;
+
+  document.getElementById('qrModalImg').src = `${API_BASE_URL}/api/qrcode?data=${encodeURIComponent(pairUrl)}`;
+  document.getElementById('qrUrlText').textContent = pairUrl;
+  document.getElementById('manualTokenInput').value = apiToken || '';
+  document.getElementById('clientPinInput').value = '';
+  document.getElementById('pinVerifyStatus').textContent = '';
+
+  setPairTab(tab);
   qrModal.classList.add('open');
-});
+}
+
+document.getElementById('btnQR').addEventListener('click', () => openPairModal('qr'));
+document.getElementById('btnQuickPair').addEventListener('click', () => openPairModal('qr'));
+document.getElementById('btnSettings').addEventListener('click', () => openPairModal('token'));
 document.getElementById('btnCloseQR').addEventListener('click', () => qrModal.classList.remove('open'));
 document.getElementById('btnCopyQRUrl').addEventListener('click', () => {
-  navigator.clipboard.writeText(window.location.href);
-  alert('Copied URL to clipboard!');
+  const url = document.getElementById('qrUrlText').textContent;
+  navigator.clipboard.writeText(url);
+  alert('One-click pairing URL copied to clipboard!');
+});
+
+// Submit 6-Digit PIN to exchange for token & authenticate
+document.getElementById('btnSubmitPin').addEventListener('click', async () => {
+  const pin = document.getElementById('clientPinInput').value.trim();
+  const statusEl = document.getElementById('pinVerifyStatus');
+  if (!pin || pin.length < 6) {
+    statusEl.textContent = 'Please enter a 6-digit PIN.';
+    return;
+  }
+  statusEl.textContent = 'Verifying PIN...';
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/auth/pin`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Invalid PIN');
+    apiToken = data.token;
+    localStorage.setItem('a23_api_token', apiToken);
+    statusEl.textContent = 'Success! Paired and authenticated.';
+    setTimeout(() => {
+      qrModal.classList.remove('open');
+      refreshAll();
+    }, 900);
+  } catch (err) {
+    statusEl.textContent = err.message;
+  }
+});
+
+// Save Manual Token
+document.getElementById('btnSaveManualToken').addEventListener('click', () => {
+  const tok = document.getElementById('manualTokenInput').value.trim();
+  if (tok) {
+    apiToken = tok;
+    localStorage.setItem('a23_api_token', apiToken);
+    alert('Security token saved!');
+    qrModal.classList.remove('open');
+    refreshAll();
+  }
 });
 
 /* ------------------------------------------------------------

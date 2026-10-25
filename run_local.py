@@ -19,6 +19,7 @@ import signal
 
 SERVER_DIR = os.path.dirname(os.path.abspath(__file__))
 TOKEN_FILE = os.path.join(SERVER_DIR, ".token")
+PIN_FILE = os.path.join(SERVER_DIR, ".pin")
 API_PORT = 5000
 DASHBOARD_PORT = 8080
 
@@ -37,6 +38,16 @@ def get_token():
         except Exception:
             pass
     return "See terminal output when API starts"
+
+
+def get_pin():
+    if os.path.exists(PIN_FILE):
+        try:
+            with open(PIN_FILE, "r") as f:
+                return f.read().strip()
+        except Exception:
+            pass
+    return "See API status"
 
 
 def main():
@@ -70,6 +81,7 @@ def main():
     time.sleep(1.5)
 
     token = get_token()
+    pin = get_pin()
 
     dashboard_url = f"http://localhost:{DASHBOARD_PORT}"
     flask_url = f"http://localhost:{API_PORT}"
@@ -79,10 +91,11 @@ def main():
     print("=" * 66)
     print(f"Dashboard URL:      {dashboard_url}")
     print(f"Direct API / Web:   {flask_url}")
+    print(f"6-Digit Pair PIN:   {pin}")
     print(f"API Access Token:   {token}")
     print("-" * 66)
-    print("NOTE: Copy the API token above. In the dashboard, click 'Settings'")
-    print("      or 'Enter Token' to activate the File Manager & Server Controls.")
+    print("NOTE: You can now connect from any device by scanning the QR code,")
+    print("      or typing the 6-digit PIN in the Settings / Pair dialog.")
     print("=" * 66)
     print("\nPress Ctrl+C to stop both servers...\n")
 
