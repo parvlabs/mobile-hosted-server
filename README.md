@@ -1,11 +1,17 @@
 # ⚡ Mobile Hosted Server
 
-> **Ultra low-power personal home server & private cloud for Android (Termux) and PC. Features real-time hardware telemetry, built-in battery UPS monitoring, web file manager with folder uploads, zero-config Cloudflare tunnels, and hardened security.**
+> **Ultra low-power personal home server & private cloud for Android (Termux) and PC. Features real-time hardware telemetry, built-in battery UPS monitoring, web file manager with ZIP/folder uploads, zero-config Cloudflare tunnels, 1-tap QR connect, 6-digit PIN pairing, and pure Claymorphism UI.**
 
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-3.x-000000?style=flat&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
 [![Termux](https://img.shields.io/badge/Termux-Supported-10b981?style=flat&logo=android&logoColor=white)](https://termux.dev/)
+[![Design](https://img.shields.io/badge/UI-Claymorphism%20Spec-FF7A6B?style=flat&logo=figma&logoColor=white)](CLAYMORPHISM.md)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+<p align="center">
+  <img src="docs/screenshots/dashboard_dark.png" alt="Mobile Hosted Server - Obsidian Dark Theme" width="49%">
+  <img src="docs/screenshots/dashboard_light.png" alt="Mobile Hosted Server - Pastel Light Theme" width="49%">
+</p>
 
 An ultra-lightweight, self-hosted home server and dashboard designed to run seamlessly on Android devices (via [Termux](https://termux.dev)) or on any desktop/laptop (Windows, Linux, macOS).
 
@@ -13,53 +19,87 @@ An ultra-lightweight, self-hosted home server and dashboard designed to run seam
 
 ## 🌟 Why an Android Phone as a Server?
 
-* 🔋 **Built-in Battery UPS**: Immune to sudden power outages — the phone's internal battery keeps the server online 24/7.
-* ⚡ **Ultra Low Power**: Consumes only ~2–4W compared to 60–100W+ for traditional desktop or rack servers.
-* 📶 **Always Connected**: Built-in Wi-Fi and cellular failover capabilities in a compact, silent footprint.
-* ♻️ **Upcycle Old Hardware**: Turn spare smartphones into dependable personal cloud storage and compute servers.
+* 🔋 **Built-in Battery UPS**: Immune to sudden power outages — the phone's internal battery acts as a natural uninterrupted power supply (UPS), keeping your homelab online 24/7.
+* ⚡ **Ultra Low Power**: Consumes only ~2–4W under load compared to 60–100W+ for traditional desktop or rack servers.
+* 📶 **Always Connected**: Built-in Wi-Fi and mobile cellular failover in a compact, silent, fanless footprint.
+* ♻️ **Upcycle Old Hardware**: Turn spare smartphones into high-performance personal cloud storage and compute servers.
 
 ---
 
-## ✨ Features
+## 📸 Screenshots & Showcase
 
-### 🎨 Claymorphism UI, Themes & Fast Connect
-* 🏺 **Pure Claymorphism Design System**: Strictly crafted with soft pastel clay surfaces (`#B8A6FF` Lavender, `#9EC9F0` Sky, `#7DD4A8` Mint, `#FFB59E` Peach, `#F5D77A` Lemon), multi-layer colored inset/outset lighting, chunky 28px card radii, and tactile squish-action buttons.
-* 🌓 **Dual Claymorphism Themes (Light & Dark)**: 1-click sidebar switcher between **Clay Light** (`#F7F5FB` pastel clay) and **Midnight Obsidian Clay** (`#13101C` sculpted dark clay with luminous glow), with persistent theme preference.
-* 📱 **Left Sidebar Navigation**: Dedicated left sidebar organizing all server functions, with **Cloud Storage & Files** as the clean landing experience, and 1-click switching to Telemetry, Remote Access, Automations, and Live Logs.
-* 📷 **1-Tap QR Connect**: Point any phone or tablet camera at the QR code to open the dashboard and authenticate instantly with zero typing.
-* 🔢 **Human-Friendly 6-Digit PIN Pairing**: Pair new devices using a simple 6-digit PIN code (e.g. `199 593`) instead of memorizing or copying long 32-character tokens.
+### 📁 Cloud Storage, File Management & Sharing (Main Landing)
+Browse, upload files, folders, and ZIP archives with automatic extraction, stream media in-browser, generate expiring download links, and monitor storage breakdown by category.
 
-### 📊 Real-Time Telemetry & Visuals
-* 📈 **60-Second Real-Time Telemetry Graph**: Smooth canvas chart displaying real-time CPU %, RAM %, and network traffic over the last minute.
-* 📥 **24-Hour Telemetry History & Export**: Automatic background metrics capture with 1-click export to CSV or JSON for deep performance analysis.
-* 💾 **Disk Space Visual Breakdown & Cache Cleaner**: Interactive multi-color storage bar categorizing Media, Documents, Archives, Code, and Logs with a 1-click temporary cache cleaner.
-* 🔋 **Battery UPS & Health Guard**: Continuous battery level and temperature monitoring with smart advisory alerts to prevent battery swelling during 24/7 wall power.
-* 🛡️ **Android Wake-Lock & Governor Guard**: Real-time CPU governor indicator and 1-click Termux wake-lock toggle to prevent the mobile OS from sleeping or killing server threads.
-* 📱 **Instant Wi-Fi QR Connect**: Built-in QR code modal to connect mobile devices or laptops on your local network instantly without typing IP addresses.
+<p align="center">
+  <img src="docs/screenshots/dashboard_dark.png" alt="Cloud Storage & File Explorer" width="95%">
+</p>
 
-### 🌐 Remote Access & Public Hosting
-* 🌐 **Zero-Config Cloudflare Tunnel**: 1-click Cloudflare Tunnel (`cloudflared`) to access your server globally over HTTPS without port forwarding or exposing your home IP.
-* 🦎 **Tailscale Mesh VPN Integration**: Node indicator showing peer IP and MagicDNS address for encrypted zero-trust private mesh networking across all your devices.
-* 🔄 **DuckDNS Dynamic DNS (DDNS) Updater**: Built-in background dynamic DNS auto-updater with configurable sync intervals, domain token support, and manual sync triggers.
-* 🌍 **Static Website & Webhook Hosting**: Built-in static website directory (`public_html/`) automatically served at `/site/` for lightweight websites, documentation, or webhook receivers.
+### 📱 1-Tap QR Connect & 6-Digit PIN Pairing
+Zero friction pairing for phones, laptops, and tablets. Scan the dynamically generated QR code with any camera or enter the human-friendly 6-digit PIN code (`199 593`) to authenticate in seconds.
+
+<p align="center">
+  <img src="docs/screenshots/connect_modal.png" alt="1-Tap QR Connect & 6-Digit PIN Pairing" width="70%">
+</p>
+
+### 📊 Real-Time Hardware Telemetry & Battery UPS Health
+60-second real-time canvas chart tracking CPU %, RAM %, and network traffic, combined with battery temperature monitoring and thermal/swelling protection alerts.
+
+<p align="center">
+  <img src="docs/screenshots/telemetry_ups.png" alt="Hardware & Battery UPS Telemetry" width="95%">
+</p>
+
+### 🌐 Remote Access & Public Web Hosting
+Zero-config global HTTPS access via Cloudflare Tunnels, encrypted Tailscale WireGuard mesh networking, automated DuckDNS dynamic DNS updates, and static website hosting from `public_html/`.
+
+<p align="center">
+  <img src="docs/screenshots/remote_hosting.png" alt="Remote Access & Web Hosting" width="95%">
+</p>
+
+### ⏰ Background Automations, Cron Tasks & Webhook Alerts
+Automated recurring supervisor for shared storage backups, cache pruning, and log rotation, with push notifications to Discord channels and Telegram bots.
+
+<p align="center">
+  <img src="docs/screenshots/automations.png" alt="Automations & Webhook Alerts" width="95%">
+</p>
+
+---
+
+## ✨ Core Features
+
+### 🎨 Pure Claymorphism UI & Dual Themes
+* 🏺 **Spec-Compliant Claymorphism**: Implements the official design spec with 3-layer colored depth and drop shadows, top-left specular sheens, 28px chunky radii, and tactile squish on click (`scale(0.97)`).
+* 🌓 **Light & Dark Obsidian Themes**: 1-click toggle between **Clay Pastel Light** (`#F7F5FB`) and **Obsidian Midnight Clay** (`#13101C` / `#1D182B`) with soft ambient violet glow.
+* ⚡ **Tactile Soft Pop-Up & Subtle Glow**: Interactive micro-elevation (`translateY(-2px) scale(1.025)`) and ambient glow across all chips, status pills, buttons, squircle icon tiles, and sidebar items.
+* 📱 **Dedicated Left Sidebar**: Fast navigation between **Cloud Storage & Sharing**, **Remote Access & Hosting**, **Hardware & Battery UPS**, **Automations & Alerts**, and **Live Audit Logs**.
+* ⚡ **Quick System Pulse Bar**: Real-time status chips on the landing page for CPU, RAM, Battery UPS, and Tunnel connectivity with 1-click jumps to detailed telemetry.
 
 ### 📁 Cloud Storage, File Manager & Sharing
-* 📁 **Web File Manager**: Browse, create folders, download, rename, and delete files safely.
-* 📦 **ZIP Archive Upload & Auto-Extraction**: Upload `.zip` archives with an option to automatically unpack and extract directories into the current folder or save as-is.
-* 📂 **Folder Upload & 1-Click ZIP Download**: Upload nested folder structures directly from your browser, or download entire directories bundled as `.zip` archives.
-* 📝 **In-Browser Text & Code Editor**: View and edit `.txt`, `.py`, `.sh`, `.json`, `.md`, `.html`, `.css`, and `.yaml` files directly from the browser with `Ctrl+S` quick save.
-* 🔗 **Shareable Expiring Download Links**: Generate public download links with custom expiration times (1 hour to 7 days), download counters, and optional password protection.
-* 🗑️ **Safe Trash Bin**: Accidental deletion protection; files are safely moved to `.trash/` with 1-click restoration and storage reclamation.
-* 🎬 **In-line Media Preview**: Stream videos, music, and view photos directly inside the browser.
-* 🛡️ **Sandboxed Storage**: Access is strictly isolated to `~/server/shared/`, preventing directory traversal escapes (`../`).
+* 📦 **ZIP Upload & Auto-Extraction**: Upload `.zip` archives with 1-click automatic unpacking or store archive as-is.
+* 📂 **Folder Uploads & ZIP Downloads**: Upload entire directory trees from your browser, or download any folder bundled into a `.zip` file.
+* 📝 **In-Browser Text & Code Editor**: Edit `.txt`, `.py`, `.sh`, `.json`, `.md`, `.html`, `.css`, and `.yaml` files with `Ctrl+S` keyboard shortcuts.
+* 🔗 **Expiring Public Share Links**: Create shareable links with custom expiration (1 hour to 7 days), download caps, and optional password protection.
+* 🗑️ **Safe Trash Bin**: Files are moved to `.trash/` instead of being permanently lost, with 1-click restore.
+* 🔍 **Interactive Category Filtering**: Click any storage category pill (`Media`, `Documents`, `Archives`, `Code & Web`, `Logs`) to instantly filter files in the directory.
+* 🎬 **In-line Media Streaming**: Stream audio/video and preview photos directly in the browser.
 
-### ⚙️ Automation, Alerts & Security
-* ⏰ **Web Scheduled Tasks (Cron Jobs)**: Background supervisor executing recurring maintenance, backup, and health checks with interval controls, enable/disable toggles, and manual execution triggers.
-* 🔔 **Discord & Telegram Webhook Alerts**: Automatic push notifications delivered to your Discord channel or Telegram chat on critical hardware triggers (high battery temperature, low battery, low storage).
-* ⚡ **Services Grid**: Real-time status monitoring and PID tracking for Web, API, and SSH services.
-* 🔄 **Server Controls**: Safe 1-click start, stop, and restart controls for core services.
-* 📜 **Live Audit Log Viewer**: Real-time server and access logs with auto-refresh and secure log-clearing.
-* 🔒 **Hardened Security**: Timing-safe token authentication (`secrets.compare_digest`), IP rate-limiting with lockout protection, upload extension verification, and HTTP security headers.
+### 🌐 Remote Access & Public Hosting
+* 🌐 **1-Click Cloudflare Tunnel**: Expose your mobile server globally over HTTPS with zero port forwarding, no router access, and hidden home IP.
+* 🦎 **Tailscale Mesh VPN**: Private, end-to-end encrypted WireGuard network connecting your phone server directly to your personal devices.
+* 🦆 **DuckDNS Dynamic DNS Auto-Updater**: Background daemon syncing dynamic IP addresses to free `*.duckdns.org` subdomains.
+* 🌍 **Static Website Hosting**: Host documentation, portfolios, or landing pages directly out of `public_html/` at `/site/`.
+
+### 📊 Real-Time Telemetry & Hardware Protection
+* 📈 **60-Second Real-Time Graph**: Live canvas rendering CPU load %, RAM usage %, and network bandwidth.
+* 📥 **24-Hour Metrics Export**: Background telemetry logger with CSV/JSON export.
+* 🛡️ **Battery Thermal & Swelling Guard**: Molded cream clay alert banner warning of continuous high-temperature charging to preserve battery longevity.
+* 🔒 **Android Wake-Lock & Governor**: Real-time CPU governor stats and 1-click Termux wake-lock to prevent OS hibernation.
+
+### ⏰ Automations & Webhook Alerts
+* ⏰ **Scheduled Cron Supervisor**: Recurring background jobs for backups, temporary cache cleaning, and log rotation.
+* 🔔 **Discord & Telegram Push Webhooks**: Instant notifications on critical events (battery temperature > 45°C, battery level < 15%, low disk space).
+* 📜 **Live Audit Logs**: Real-time log streamer with auto-refresh and secure 1-click clearing.
+* ⚙️ **Services Grid**: Start, stop, and restart controls for Web, API, and SSH services.
 
 ---
 
@@ -87,7 +127,7 @@ An ultra-lightweight, self-hosted home server and dashboard designed to run seam
    bash start-all.sh
    ```
 6. **Open the Dashboard**:
-   The terminal will display your local IP. Open your browser on any device on the same Wi-Fi:
+   The terminal will display your local IP and 6-digit pair PIN. Open your browser on any device on the same Wi-Fi:
    ```text
    http://<PHONE_IP>:8080
    ```
@@ -107,11 +147,11 @@ An ultra-lightweight, self-hosted home server and dashboard designed to run seam
    ```
 3. **Launch the server**:
    * **Windows (One-Click)**: Double-click `start-local.bat`
-   * **Any OS (Terminal)**:
+   * **Terminal (Any OS)**:
      ```bash
      python run_local.py
      ```
-   The runner will start both services, output your access token, and automatically open the dashboard in your default browser.
+   The runner starts both the Flask API (`:5000`) and the Dashboard (`:8080`), displays your 6-digit PIN and security token, and automatically launches the dashboard in your default browser.
 
 ---
 
@@ -119,9 +159,11 @@ An ultra-lightweight, self-hosted home server and dashboard designed to run seam
 
 ```text
 mobile-hosted-server/
-├── api.py              # Flask backend REST API (telemetry, storage, services, logs, cron, DDNS)
-├── index.html          # Modern frontend dashboard (telemetry chart, file manager, editor, modals)
-├── public_html/        # Hosted static website served at /site/ (starter template included)
+├── api.py              # Flask backend REST API (telemetry, storage, services, logs, cron, DDNS, PIN auth)
+├── index.html          # Claymorphism frontend dashboard (sidebar, file explorer, telemetry chart, modals)
+├── public_html/        # Hosted static website directory served at /site/
+├── docs/
+│   └── screenshots/    # High-resolution UI showcase screenshots
 ├── run_local.py        # Cross-platform runner for Windows / macOS / Linux
 ├── start-local.bat     # One-click Windows batch launcher
 ├── start-all.sh        # Background launcher for Termux / Linux
@@ -129,8 +171,8 @@ mobile-hosted-server/
 ├── start-dashboard.sh  # Foreground HTTP server debug launcher
 ├── start-server.sh     # Boot script for Termux:Boot app
 ├── requirements.txt    # Python dependencies
-├── .gitignore          # Security rules (ignores tokens, logs, uploaded files)
-└── README.md           # Documentation
+├── .gitignore          # Security rules (ignores tokens, pins, logs, uploaded files)
+└── README.md           # Documentation & visual showcase
 ```
 
 ---
@@ -138,9 +180,9 @@ mobile-hosted-server/
 ## 🔒 Security Model
 
 * **Sandboxed Storage**: File Manager access is strictly confined to `~/server/shared/`. Path traversal (`../`, absolute paths, symlinks) is blocked via sanitized path resolution.
-* **Token Authentication**: Modifying files, server controls, and logs require the `Authorization: Bearer <token>` header. A cryptographically random token is generated on initial run in `.token`.
-* **Private Network First**: CORS is constrained to private network subnets (10.x, 172.16-31.x, 192.168.x, localhost).
-* **Safe Error Handling**: Unhandled errors return sanitized JSON responses without leaking Python tracebacks.
+* **PIN & Token Authentication**: Modifying files, server controls, and logs require valid authorization (`API_TOKEN` or 6-digit `API_PIN`). Tokens are cryptographically generated in `.token` and PINs in `.pin`.
+* **Private Network First**: Localhost and local private network subnets (10.x, 172.16-31.x, 192.168.x) are supported with timing-safe token verification (`secrets.compare_digest`).
+* **Safe Error Handling**: Unhandled exceptions return sanitized JSON responses without leaking Python tracebacks.
 
 ---
 

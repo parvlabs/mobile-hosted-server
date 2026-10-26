@@ -1840,7 +1840,8 @@ function toggleTheme() {
   applyTheme(current === 'dark' ? 'light' : 'dark');
 }
 document.getElementById('btnThemeToggle').addEventListener('click', toggleTheme);
-const savedTheme = localStorage.getItem('server_theme') || 'light';
+const themeParam = urlParams.get('theme');
+const savedTheme = themeParam || localStorage.getItem('server_theme') || 'light';
 applyTheme(savedTheme);
 
 /* ------------------------------------------------------------
@@ -3190,8 +3191,10 @@ async function refreshAll() {
 document.getElementById('btnRefresh').addEventListener('click', refreshAll);
 
 // Restore saved view or default to Storage
-const savedView = localStorage.getItem('active_view') || 'Storage';
+const viewParam = urlParams.get('view');
+const savedView = viewParam || localStorage.getItem('active_view') || 'Storage';
 switchView(savedView);
+if (urlParams.get('modal') === 'pair') setTimeout(() => openPairModal('qr'), 300);
 
 // Polling loop
 setInterval(fetchTelemetry, REFRESH_INTERVAL_MS);
