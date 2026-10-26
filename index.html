@@ -394,7 +394,7 @@
       inset -3px -3px 8px rgba(255, 255, 255, 0.1);
   }
 
-  /* Clay Status Chips / Pills */
+  /* Clay Status Chips / Pills (3D Sculpted Clay Recipe) */
   .clay-chip {
     border-radius: var(--r-chip);
     padding: 6px 14px;
@@ -404,39 +404,84 @@
     align-items: center;
     gap: 6px;
     border: none;
+    line-height: 1.3;
+    box-shadow:
+      4px 4px 12px rgba(160, 145, 205, 0.28),
+      -4px -4px 12px rgba(255, 255, 255, 0.8),
+      inset 2px 2px 4px rgba(255, 255, 255, 0.65),
+      inset -2px -2px 5px rgba(135, 120, 185, 0.25);
+    transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, filter 0.12s ease-out;
   }
+  .clay-chip[onclick] {
+    cursor: pointer;
+  }
+  .clay-chip[onclick]:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+  }
+  .clay-chip[onclick]:active {
+    transform: scale(0.96);
+  }
+
+  /* Dark Theme Clay Chips (Obsidian Molded Depth) */
+  [data-theme="dark"] .clay-chip {
+    box-shadow:
+      3px 4px 12px rgba(0, 0, 0, 0.7),
+      -2px -2px 8px rgba(45, 36, 62, 0.45),
+      inset 2px 2px 4px rgba(255, 255, 255, 0.32),
+      inset -2px -2px 5px rgba(0, 0, 0, 0.55);
+  }
+
   .badge-online, .clay-chip-active {
     background: var(--status-active);
     color: #154D33;
     box-shadow:
-      3px 3px 10px rgba(75, 175, 125, 0.28),
-      -3px -3px 10px rgba(255, 255, 255, 0.6),
-      inset 2px 2px 4px rgba(255, 255, 255, 0.5),
-      inset -2px -2px 4px rgba(75, 175, 125, 0.22);
+      3px 3px 10px rgba(75, 175, 125, 0.35),
+      -3px -3px 10px rgba(255, 255, 255, 0.7),
+      inset 2px 2px 4px rgba(255, 255, 255, 0.6),
+      inset -2px -2px 4px rgba(60, 150, 105, 0.3);
   }
   [data-theme="dark"] .badge-online, [data-theme="dark"] .clay-chip-active {
     color: #B2F2D2;
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5), -3px -3px 10px rgba(45, 120, 80, 0.3);
+    box-shadow:
+      3px 4px 12px rgba(0, 0, 0, 0.7),
+      -2px -2px 8px rgba(35, 95, 65, 0.45),
+      inset 2px 2px 4px rgba(255, 255, 255, 0.32),
+      inset -2px -2px 5px rgba(0, 0, 0, 0.55);
   }
   .badge-offline, .clay-chip-pending {
     background: var(--surface-lemon);
     color: #5D4507;
     box-shadow:
-      3px 3px 10px rgba(215, 175, 60, 0.28),
-      -3px -3px 10px rgba(255, 255, 255, 0.6),
-      inset 2px 2px 4px rgba(255, 255, 255, 0.5),
-      inset -2px -2px 4px rgba(215, 175, 60, 0.22);
+      3px 3px 10px rgba(215, 175, 60, 0.35),
+      -3px -3px 10px rgba(255, 255, 255, 0.7),
+      inset 2px 2px 4px rgba(255, 255, 255, 0.6),
+      inset -2px -2px 4px rgba(185, 150, 45, 0.3);
   }
   [data-theme="dark"] .badge-offline, [data-theme="dark"] .clay-chip-pending {
     color: #FFE699;
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5), -3px -3px 10px rgba(110, 90, 30, 0.3);
+    box-shadow:
+      3px 4px 12px rgba(0, 0, 0, 0.7),
+      -2px -2px 8px rgba(95, 80, 25, 0.45),
+      inset 2px 2px 4px rgba(255, 255, 255, 0.32),
+      inset -2px -2px 5px rgba(0, 0, 0, 0.55);
   }
   .clay-chip-archived {
     background: var(--status-archived);
     color: #38246E;
+    box-shadow:
+      3px 3px 10px rgba(145, 115, 235, 0.3),
+      -3px -3px 10px rgba(255, 255, 255, 0.7),
+      inset 2px 2px 4px rgba(255, 255, 255, 0.6),
+      inset -2px -2px 4px rgba(120, 95, 205, 0.25);
   }
   [data-theme="dark"] .clay-chip-archived {
     color: #E2DAFC;
+    box-shadow:
+      3px 4px 12px rgba(0, 0, 0, 0.7),
+      -2px -2px 8px rgba(55, 45, 85, 0.45),
+      inset 2px 2px 4px rgba(255, 255, 255, 0.32),
+      inset -2px -2px 5px rgba(0, 0, 0, 0.55);
   }
 
   /* Squircle App-Icon Tile */
