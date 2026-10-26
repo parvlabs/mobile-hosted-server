@@ -1,6 +1,6 @@
 # ⚡ Mobile Hosted Server
 
-> **Ultra low-power personal home server & private cloud for Android (Termux) and PC. Features real-time hardware telemetry, built-in battery UPS monitoring, web file manager with ZIP/folder uploads, zero-config Cloudflare tunnels, 1-tap QR connect, 6-digit PIN pairing, and pure Claymorphism UI.**
+> **Ultra low-power personal home server & private cloud for Android (Termux) and PC. Features real-time hardware telemetry, built-in battery UPS monitoring, web file manager with ZIP/folder uploads, zero-config Cloudflare tunnels, 1-tap QR connect, human-friendly 6-digit PIN pairing, and pure Claymorphism UI.**
 
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-3.x-000000?style=flat&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
@@ -9,75 +9,81 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 <p align="center">
-  <img src="docs/screenshots/dashboard_dark.png" alt="Mobile Hosted Server - Obsidian Dark Theme" width="49%">
-  <img src="docs/screenshots/dashboard_light.png" alt="Mobile Hosted Server - Pastel Light Theme" width="49%">
+  <img src="docs/screenshots/dashboard_light.png" alt="Mobile Hosted Server - Claymorphism Dashboard" width="100%">
 </p>
 
-An ultra-lightweight, self-hosted home server and dashboard designed to run seamlessly on Android devices (via [Termux](https://termux.dev)) or on any desktop/laptop (Windows, Linux, macOS).
+An ultra-lightweight, self-hosted personal cloud and homelab server designed to run 24/7 on Android devices (via [Termux](https://termux.dev)) or on any desktop/laptop (Windows, Linux, macOS).
 
 ---
 
 ## 🌟 Why an Android Phone as a Server?
 
 * 🔋 **Built-in Battery UPS**: Immune to sudden power outages — the phone's internal battery acts as a natural uninterrupted power supply (UPS), keeping your homelab online 24/7.
-* ⚡ **Ultra Low Power**: Consumes only ~2–4W under load compared to 60–100W+ for traditional desktop or rack servers.
-* 📶 **Always Connected**: Built-in Wi-Fi and mobile cellular failover in a compact, silent, fanless footprint.
+* ⚡ **Ultra Low Power**: Consumes only ~2–4W under load compared to 60–100W+ for traditional desktop or rack servers, saving money and generating zero noise.
+* 📶 **Always Connected**: Built-in Wi-Fi and mobile cellular failover in a compact, fanless, pocket-sized footprint.
 * ♻️ **Upcycle Old Hardware**: Turn spare smartphones into high-performance personal cloud storage and compute servers.
 
 ---
 
-## 📸 Screenshots & Showcase
+## 📸 Interface Tour & Feature Showcase
 
-### 📁 Cloud Storage, File Management & Sharing (Main Landing)
-Browse, upload files, folders, and ZIP archives with automatic extraction, stream media in-browser, generate expiring download links, and monitor storage breakdown by category.
-
-<p align="center">
-  <img src="docs/screenshots/dashboard_dark.png" alt="Cloud Storage & File Explorer" width="95%">
-</p>
-
-### 📱 1-Tap QR Connect & 6-Digit PIN Pairing
-Zero friction pairing for phones, laptops, and tablets. Scan the dynamically generated QR code with any camera or enter the human-friendly 6-digit PIN code (`199 593`) to authenticate in seconds.
+### 📁 1. Cloud Storage, File Management & Sharing
+The primary landing view gives you full control over your storage. Upload individual files, nested folder structures, or `.zip` archives with automatic extraction. Preview photos, stream media, edit code in-browser, and monitor storage breakdown by category.
 
 <p align="center">
-  <img src="docs/screenshots/connect_modal.png" alt="1-Tap QR Connect & 6-Digit PIN Pairing" width="70%">
-</p>
-
-### 📊 Real-Time Hardware Telemetry & Battery UPS Health
-60-second real-time canvas chart tracking CPU %, RAM %, and network traffic, combined with battery temperature monitoring and thermal/swelling protection alerts.
-
-<p align="center">
-  <img src="docs/screenshots/telemetry_ups.png" alt="Hardware & Battery UPS Telemetry" width="95%">
-</p>
-
-### 🌐 Remote Access & Public Web Hosting
-Zero-config global HTTPS access via Cloudflare Tunnels, encrypted Tailscale WireGuard mesh networking, automated DuckDNS dynamic DNS updates, and static website hosting from `public_html/`.
-
-<p align="center">
-  <img src="docs/screenshots/remote_hosting.png" alt="Remote Access & Web Hosting" width="95%">
-</p>
-
-### ⏰ Background Automations, Cron Tasks & Webhook Alerts
-Automated recurring supervisor for shared storage backups, cache pruning, and log rotation, with push notifications to Discord channels and Telegram bots.
-
-<p align="center">
-  <img src="docs/screenshots/automations.png" alt="Automations & Webhook Alerts" width="95%">
+  <img src="docs/screenshots/dashboard_light.png" alt="Cloud Storage & File Explorer" width="100%">
 </p>
 
 ---
 
-## ✨ Core Features
+### 📱 2. 1-Tap QR Connect & 6-Digit PIN Pairing
+Pair any phone, laptop, or tablet in seconds with zero friction. Point your camera at the dynamic QR code to open the dashboard with instant authentication, or enter the human-friendly 6-digit PIN (`199 593`) without typing 32-character tokens.
 
-### 🎨 Pure Claymorphism UI & Dual Themes
-* 🏺 **Spec-Compliant Claymorphism**: Implements the official design spec with 3-layer colored depth and drop shadows, top-left specular sheens, 28px chunky radii, and tactile squish on click (`scale(0.97)`).
-* 🌓 **Light & Dark Obsidian Themes**: 1-click toggle between **Clay Pastel Light** (`#F7F5FB`) and **Obsidian Midnight Clay** (`#13101C` / `#1D182B`) with soft ambient violet glow.
-* ⚡ **Tactile Soft Pop-Up & Subtle Glow**: Interactive micro-elevation (`translateY(-2px) scale(1.025)`) and ambient glow across all chips, status pills, buttons, squircle icon tiles, and sidebar items.
-* 📱 **Dedicated Left Sidebar**: Fast navigation between **Cloud Storage & Sharing**, **Remote Access & Hosting**, **Hardware & Battery UPS**, **Automations & Alerts**, and **Live Audit Logs**.
+<p align="center">
+  <img src="docs/screenshots/connect_modal_light.png" alt="1-Tap QR Connect & 6-Digit PIN Pairing" width="75%">
+</p>
+
+---
+
+### 📊 3. Real-Time Hardware Telemetry & Battery UPS Health
+A smooth 60-second canvas graph tracks CPU %, RAM %, and network bandwidth in real time. Continuous battery level and thermal monitoring guard your phone from swelling with smart charging advisories during 24/7 wall power.
+
+<p align="center">
+  <img src="docs/screenshots/telemetry_ups_light.png" alt="Hardware & Battery UPS Telemetry" width="100%">
+</p>
+
+---
+
+### 🌐 4. Remote Access & Public Web Hosting
+Expose your server globally with zero port forwarding via 1-click Cloudflare Tunnels, join private WireGuard networks with Tailscale Mesh VPN, auto-update DuckDNS dynamic DNS records, and host static websites directly from `public_html/`.
+
+<p align="center">
+  <img src="docs/screenshots/remote_hosting_light.png" alt="Remote Access & Web Hosting" width="100%">
+</p>
+
+---
+
+### ⏰ 5. Background Automations, Cron Tasks & Webhook Alerts
+An automated recurring background supervisor handles shared storage backups, cache pruning, and log rotation. Push notifications alert your Discord channel or Telegram bot on critical hardware triggers (high temperature, low battery, low disk).
+
+<p align="center">
+  <img src="docs/screenshots/automations_light.png" alt="Automations & Webhook Alerts" width="100%">
+</p>
+
+---
+
+## ✨ Core Features Breakdown
+
+### 🎨 Pure Claymorphism UI & Micro-Interactions
+* 🏺 **Spec-Compliant Claymorphism**: Built following the official spec verbatim — multi-layer colored depth and drop shadows, top-left specular sheens, 28px chunky radii, and tactile squish on click (`scale(0.97)`).
+* ⚡ **Tactile Soft Pop-Up & Subtle Glow**: Interactive micro-elevation (`translateY(-2px) scale(1.025)`) and ambient glow across all chips, status pills, buttons, squircle icon tiles, and navigation items.
+* 📱 **Dedicated Left Sidebar**: Clean navigation between **Cloud Storage & Sharing**, **Remote Access & Hosting**, **Hardware & Battery UPS**, **Automations & Alerts**, and **Live Audit Logs**.
 * ⚡ **Quick System Pulse Bar**: Real-time status chips on the landing page for CPU, RAM, Battery UPS, and Tunnel connectivity with 1-click jumps to detailed telemetry.
 
-### 📁 Cloud Storage, File Manager & Sharing
-* 📦 **ZIP Upload & Auto-Extraction**: Upload `.zip` archives with 1-click automatic unpacking or store archive as-is.
+### 📁 Cloud Storage & File Manager
+* 📦 **ZIP Upload & Auto-Extraction**: Upload `.zip` archives with 1-click automatic unpacking or store archives as-is.
 * 📂 **Folder Uploads & ZIP Downloads**: Upload entire directory trees from your browser, or download any folder bundled into a `.zip` file.
-* 📝 **In-Browser Text & Code Editor**: Edit `.txt`, `.py`, `.sh`, `.json`, `.md`, `.html`, `.css`, and `.yaml` files with `Ctrl+S` keyboard shortcuts.
+* 📝 **In-Browser Text & Code Editor**: Edit `.txt`, `.py`, `.sh`, `.json`, `.md`, `.html`, `.css`, and `.yaml` files with `Ctrl+S` quick save.
 * 🔗 **Expiring Public Share Links**: Create shareable links with custom expiration (1 hour to 7 days), download caps, and optional password protection.
 * 🗑️ **Safe Trash Bin**: Files are moved to `.trash/` instead of being permanently lost, with 1-click restore.
 * 🔍 **Interactive Category Filtering**: Click any storage category pill (`Media`, `Documents`, `Archives`, `Code & Web`, `Logs`) to instantly filter files in the directory.
