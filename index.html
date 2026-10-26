@@ -217,8 +217,11 @@
       -6px -6px 20px rgba(255, 255, 255, 0.6),
       inset 3px 3px 6px rgba(255, 255, 255, 0.5),
       inset -4px -4px 8px rgba(200, 50, 40, 0.30);
-    transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
+    transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, filter 0.12s ease-out;
     white-space: nowrap;
+  }
+  .clay-btn-primary:hover {
+    filter: brightness(1.04);
   }
   .clay-btn-primary:active {
     transform: scale(0.97);
@@ -227,6 +230,67 @@
       -3px -3px 10px rgba(255, 255, 255, 0.6),
       inset 2px 2px 4px rgba(255, 255, 255, 0.5),
       inset -2px -2px 4px rgba(200, 50, 40, 0.30);
+  }
+
+  /* Dark Theme Hero Buttons - Seamlessly sculpted, eliminating harsh white light-lift halo */
+  [data-theme="dark"] .clay-btn-primary {
+    background: #FF7A6B;
+    color: #FFFFFF;
+    box-shadow:
+      5px 5px 18px rgba(0, 0, 0, 0.75),
+      -3px -3px 12px rgba(45, 34, 60, 0.45),
+      0 0 16px rgba(255, 122, 107, 0.28),
+      inset 2px 2px 5px rgba(255, 255, 255, 0.4),
+      inset -4px -4px 8px rgba(175, 45, 35, 0.6);
+  }
+  [data-theme="dark"] .clay-btn-primary:hover {
+    box-shadow:
+      6px 6px 22px rgba(0, 0, 0, 0.8),
+      -3px -3px 12px rgba(55, 42, 75, 0.5),
+      0 0 22px rgba(255, 122, 107, 0.42),
+      inset 2px 2px 5px rgba(255, 255, 255, 0.45),
+      inset -4px -4px 8px rgba(175, 45, 35, 0.65);
+  }
+  [data-theme="dark"] .clay-btn-primary:active {
+    transform: scale(0.97);
+    box-shadow:
+      3px 3px 10px rgba(0, 0, 0, 0.85),
+      -1px -1px 6px rgba(45, 34, 60, 0.4),
+      0 0 10px rgba(255, 122, 107, 0.25),
+      inset 1px 1px 3px rgba(255, 255, 255, 0.35),
+      inset -2px -2px 4px rgba(175, 45, 35, 0.7);
+  }
+
+  /* Dark Theme Refinements for Secondary Controls & Badges */
+  [data-theme="dark"] #serverAddress {
+    background: #332652 !important;
+    color: #E8E2FF !important;
+  }
+  [data-theme="dark"] #batteryGuardBanner {
+    background: #381A16 !important;
+    border-left-color: #FF7A6B !important;
+  }
+  [data-theme="dark"] #batteryGuardBanner strong {
+    color: #FFA496 !important;
+  }
+  [data-theme="dark"] #batteryGuardBanner #batteryGuardMsg {
+    color: #E6B5AE !important;
+  }
+  [data-theme="dark"] .file-name-click.is-dir {
+    color: #C0A9FF !important;
+  }
+  [data-theme="dark"] #qrModalImg {
+    background: #FFFFFF !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7) !important;
+  }
+  [data-theme="dark"] ::placeholder {
+    color: #7A7292;
+  }
+  [data-theme="dark"] .clay-input:focus {
+    box-shadow:
+      inset 3px 3px 8px rgba(140, 108, 255, 0.4),
+      inset -2px -2px 6px rgba(35, 28, 50, 0.5),
+      0 0 8px rgba(184, 166, 255, 0.2);
   }
 
   /* Secondary Button */
