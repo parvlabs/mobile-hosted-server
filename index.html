@@ -293,6 +293,46 @@
       0 0 8px rgba(184, 166, 255, 0.2);
   }
 
+  /* File Actions Toolbar - Interactive Hero Shift */
+  .file-actions-toolbar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .file-action-btn {
+    transition: transform 0.12s ease-out, box-shadow 0.15s ease-out, background-color 0.15s ease-out, color 0.15s ease-out, filter 0.15s ease-out;
+  }
+  /* Active hero button when toolbar is not hovered, or actively hovered button */
+  .file-actions-toolbar:not(:hover) .file-action-btn.active,
+  .file-action-btn:hover,
+  .file-action-btn:focus-visible {
+    background: var(--action-primary) !important;
+    color: var(--action-on) !important;
+    box-shadow:
+      6px 6px 20px rgba(225, 75, 60, 0.38),
+      -6px -6px 20px rgba(255, 255, 255, 0.6),
+      inset 3px 3px 6px rgba(255, 255, 255, 0.5),
+      inset -4px -4px 8px rgba(200, 50, 40, 0.30) !important;
+  }
+  .file-action-btn:active {
+    transform: scale(0.97);
+  }
+
+  /* Dark Theme for File Actions Toolbar */
+  [data-theme="dark"] .file-actions-toolbar:not(:hover) .file-action-btn.active,
+  [data-theme="dark"] .file-action-btn:hover,
+  [data-theme="dark"] .file-action-btn:focus-visible {
+    background: #FF7A6B !important;
+    color: #FFFFFF !important;
+    box-shadow:
+      5px 5px 18px rgba(0, 0, 0, 0.75),
+      -3px -3px 12px rgba(45, 34, 60, 0.45),
+      0 0 16px rgba(255, 122, 107, 0.28),
+      inset 2px 2px 5px rgba(255, 255, 255, 0.4),
+      inset -4px -4px 8px rgba(175, 45, 35, 0.6) !important;
+  }
+
   /* Secondary Button */
   .clay-btn {
     background: var(--btn-bg);
@@ -887,15 +927,15 @@
           </div>
 
           <!-- File Actions Toolbar -->
-          <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-            <button class="clay-btn-primary" id="btnUploadFile">📤 Upload File</button>
-            <button class="clay-btn" id="btnUploadFolder">📂 Upload Folder</button>
-            <button class="clay-btn" id="btnUploadZip">📦 Upload ZIP</button>
-            <button class="clay-btn" id="btnDownloadZip">📦 Download ZIP</button>
-            <button class="clay-btn" id="btnNewFolder">➕ Folder</button>
-            <button class="clay-btn" id="btnOpenTrash">🗑️ Trash (<span id="trashCountBadge">0</span>)</button>
-            <button class="clay-btn" id="btnOpenSharedLinks">🔗 Links (<span id="linksCountBadge">0</span>)</button>
-            <button class="clay-btn" id="btnRefreshFiles">🔄 Refresh</button>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;" class="file-actions-toolbar">
+            <button class="clay-btn file-action-btn active" id="btnUploadFile">📤 Upload File</button>
+            <button class="clay-btn file-action-btn" id="btnUploadFolder">📂 Upload Folder</button>
+            <button class="clay-btn file-action-btn" id="btnUploadZip">📦 Upload ZIP</button>
+            <button class="clay-btn file-action-btn" id="btnDownloadZip">📦 Download ZIP</button>
+            <button class="clay-btn file-action-btn" id="btnNewFolder">➕ Folder</button>
+            <button class="clay-btn file-action-btn" id="btnOpenTrash">🗑️ Trash (<span id="trashCountBadge">0</span>)</button>
+            <button class="clay-btn file-action-btn" id="btnOpenSharedLinks">🔗 Links (<span id="linksCountBadge">0</span>)</button>
+            <button class="clay-btn file-action-btn" id="btnRefreshFiles">🔄 Refresh</button>
           </div>
         </div>
 
@@ -2089,6 +2129,14 @@ async function loadFiles(path = '') {
 }
 
 document.getElementById('btnRefreshFiles').addEventListener('click', () => loadFiles(currentPath));
+
+function setActiveFileAction(btn) {
+  document.querySelectorAll('.file-actions-toolbar .file-action-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+document.querySelectorAll('.file-actions-toolbar .file-action-btn').forEach(btn => {
+  btn.addEventListener('click', () => setActiveFileAction(btn));
+});
 
 /* ------------------------------------------------------------
    Upload Single File
