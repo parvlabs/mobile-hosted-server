@@ -96,6 +96,28 @@
     margin: 0;
     padding: 0;
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    caret-color: transparent;
+  }
+
+  /* Prevent irritating caret / I-beam cursor and accidental selection on UI elements */
+  body, h1, h2, h3, h4, h5, h6,
+  .clay-card, .clay-chip, .clay-btn, .sidebar-nav-item,
+  .system-pulse-bar, .clay-banner-cream, .clay-table,
+  .clay-icon-tile, label, p, td, th {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* Allow text selection & proper cursor ONLY in inputs, code blocks, logs, and copy fields */
+  input, textarea, [contenteditable="true"] {
+    caret-color: var(--text-strong) !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+  }
+  #logView, code, pre, #shareGeneratedUrl, #qrUrlText, .file-breadcrumbs, .file-name-click {
+    user-select: text !important;
+    -webkit-user-select: text !important;
   }
 
   body {
@@ -107,6 +129,8 @@
     min-height: 100vh;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    cursor: default;
   }
 
   /* ============================================================
@@ -2757,9 +2781,9 @@ async function loadCronTasks() {
       tr.innerHTML = `
         <td>
           <strong style="font-size:14.5px;">${task.name}</strong>
-          <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--text-muted);">${task.command}</div>
+          <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--text-muted);">${task.command || task.action || ''}</div>
         </td>
-        <td style="font-family:var(--font-mono); font-size:13px;">${task.interval_minutes}m</td>
+        <td style="font-family:var(--font-mono); font-size:13px;">${task.interval_hours ? task.interval_hours + 'h' : (task.interval_minutes ? task.interval_minutes + 'm' : '24h')}</td>
         <td style="font-size:12.5px; color:var(--text-muted);">${lastRun}</td>
         <td style="text-align:center;">
           <input type="checkbox" ${task.enabled ? 'checked' : ''} class="clay-toggle" style="width:40px; height:22px;">
