@@ -416,7 +416,7 @@
       inset -4px -4px 8px rgba(175, 45, 35, 0.6) !important;
   }
 
-  /* Secondary Button */
+  /* Secondary Button (Tactile Clay Micro-Lift & Soft Glow) */
   .clay-btn {
     background: var(--btn-bg);
     color: var(--btn-text);
@@ -432,12 +432,35 @@
     border: none;
     cursor: pointer;
     box-shadow: var(--shadow-btn);
-    transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
+    transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.16s ease-out, filter 0.16s ease-out;
     white-space: nowrap;
+  }
+  .clay-btn:hover {
+    filter: brightness(1.06);
+    transform: translateY(-2px) scale(1.015);
+    box-shadow:
+      6px 8px 20px rgba(180, 168, 215, 0.32),
+      0 0 14px rgba(255, 255, 255, 0.5),
+      inset 2px 2px 5px rgba(255, 255, 255, 0.95),
+      inset -3px -3px 6px rgba(190, 180, 220, 0.18);
   }
   .clay-btn:active {
     transform: scale(0.97);
   }
+
+  [data-theme="dark"] .clay-btn:hover {
+    filter: brightness(1.12);
+    transform: translateY(-2px) scale(1.015);
+    box-shadow:
+      6px 8px 20px rgba(0, 0, 0, 0.75),
+      0 0 14px rgba(184, 166, 255, 0.22),
+      inset 2px 2px 5px rgba(75, 65, 100, 0.7),
+      inset -3px -3px 6px rgba(10, 8, 16, 0.6);
+  }
+  [data-theme="dark"] .clay-btn:active {
+    transform: scale(0.97);
+  }
+
   .clay-btn-sm {
     min-height: 36px;
     padding: 0 14px;
@@ -452,11 +475,27 @@
       -4px -4px 14px rgba(255, 255, 255, 0.8),
       inset 2px 2px 4px rgba(255, 255, 255, 0.9),
       inset -2px -2px 4px rgba(220, 70, 70, 0.15);
+    transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.16s ease-out, filter 0.16s ease-out;
+  }
+  .clay-btn-danger:hover {
+    transform: translateY(-2px) scale(1.015);
+    box-shadow:
+      5px 7px 18px rgba(230, 90, 90, 0.35),
+      0 0 14px rgba(255, 120, 120, 0.35);
+  }
+  .clay-btn-danger:active {
+    transform: scale(0.97);
   }
   [data-theme="dark"] .clay-btn-danger {
     background: #4E1E1E;
     color: #FFA4A4;
     box-shadow: 4px 4px 14px rgba(0, 0, 0, 0.5), -4px -4px 14px rgba(80, 30, 30, 0.3), inset 2px 2px 4px rgba(120, 40, 40, 0.4), inset -2px -2px 4px rgba(10, 4, 4, 0.5);
+  }
+  [data-theme="dark"] .clay-btn-danger:hover {
+    transform: translateY(-2px) scale(1.015);
+    box-shadow:
+      5px 7px 18px rgba(0, 0, 0, 0.75),
+      0 0 14px rgba(255, 90, 90, 0.35);
   }
 
   /* Clay Inputs */
@@ -477,7 +516,7 @@
       inset -3px -3px 8px rgba(255, 255, 255, 0.1);
   }
 
-  /* Clay Status Chips / Pills (3D Sculpted Clay Recipe) */
+  /* Clay Status Chips / Pills (Universal Soft Pop-Up & Subtle Glow) */
   .clay-chip {
     border-radius: var(--r-chip);
     padding: 6px 14px;
@@ -488,31 +527,48 @@
     gap: 6px;
     border: none;
     line-height: 1.3;
+    cursor: pointer;
     box-shadow:
       4px 4px 12px rgba(160, 145, 205, 0.28),
       -4px -4px 12px rgba(255, 255, 255, 0.8),
       inset 2px 2px 4px rgba(255, 255, 255, 0.65),
       inset -2px -2px 5px rgba(135, 120, 185, 0.25);
-    transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, filter 0.12s ease-out;
+    transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.16s ease-out, filter 0.16s ease-out;
   }
-  .clay-chip[onclick] {
-    cursor: pointer;
+  .clay-chip:hover {
+    filter: brightness(1.09);
+    transform: translateY(-2px) scale(1.025);
+    box-shadow:
+      5px 7px 18px rgba(160, 145, 205, 0.35),
+      0 0 14px rgba(255, 255, 255, 0.5),
+      inset 2px 2px 4px rgba(255, 255, 255, 0.8),
+      inset -2px -2px 5px rgba(135, 120, 185, 0.25);
   }
-  .clay-chip[onclick]:hover {
-    filter: brightness(1.08);
-    transform: translateY(-1px);
-  }
-  .clay-chip[onclick]:active {
+  .clay-chip:active {
     transform: scale(0.96);
+    filter: brightness(0.97);
   }
 
-  /* Dark Theme Clay Chips (Obsidian Molded Depth) */
+  /* Dark Theme Clay Chips (Obsidian Molded Depth & Soft Violet Glow) */
   [data-theme="dark"] .clay-chip {
     box-shadow:
       3px 4px 12px rgba(0, 0, 0, 0.7),
       -2px -2px 8px rgba(45, 36, 62, 0.45),
       inset 2px 2px 4px rgba(255, 255, 255, 0.32),
       inset -2px -2px 5px rgba(0, 0, 0, 0.55);
+  }
+  [data-theme="dark"] .clay-chip:hover {
+    filter: brightness(1.15);
+    transform: translateY(-2px) scale(1.025);
+    box-shadow:
+      4px 7px 18px rgba(0, 0, 0, 0.8),
+      0 0 14px rgba(184, 166, 255, 0.28),
+      inset 2px 2px 4px rgba(255, 255, 255, 0.45),
+      inset -2px -2px 5px rgba(0, 0, 0, 0.6);
+  }
+  [data-theme="dark"] .clay-chip:active {
+    transform: scale(0.96);
+    filter: brightness(0.97);
   }
 
   .badge-online, .clay-chip-active {
@@ -567,7 +623,7 @@
       inset -2px -2px 5px rgba(0, 0, 0, 0.55);
   }
 
-  /* Squircle App-Icon Tile */
+  /* Squircle App-Icon Tile (Pop-Up & Soft Glow) */
   .clay-icon-tile {
     width: 44px;
     height: 44px;
@@ -577,14 +633,29 @@
     justify-content: center;
     font-size: 22px;
     flex-shrink: 0;
+    cursor: pointer;
     box-shadow:
       5px 5px 14px rgba(180, 168, 215, 0.28),
       -5px -5px 14px rgba(255, 255, 255, 0.8),
       inset 2px 2px 4px rgba(255, 255, 255, 0.9),
       inset -3px -3px 6px rgba(190, 180, 220, 0.16);
+    transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease-out, filter 0.18s ease-out;
+  }
+  .clay-icon-tile:hover {
+    transform: translateY(-2px) scale(1.06) rotate(-2deg);
+    filter: brightness(1.08);
+    box-shadow:
+      6px 8px 18px rgba(180, 168, 215, 0.38),
+      0 0 14px rgba(184, 166, 255, 0.28);
   }
   [data-theme="dark"] .clay-icon-tile {
     box-shadow: 5px 5px 14px rgba(0, 0, 0, 0.5), -5px -5px 14px rgba(45, 38, 64, 0.4);
+  }
+  [data-theme="dark"] .clay-icon-tile:hover {
+    filter: brightness(1.15);
+    box-shadow:
+      6px 8px 18px rgba(0, 0, 0, 0.8),
+      0 0 14px rgba(184, 166, 255, 0.25);
   }
 
   /* ============================================================
@@ -635,19 +706,36 @@
     border: none;
     width: 100%;
     text-align: left;
-    transition: all 0.15s ease-out;
+    transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.16s ease-out, background 0.16s ease-out, color 0.16s ease-out;
   }
   .sidebar-nav-item:hover {
     color: var(--text-strong);
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.18);
+    transform: translateX(4px) translateY(-1px);
+    box-shadow: 0 4px 16px rgba(184, 166, 255, 0.22);
   }
   .sidebar-nav-item.active {
     background: var(--bg-raised);
     color: var(--text-strong);
     box-shadow: var(--shadow-raised);
   }
+  .sidebar-nav-item.active:hover {
+    transform: translateX(4px) translateY(-1px);
+    box-shadow:
+      10px 10px 28px rgba(185, 172, 220, 0.35),
+      0 0 16px rgba(184, 166, 255, 0.28);
+  }
   .sidebar-nav-item:active {
     transform: scale(0.97);
+  }
+  [data-theme="dark"] .sidebar-nav-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 16px rgba(184, 166, 255, 0.15);
+  }
+  [data-theme="dark"] .sidebar-nav-item.active:hover {
+    box-shadow:
+      10px 10px 28px rgba(0, 0, 0, 0.8),
+      0 0 16px rgba(184, 166, 255, 0.22);
   }
 
   .sidebar-footer {
@@ -732,7 +820,7 @@
     margin-top: 10px;
   }
 
-  /* File Table in Clay Style */
+  /* File Table in Clay Style (Soft Pop-Up & Ambient Glow) */
   .file-row-clay {
     display: flex;
     align-items: center;
@@ -742,10 +830,19 @@
     border-radius: var(--r-button);
     background: var(--bg-raised);
     box-shadow: var(--shadow-btn);
-    transition: transform 0.12s;
+    transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.16s ease-out;
   }
   .file-row-clay:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px) scale(1.006);
+    box-shadow:
+      6px 8px 20px rgba(180, 168, 215, 0.3),
+      0 0 12px rgba(184, 166, 255, 0.18);
+  }
+  [data-theme="dark"] .file-row-clay:hover {
+    transform: translateY(-2px) scale(1.006);
+    box-shadow:
+      6px 8px 20px rgba(0, 0, 0, 0.75),
+      0 0 14px rgba(184, 166, 255, 0.2);
   }
   .file-name-click {
     font-weight: 700;
@@ -2132,6 +2229,159 @@ async function verifyInlinePin() {
   }
 }
 
+let currentDirectoryEntries = [];
+let activeCategoryFilter = null;
+const categoryMap = {
+  legMedia: ['mp4', 'mkv', 'avi', 'mov', 'mp3', 'wav', 'flac', 'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'],
+  legDocs: ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'md'],
+  legArchives: ['zip', 'tar', 'gz', 'bz2', '7z', 'rar'],
+  legCode: ['html', 'css', 'js', 'json', 'py', 'sh', 'bat'],
+  legLogs: ['log']
+};
+
+function renderDirectoryEntries() {
+  const container = document.getElementById('fileTable');
+  if (!container) return;
+
+  let entries = currentDirectoryEntries;
+  if (activeCategoryFilter) {
+    const exts = categoryMap[activeCategoryFilter] || [];
+    entries = entries.filter(item => {
+      if (item.is_dir) return false;
+      const idx = item.name.lastIndexOf('.');
+      if (idx === -1) return false;
+      const ext = item.name.slice(idx + 1).toLowerCase();
+      return exts.includes(ext);
+    });
+  }
+
+  if (entries.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+        <div style="font-size: 38px; margin-bottom: 8px;">📂</div>
+        <h4 style="font-size: 16px; font-weight: 800; color: var(--text-strong); margin-bottom: 4px;">
+          ${activeCategoryFilter ? 'No files match this category filter' : 'This directory is empty'}
+        </h4>
+        <p style="font-size: 13.5px; font-weight: 600;">
+          ${activeCategoryFilter ? 'Click the category pill above again to clear filter.' : 'Use the toolbar buttons above to upload files, folders, or ZIP archives.'}
+        </p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = '';
+  entries.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'file-row-clay';
+    const icon = item.is_dir ? '📁' : '📄';
+    const sizeStr = item.size_bytes !== null ? `${Math.round(item.size_bytes / 1024)} KB` : '';
+    const editable = !item.is_dir && isEditableFile(item.name);
+
+    row.innerHTML = `
+      <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
+        <span style="font-size:22px;">${icon}</span>
+        <span class="file-name-click ${item.is_dir ? 'is-dir' : ''}">${item.name}</span>
+        <span style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted); margin-left:8px;">${sizeStr}</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+        ${item.previewable ? `<button class="clay-btn clay-btn-sm" data-action="preview">Preview</button>` : ''}
+        ${editable ? `<button class="clay-btn clay-btn-sm" data-action="edit">📝 Edit</button>` : ''}
+        ${!item.is_dir ? `<button class="clay-btn clay-btn-sm" data-action="share">🔗 Share</button>` : ''}
+        ${!item.is_dir ? `<button class="clay-btn clay-btn-sm" data-action="download">Download</button>` : ''}
+        ${item.is_dir ? `<button class="clay-btn clay-btn-sm" data-action="zip">📦 ZIP</button>` : ''}
+        <button class="clay-btn clay-btn-sm clay-btn-danger" data-action="delete">Delete</button>
+      </div>
+    `;
+
+    if (item.is_dir) {
+      row.querySelector('.file-name-click').addEventListener('click', () => {
+        loadFiles(currentPath ? `${currentPath}/${item.name}` : item.name);
+      });
+    }
+
+    const itemRelPath = currentPath ? `${currentPath}/${item.name}` : item.name;
+    const prevBtn = row.querySelector('[data-action="preview"]');
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        window.open(`${API_BASE_URL}/api/files/stream?path=${encodeURIComponent(itemRelPath)}&token=${encodeURIComponent(apiToken)}`, '_blank');
+      });
+    }
+    const editBtn = row.querySelector('[data-action="edit"]');
+    if (editBtn) {
+      editBtn.addEventListener('click', () => openEditor(itemRelPath));
+    }
+    const shareBtn = row.querySelector('[data-action="share"]');
+    if (shareBtn) {
+      shareBtn.addEventListener('click', () => openShareModal(itemRelPath));
+    }
+    const dlBtn = row.querySelector('[data-action="download"]');
+    if (dlBtn) {
+      dlBtn.addEventListener('click', () => {
+        window.open(`${API_BASE_URL}/api/files/download?path=${encodeURIComponent(itemRelPath)}&token=${encodeURIComponent(apiToken)}`, '_blank');
+      });
+    }
+    const zipBtn = row.querySelector('[data-action="zip"]');
+    if (zipBtn) {
+      zipBtn.addEventListener('click', () => {
+        window.open(`${API_BASE_URL}/api/files/zip?path=${encodeURIComponent(itemRelPath)}&token=${encodeURIComponent(apiToken)}`, '_blank');
+      });
+    }
+    const delBtn = row.querySelector('[data-action="delete"]');
+    if (delBtn) {
+      delBtn.addEventListener('click', async () => {
+        if (!confirm(`Move "${item.name}" to trash bin?`)) return;
+        try {
+          await fetch(`${API_BASE_URL}/api/files`, {
+            method: 'DELETE',
+            headers: { ...authHeader(), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ path: itemRelPath })
+          });
+          loadFiles(currentPath);
+          fetchTelemetry();
+          fetchStorageBreakdown();
+        } catch (err) {
+          alert('Delete failed: ' + err.message);
+        }
+      });
+    }
+
+    container.appendChild(row);
+  });
+}
+
+// Wire up storage category pills for interactive filtering
+['legMedia', 'legDocs', 'legArchives', 'legCode', 'legLogs'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.title = 'Click to filter files by this category';
+  el.addEventListener('click', () => {
+    if (activeCategoryFilter === id) {
+      activeCategoryFilter = null;
+      document.querySelectorAll('.storage-legend-clay .clay-chip').forEach(c => c.style.outline = 'none');
+    } else {
+      activeCategoryFilter = id;
+      document.querySelectorAll('.storage-legend-clay .clay-chip').forEach(c => c.style.outline = 'none');
+      el.style.outline = '2px solid var(--action-primary)';
+    }
+    renderDirectoryEntries();
+  });
+});
+
+// Wire up header chips for interactive copy & connect
+const chipDev = document.getElementById('deviceName');
+if (chipDev) {
+  chipDev.title = 'Click to view device info / pair';
+  chipDev.addEventListener('click', () => openPairModal('qr'));
+}
+const chipAddr = document.getElementById('serverAddress');
+if (chipAddr) {
+  chipAddr.title = 'Click to copy server IP';
+  chipAddr.addEventListener('click', () => {
+    navigator.clipboard.writeText(chipAddr.textContent.trim());
+    alert('Server IP copied to clipboard: ' + chipAddr.textContent.trim());
+  });
+}
+
 async function loadFiles(path = '') {
   const container = document.getElementById('fileTable');
   if (!ensureToken()) {
@@ -2161,96 +2411,8 @@ async function loadFiles(path = '') {
     const data = await res.json();
     currentPath = data.path;
     document.getElementById('fileBreadcrumbs').textContent = currentPath ? `Root / ${currentPath}` : 'Root';
-
-    if (!data.entries || data.entries.length === 0) {
-      container.innerHTML = `
-        <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
-          <div style="font-size: 38px; margin-bottom: 8px;">📂</div>
-          <h4 style="font-size: 16px; font-weight: 800; color: var(--text-strong); margin-bottom: 4px;">This directory is empty</h4>
-          <p style="font-size: 13.5px; font-weight: 600;">Use the toolbar buttons above to upload files, folders, or ZIP archives.</p>
-        </div>`;
-      return;
-    }
-
-    container.innerHTML = '';
-    data.entries.forEach(item => {
-      const row = document.createElement('div');
-      row.className = 'file-row-clay';
-      const icon = item.is_dir ? '📁' : '📄';
-      const sizeStr = item.size_bytes !== null ? `${Math.round(item.size_bytes / 1024)} KB` : '';
-      const editable = !item.is_dir && isEditableFile(item.name);
-
-      row.innerHTML = `
-        <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
-          <span style="font-size:22px;">${icon}</span>
-          <span class="file-name-click ${item.is_dir ? 'is-dir' : ''}">${item.name}</span>
-          <span style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted); margin-left:8px;">${sizeStr}</span>
-        </div>
-        <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
-          ${item.previewable ? `<button class="clay-btn clay-btn-sm" data-action="preview">Preview</button>` : ''}
-          ${editable ? `<button class="clay-btn clay-btn-sm" data-action="edit">📝 Edit</button>` : ''}
-          ${!item.is_dir ? `<button class="clay-btn clay-btn-sm" data-action="share">🔗 Share</button>` : ''}
-          ${!item.is_dir ? `<button class="clay-btn clay-btn-sm" data-action="download">Download</button>` : ''}
-          ${item.is_dir ? `<button class="clay-btn clay-btn-sm" data-action="zip">📦 ZIP</button>` : ''}
-          <button class="clay-btn clay-btn-sm clay-btn-danger" data-action="delete">Delete</button>
-        </div>
-      `;
-
-      if (item.is_dir) {
-        row.querySelector('.file-name-click').addEventListener('click', () => {
-          loadFiles(currentPath ? `${currentPath}/${item.name}` : item.name);
-        });
-      }
-
-      const itemRelPath = currentPath ? `${currentPath}/${item.name}` : item.name;
-      const prevBtn = row.querySelector('[data-action="preview"]');
-      if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-          window.open(`${API_BASE_URL}/api/files/stream?path=${encodeURIComponent(itemRelPath)}&token=${encodeURIComponent(apiToken)}`, '_blank');
-        });
-      }
-      const editBtn = row.querySelector('[data-action="edit"]');
-      if (editBtn) {
-        editBtn.addEventListener('click', () => openEditor(itemRelPath));
-      }
-      const shareBtn = row.querySelector('[data-action="share"]');
-      if (shareBtn) {
-        shareBtn.addEventListener('click', () => openShareModal(itemRelPath));
-      }
-      const dlBtn = row.querySelector('[data-action="download"]');
-      if (dlBtn) {
-        dlBtn.addEventListener('click', () => {
-          window.open(`${API_BASE_URL}/api/files/download?path=${encodeURIComponent(itemRelPath)}&token=${encodeURIComponent(apiToken)}`, '_blank');
-        });
-      }
-      const zipBtn = row.querySelector('[data-action="zip"]');
-      if (zipBtn) {
-        zipBtn.addEventListener('click', () => {
-          window.open(`${API_BASE_URL}/api/files/zip?path=${encodeURIComponent(itemRelPath)}&token=${encodeURIComponent(apiToken)}`, '_blank');
-        });
-      }
-      const delBtn = row.querySelector('[data-action="delete"]');
-      if (delBtn) {
-        delBtn.addEventListener('click', async () => {
-          if (!confirm(`Move "${item.name}" to trash bin?`)) return;
-          try {
-            await fetch(`${API_BASE_URL}/api/files`, {
-              method: 'DELETE',
-              headers: { ...authHeader(), 'Content-Type': 'application/json' },
-              body: JSON.stringify({ path: itemRelPath })
-            });
-            loadFiles(currentPath);
-            fetchTelemetry();
-            fetchStorageBreakdown();
-          } catch (err) {
-            alert('Delete failed: ' + err.message);
-          }
-        });
-      }
-
-      container.appendChild(row);
-    });
-
+    currentDirectoryEntries = data.entries || [];
+    renderDirectoryEntries();
   } catch (err) {
     container.innerHTML = `<div style="padding:28px; text-align:center; color:#FF7A6B; font-weight:700;">Error loading files: ${err.message}</div>`;
   }
