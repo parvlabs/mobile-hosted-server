@@ -266,15 +266,74 @@
     background: #332652 !important;
     color: #E8E2FF !important;
   }
-  [data-theme="dark"] #batteryGuardBanner {
-    background: #381A16 !important;
-    border-left-color: #FF7A6B !important;
+  /* Cream Clay Warning / Advisory Banner */
+  .clay-banner-cream {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 24px;
+    border-radius: var(--r-card);
+    background: #FFF8E7; /* warm cream clay */
+    border: none;
+    box-shadow:
+      6px 6px 20px rgba(215, 175, 60, 0.22),
+      -6px -6px 20px rgba(255, 255, 255, 0.95),
+      inset 3px 3px 6px rgba(255, 255, 255, 0.95),
+      inset -4px -4px 8px rgba(220, 185, 80, 0.18);
+    transition: all 0.2s ease-out;
   }
-  [data-theme="dark"] #batteryGuardBanner strong {
-    color: #FFA496 !important;
+  .clay-banner-cream .clay-banner-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--r-icon);
+    background: #F5D77A; /* lemon accent */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+    box-shadow:
+      3px 3px 10px rgba(195, 150, 40, 0.28),
+      -3px -3px 8px rgba(255, 255, 255, 0.9),
+      inset 2px 2px 4px rgba(255, 255, 255, 0.75),
+      inset -2px -2px 4px rgba(185, 140, 30, 0.25);
   }
-  [data-theme="dark"] #batteryGuardBanner #batteryGuardMsg {
-    color: #E6B5AE !important;
+  .clay-banner-cream strong {
+    font-size: 15px;
+    font-weight: 800;
+    color: #6D4C06;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .clay-banner-cream #batteryGuardMsg {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #7D5C16;
+    line-height: 1.4;
+  }
+
+  /* Dark Theme Cream / Warm Amber Banner */
+  [data-theme="dark"] .clay-banner-cream {
+    background: #2B2114; /* sculpted deep obsidian cream */
+    box-shadow:
+      6px 6px 20px rgba(0, 0, 0, 0.7),
+      -3px -3px 12px rgba(60, 48, 25, 0.35),
+      inset 2px 2px 5px rgba(255, 235, 180, 0.18),
+      inset -4px -4px 8px rgba(12, 8, 4, 0.6);
+  }
+  [data-theme="dark"] .clay-banner-cream .clay-banner-icon {
+    background: #4B3714;
+    box-shadow:
+      3px 3px 10px rgba(0, 0, 0, 0.6),
+      -2px -2px 6px rgba(80, 65, 30, 0.35),
+      inset 2px 2px 4px rgba(255, 230, 160, 0.25),
+      inset -2px -2px 4px rgba(15, 10, 4, 0.5);
+  }
+  [data-theme="dark"] .clay-banner-cream strong {
+    color: #FFE187;
+  }
+  [data-theme="dark"] .clay-banner-cream #batteryGuardMsg {
+    color: #D6BC76;
   }
   [data-theme="dark"] .file-name-click.is-dir {
     color: #C0A9FF !important;
@@ -898,11 +957,11 @@
     </div>
 
     <!-- Battery Guard Warning Banner (if risk detected) -->
-    <div id="batteryGuardBanner" class="clay-card" style="background:#FFEBE6; border-left:6px solid #FF7A6B; display:none; align-items:center; gap:14px;">
-      <span style="font-size:24px;">⚠️</span>
-      <div>
-        <strong style="color:#B32818;">Battery Thermal & Swelling Guard</strong>
-        <div style="font-size:13px; color:#6B2015;" id="batteryGuardMsg">Advisory notice</div>
+    <div id="batteryGuardBanner" class="clay-banner-cream" style="display:none;">
+      <div class="clay-banner-icon">⚠️</div>
+      <div style="flex:1;">
+        <strong>Battery Thermal & Swelling Guard</strong>
+        <div id="batteryGuardMsg">Advisory notice</div>
       </div>
     </div>
 
