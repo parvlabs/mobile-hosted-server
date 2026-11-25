@@ -76,11 +76,17 @@ An automated recurring background supervisor handles shared storage backups, cac
 
 ### 🎨 Pure Claymorphism UI & Micro-Interactions
 * 🏺 **Spec-Compliant Claymorphism**: Built following the official spec verbatim — multi-layer colored depth and drop shadows, top-left specular sheens, 28px chunky radii, and tactile squish on click (`scale(0.97)`).
+* 🎨 **5 Clay Accent Themes**: Instant theme switching between **Terracotta Cream** (warm desert), **Pastel Mint** (fresh sage), **Lavender Clay** (dreamy lilac), **Coral Glow** (sunset peach), and **Deep Obsidian** (graphite midnight).
 * ⚡ **Tactile Soft Pop-Up & Subtle Glow**: Interactive micro-elevation (`translateY(-2px) scale(1.025)`) and ambient glow across all chips, status pills, buttons, squircle icon tiles, and navigation items.
-* 📱 **Dedicated Left Sidebar**: Clean navigation between **Cloud Storage & Sharing**, **Remote Access & Hosting**, **Hardware & Battery UPS**, **Automations & Alerts**, and **Live Audit Logs**.
+* 📱 **Progressive Web App (PWA)**: Installable standalone app with custom clay icon, offline shell caching via Service Worker (`sw.js`), and Home Screen install prompt on Android, iOS, and Chrome.
+* 📱 **Dedicated Left Sidebar**: Clean navigation between **Cloud Storage & Sharing**, **Remote Access & Hosting**, **Hardware & Battery UPS**, **Automations & Alerts**, **Scratchpad & Pastebin**, and **Live Audit Logs**.
 * ⚡ **Quick System Pulse Bar**: Real-time status chips on the landing page for CPU, RAM, Battery UPS, and Tunnel connectivity with 1-click jumps to detailed telemetry.
 
 ### 📁 Cloud Storage & File Manager
+* 📥 **Drag-and-Drop Direct Upload**: Drag single files or entire nested folder trees directly from your desktop into the File Explorer for seamless background upload.
+* 🔍 **Recursive Deep Search**: Real-time debounced in-browser search finding any file or directory across nested subfolders in milliseconds.
+* ☑️ **Multi-Select & Bulk Actions**: Select multiple files/folders via checkboxes with a floating clay action bar for **Bulk Download (ZIP)**, **Bulk Move**, and **Bulk Trash**.
+* 📖 **In-Browser Markdown & PDF Viewers**: Render `.md` documentation with formatted typography and preview `.pdf` files without downloading first.
 * 📦 **ZIP Upload & Auto-Extraction**: Upload `.zip` archives with 1-click automatic unpacking or store archives as-is.
 * 📂 **Folder Uploads & ZIP Downloads**: Upload entire directory trees from your browser, or download any folder bundled into a `.zip` file.
 * 📝 **In-Browser Text & Code Editor**: Edit `.txt`, `.py`, `.sh`, `.json`, `.md`, `.html`, `.css`, and `.yaml` files with `Ctrl+S` quick save.
@@ -93,15 +99,23 @@ An automated recurring background supervisor handles shared storage backups, cac
 * 🌐 **1-Click Cloudflare Tunnel**: Expose your mobile server globally over HTTPS with zero port forwarding, no router access, and hidden home IP.
 * 🦎 **Tailscale Mesh VPN**: Private, end-to-end encrypted WireGuard network connecting your phone server directly to your personal devices.
 * 🦆 **DuckDNS Dynamic DNS Auto-Updater**: Background daemon syncing dynamic IP addresses to free `*.duckdns.org` subdomains.
-* 🌍 **Static Website Hosting**: Host documentation, portfolios, or landing pages directly out of `public_html/` at `/site/`.
+* 🌍 **Multi-Site Static Web Hosting**: Host multiple independent websites, portfolios, or documentations directly from sub-folders in `public_html/` (e.g. `/site/portfolio/`, `/site/docs/`) with a built-in sub-site creator.
 
 ### 📊 Real-Time Telemetry & Hardware Protection
 * 📈 **60-Second Real-Time Graph**: Live canvas rendering CPU load %, RAM usage %, and network bandwidth.
+* 📶 **Network Health & Ping Monitor**: Real-time TCP latency measurement to your local router gateway, Cloudflare DNS (`1.1.1.1`), and Google DNS (`8.8.8.8`) with Wi-Fi stability indicator.
 * 📥 **24-Hour Metrics Export**: Background telemetry logger with CSV/JSON export.
 * 🛡️ **Battery Thermal & Swelling Guard**: Molded cream clay alert banner warning of continuous high-temperature charging to preserve battery longevity.
 * 🔒 **Android Wake-Lock & Governor**: Real-time CPU governor stats and 1-click Termux wake-lock to prevent OS hibernation.
 
-### ⏰ Automations & Webhook Alerts
+### 📝 Scratchpad & Personal Pastebin
+* 💡 **Micro-Notes & Code Snippets**: Quick personal pastebin for saving code snippets (with monospace styling), Wi-Fi passwords, URLs, and shared clipboard text.
+* ✅ **Interactive To-Do Checklists**: Create task lists with 1-click strike-through and state persistence.
+* 📋 **1-Click Clipboard Copy**: One-tap copy button for fast text transfer across devices.
+* 📌 **Pin to Top & Tag Filtering**: Organize notes by tags or pin critical notes to the top.
+
+### ⏰ Automations, Cloud Sync & Webhook Alerts
+* ☁️ **External Cloud Backup Sync (Rclone)**: Automatically mirror your private cloud storage to Google Drive, Dropbox, Nextcloud, or AWS S3 via Rclone.
 * ⏰ **Scheduled Cron Supervisor**: Recurring background jobs for backups, temporary cache cleaning, and log rotation.
 * 🔔 **Discord & Telegram Push Webhooks**: Instant notifications on critical events (battery temperature > 45°C, battery level < 15%, low disk space).
 * 📜 **Live Audit Logs**: Real-time log streamer with auto-refresh and secure 1-click clearing.

@@ -1,0 +1,29 @@
+{
+  "name": "Mobile Hosted Server",
+  "short_name": "MobileServer",
+  "description": "Ultra low-power personal home server & private cloud for Android (Termux) and PC",
+  "start_url": "/?pwa=1",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#F7F5FB",
+  "background_color": "#F7F5FB",
+  "categories": [
+    "utilities",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

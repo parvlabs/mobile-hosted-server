@@ -3,6 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- PWA & Mobile Web App Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <meta name="theme-color" content="#F7F5FB">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="MobileServer">
   <title>Mobile Hosted Server — Personal Homelab & Private Cloud</title>
   
   <!-- Fonts: Nunito & Outfit (Rounded, Chunky, Friendly) -->
@@ -90,6 +98,188 @@
     --btn-bg: #272138;
     --btn-text: #F6F4FD;
   }
+
+  /* ============================================================
+     5 CLAY ACCENT THEMES (PERSISTENT CLAY SPEC)
+     ============================================================ */
+  /* 1. Terracotta Cream (Default Warm Clay) */
+  :root[data-clay-accent="terracotta"], [data-theme="light"][data-clay-accent="terracotta"] {
+    --bg-app: #FAF7F2;
+    --action-primary: #FF7A6B;
+    --accent-glow: rgba(255, 122, 107, 0.45);
+  }
+
+  /* 2. Pastel Mint */
+  [data-clay-accent="mint"] {
+    --bg-app: #F2F9F5;
+    --surface-lavender: #C2EBD6;
+    --surface-sky: #A8DED2;
+    --surface-mint: #7DD4A8;
+    --action-primary: #10B981;
+    --accent-glow: rgba(16, 185, 129, 0.45);
+  }
+
+  /* 3. Lavender Clay */
+  [data-clay-accent="lavender"] {
+    --bg-app: #F6F4FD;
+    --surface-lavender: #C9B5FF;
+    --surface-sky: #B6D2FF;
+    --action-primary: #8B5CF6;
+    --accent-glow: rgba(139, 92, 246, 0.45);
+  }
+
+  /* 4. Coral Glow */
+  [data-clay-accent="coral"] {
+    --bg-app: #FFF6F4;
+    --surface-lavender: #FFD2C7;
+    --surface-peach: #FFB59E;
+    --action-primary: #FF5733;
+    --accent-glow: rgba(255, 87, 51, 0.45);
+  }
+
+  /* 5. Deep Obsidian */
+  [data-clay-accent="obsidian"], [data-theme="dark"][data-clay-accent="obsidian"] {
+    --bg-app: #13101C;
+    --bg-raised: #1D182B;
+    --surface-lavender: #3B2B6D;
+    --surface-sky: #1F4268;
+    --surface-mint: #185437;
+    --surface-peach: #633026;
+    --surface-pink: #59263C;
+    --surface-lemon: #544314;
+    --action-primary: #FF7A6B;
+    --text-strong: #F6F4FD;
+    --text-muted: #A59DBA;
+    --shadow-raised: 8px 8px 24px rgba(6, 4, 12, 0.7), -8px -8px 24px rgba(45, 38, 64, 0.45), inset 3px 3px 6px rgba(60, 50, 82, 0.6), inset -5px -5px 10px rgba(8, 6, 14, 0.6);
+    --shadow-input: inset 3px 3px 8px rgba(0, 0, 0, 0.65), inset -3px -3px 8px rgba(40, 34, 56, 0.45);
+    --shadow-btn: 5px 5px 16px rgba(0, 0, 0, 0.5), -5px -5px 16px rgba(45, 38, 64, 0.4), inset 2px 2px 4px rgba(60, 50, 82, 0.6), inset -3px -3px 6px rgba(10, 8, 16, 0.5);
+    --border-subtle: rgba(45, 38, 64, 0.6);
+    --chart-grid: #231E33;
+    --btn-bg: #272138;
+    --btn-text: #F6F4FD;
+    --accent-glow: rgba(255, 122, 107, 0.5);
+  }
+
+  /* Drag and Drop Zone Overlay */
+  .clay-dropzone-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(247, 245, 251, 0.92);
+    backdrop-filter: blur(8px);
+    border-radius: var(--r-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 60;
+    pointer-events: none;
+    border: 3px dashed var(--action-primary);
+    animation: fadeInDrop 0.2s ease;
+  }
+  [data-theme="dark"] .clay-dropzone-overlay, [data-clay-accent="obsidian"] .clay-dropzone-overlay {
+    background: rgba(19, 16, 28, 0.92);
+  }
+  @keyframes fadeInDrop {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .clay-dropzone-box {
+    background: var(--bg-raised);
+    padding: 32px 44px;
+    border-radius: var(--r-card);
+    box-shadow: var(--shadow-raised);
+    text-align: center;
+    border: 2px solid var(--action-primary);
+  }
+
+  /* Floating Bulk Action Bar */
+  .bulk-action-bar-clay {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-raised);
+    padding: 12px 22px;
+    border-radius: 999px;
+    box-shadow: 0 12px 36px rgba(185, 172, 220, 0.45), var(--shadow-raised);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    z-index: 1000;
+    border: 1px solid var(--border-subtle);
+    animation: slideUpFloat 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes slideUpFloat {
+    from { opacity: 0; transform: translate(-50%, 20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+
+  /* Theme Accent Dots Picker */
+  .theme-accent-picker {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 0;
+  }
+  .theme-accent-dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.15), inset 1px 1px 2px rgba(255,255,255,0.8);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .theme-accent-dot:hover {
+    transform: scale(1.22);
+  }
+  .theme-accent-dot.active {
+    outline: 2px solid var(--text-strong);
+    outline-offset: 2px;
+    transform: scale(1.18);
+  }
+
+  /* Markdown Preview Typography */
+  .md-preview-body {
+    font-family: var(--font-sans);
+    color: var(--text-strong);
+    line-height: 1.7;
+    font-size: 14.5px;
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 10px;
+  }
+  .md-preview-body h1 { font-size: 24px; font-weight: 800; margin: 16px 0 10px; color: var(--action-primary); border-bottom: 2px solid var(--border-subtle); padding-bottom: 6px; }
+  .md-preview-body h2 { font-size: 20px; font-weight: 800; margin: 14px 0 8px; }
+  .md-preview-body h3 { font-size: 17px; font-weight: 700; margin: 12px 0 6px; }
+  .md-preview-body p { margin-bottom: 12px; }
+  .md-preview-body code { font-family: var(--font-mono); background: var(--bg-app); padding: 2px 6px; border-radius: 6px; font-size: 13px; color: var(--action-primary); }
+  .md-preview-body pre { background: var(--bg-app); padding: 14px; border-radius: 14px; overflow-x: auto; margin: 12px 0; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-input); }
+  .md-preview-body pre code { background: transparent; padding: 0; color: var(--text-strong); font-size: 12.5px; }
+  .md-preview-body blockquote { border-left: 4px solid var(--action-primary); padding: 8px 14px; margin: 12px 0; background: var(--bg-app); border-radius: 0 12px 12px 0; font-style: italic; }
+  .md-preview-body ul, .md-preview-body ol { margin: 8px 0 14px 24px; }
+  .md-preview-body li { margin-bottom: 4px; }
+  .md-preview-body table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13.5px; }
+  .md-preview-body th, .md-preview-body td { border: 1px solid var(--border-subtle); padding: 8px 12px; }
+  .md-preview-body th { background: var(--bg-app); font-weight: 800; }
+
+  /* Note Cards */
+  .note-card-clay {
+    background: var(--bg-raised);
+    border-radius: var(--r-card);
+    padding: 20px;
+    box-shadow: var(--shadow-raised);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    border: 1px solid var(--border-subtle);
+  }
+  .note-card-clay:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 10px 10px 28px rgba(185, 172, 220, 0.35), 0 0 16px var(--accent-glow);
+  }
+
 
   * {
     box-sizing: border-box;
@@ -995,6 +1185,48 @@
 
 <div class="app-shell">
 
+      <!-- ==========================================================
+         VIEW 6: 📝 SCRATCHPAD & PERSONAL PASTEBIN
+         ========================================================== -->
+    <div id="viewNotes" class="view-section">
+      <div class="clay-card" style="margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="clay-icon-tile" style="background: var(--surface-lavender);">📝</div>
+            <div>
+              <h3 style="font-size: 20px; font-weight: 800;">Scratchpad & Personal Pastebin</h3>
+              <p style="font-size: 13.5px; color: var(--text-muted); font-weight: 600;">Save quick code snippets, Wi-Fi credentials, checklists, and shared clipboard text</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <button class="clay-btn clay-btn-primary" id="btnNewNote">➕ New Note / Snippet</button>
+            <button class="clay-btn clay-btn-sm" id="btnRefreshNotes">🔄 Refresh</button>
+          </div>
+        </div>
+
+        <!-- Filter tabs & search -->
+        <div style="display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; align-items: center;">
+          <div style="display: flex; gap: 8px;" id="notesFilterTabs">
+            <button class="clay-btn clay-btn-sm active" data-filter="all">All (<span id="countAllNotes">0</span>)</button>
+            <button class="clay-btn clay-btn-sm" data-filter="text">📝 Notes</button>
+            <button class="clay-btn clay-btn-sm" data-filter="code">💻 Code</button>
+            <button class="clay-btn clay-btn-sm" data-filter="todo">✅ To-Dos</button>
+            <button class="clay-btn clay-btn-sm" data-filter="link">🔗 Links</button>
+          </div>
+          <div style="flex: 1; min-width: 200px;">
+            <input type="text" id="noteSearchInput" class="clay-input" placeholder="🔍 Search notes by title or content..." style="width: 100%; height: 36px;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes Grid -->
+      <div id="notesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px;">
+        <!-- Dynamically rendered -->
+      </div>
+    </div>
+
+  </div>
+
   <!-- ============================================================
        LEFT SIDEBAR NAVIGATION
        ============================================================ -->
@@ -1023,6 +1255,9 @@
       <button class="sidebar-nav-item" id="navAutomations" onclick="switchView('Automations')">
         <span style="font-size: 20px;">⏰</span> Automations & Alerts
       </button>
+            <button class="sidebar-nav-item" id="navNotes" onclick="switchView('Notes')">
+        <span style="font-size: 20px;">📝</span> Scratchpad & Pastebin
+      </button>
       <button class="sidebar-nav-item" id="navLogs" onclick="switchView('Logs')">
         <span style="font-size: 20px;">📜</span> Live Audit Logs
       </button>
@@ -1031,6 +1266,23 @@
     <!-- Sidebar Footer with Theme Toggle & Pair Options -->
     <div class="sidebar-footer">
       <!-- 🌓 Theme Switcher -->
+            <!-- 🎨 5 Clay Accent Themes Selector -->
+      <div style="margin-top: 10px; text-align: center;">
+        <div style="font-size: 11.5px; font-weight: 800; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.05em;">CLAY THEME ACCENTS</div>
+        <div class="theme-accent-picker">
+          <div class="theme-accent-dot active" data-accent="terracotta" title="Terracotta Cream" style="background: #FF7A6B;"></div>
+          <div class="theme-accent-dot" data-accent="mint" title="Pastel Mint" style="background: #10B981;"></div>
+          <div class="theme-accent-dot" data-accent="lavender" title="Lavender Clay" style="background: #8B5CF6;"></div>
+          <div class="theme-accent-dot" data-accent="coral" title="Coral Glow" style="background: #FF5733;"></div>
+          <div class="theme-accent-dot" data-accent="obsidian" title="Deep Obsidian" style="background: #2D2545;"></div>
+        </div>
+      </div>
+
+      <!-- 📲 PWA Install Button (Hidden until browser triggers install prompt) -->
+      <button class="clay-btn clay-btn-sm" id="btnInstallPwa" style="width: 100%; display: none; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; background: var(--surface-mint); color: #185437; font-weight: 800;">
+        <span>📲</span> Install Standalone App
+      </button>
+
       <button class="clay-btn clay-btn-sm" id="btnThemeToggle" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
         <span id="themeToggleIcon">🌙</span> <span id="themeToggleText">Dark Theme</span>
       </button>
@@ -1140,6 +1392,19 @@
         </div>
       </div>
 
+        <!-- Floating Bulk Action Bar -->
+  <div id="bulkActionBar" class="bulk-action-bar-clay" style="display:none;">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span class="clay-chip" style="background:var(--action-primary); color:#FFF; font-weight:800;" id="bulkSelectedCount">0 Selected</span>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button class="clay-btn clay-btn-sm" id="btnBulkZip">📦 Download as ZIP</button>
+      <button class="clay-btn clay-btn-sm" id="btnBulkMove">📂 Move</button>
+      <button class="clay-btn clay-btn-sm" id="btnBulkDelete" style="color:#d9534f; font-weight:800;">🗑️ Move to Trash</button>
+      <button class="clay-btn clay-btn-sm" id="btnBulkCancel" title="Clear selection">✕</button>
+    </div>
+  </div>
+
       <!-- File Manager Section -->
       <div class="clay-card" id="fileManagerSection">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 18px;">
@@ -1171,6 +1436,24 @@
 
         <!-- Upload progress toast -->
         <div id="uploadProgress" style="font-weight:700; color:#FF7A6B; margin-bottom:12px; font-size:13.5px;"></div>
+
+                <!-- Recursive Search Bar & Deep Filtering -->
+        <div style="display: flex; gap: 10px; margin-bottom: 14px; align-items: center;">
+          <div style="position: relative; flex: 1;">
+            <input type="text" id="fileSearchInput" class="clay-input" placeholder="🔍 Search all files across nested folders in realtime..." style="width: 100%; padding-left: 38px; height: 40px; font-weight: 600;">
+            <span style="position: absolute; left: 14px; top: 10px; font-size: 15px; opacity: 0.6; pointer-events: none;">🔍</span>
+            <button id="btnClearSearch" class="clay-btn clay-btn-sm" style="position: absolute; right: 8px; top: 6px; padding: 3px 10px; font-size: 11.5px; display: none;">✕ Clear Search</button>
+          </div>
+        </div>
+
+        <!-- Drag & Drop Overlay Zone -->
+        <div id="dropZoneOverlay" class="clay-dropzone-overlay" style="display:none;">
+          <div class="clay-dropzone-box">
+            <span style="font-size: 46px; display: block; margin-bottom: 8px;">📥</span>
+            <h3 style="font-size: 20px; font-weight: 800; color: var(--action-primary); margin-bottom: 6px;">Drop Files or Folders Here</h3>
+            <p style="color: var(--text-muted); font-size: 13.5px; font-weight: 600;">Files and directory hierarchies will upload directly to this folder.</p>
+          </div>
+        </div>
 
         <!-- File List Table -->
         <div id="fileTable" style="margin-top: 14px;">
@@ -1227,6 +1510,43 @@
           <h2 style="font-size: 36px; font-weight: 900; margin: 12px 0 4px;" id="batteryValue">100%</h2>
           <div class="meter-track-clay"><div class="meter-fill-clay" id="batteryFill" style="width: 100%;"></div></div>
           <div style="font-size: 12.5px; font-weight: 600; opacity: 0.85;" id="batterySub">5000 mAh Protected</div>
+        </div>
+      </div>
+
+            <!-- Network Health & Latency Monitor Card -->
+      <div class="clay-card" style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="clay-icon-tile" style="background: var(--surface-sky);">📶</div>
+            <div>
+              <h3 style="font-size: 20px; font-weight: 800;">Network Health & Ping Monitor</h3>
+              <p style="font-size: 13.5px; color: var(--text-muted); font-weight: 600;">Real-time TCP latency to default gateway router and public DNS resolvers</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <span class="clay-chip badge-online" id="networkOverallStatus">⚡ Latency: Measuring...</span>
+            <button class="clay-btn clay-btn-sm" id="btnPingNow">🔄 Ping Now</button>
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-bottom: 8px;">
+          <div class="clay-card" style="padding: 16px; text-align: center;">
+            <div style="font-size: 12px; color: var(--text-muted); font-weight: 700;">DEFAULT GATEWAY (LAN)</div>
+            <div style="font-size: 26px; font-weight: 900; margin: 8px 0 4px; color: var(--action-primary);" id="pingGatewayVal">-- ms</div>
+            <div style="font-size: 12px; font-family: var(--font-mono); color: var(--text-muted);" id="pingGatewayHost">router / lan</div>
+          </div>
+
+          <div class="clay-card" style="padding: 16px; text-align: center;">
+            <div style="font-size: 12px; color: var(--text-muted); font-weight: 700;">CLOUDFLARE DNS (1.1.1.1)</div>
+            <div style="font-size: 26px; font-weight: 900; margin: 8px 0 4px; color: var(--surface-lavender);" id="pingCfVal">-- ms</div>
+            <div style="font-size: 12px; font-family: var(--font-mono); color: var(--text-muted);">1.1.1.1:53 Fast SYN</div>
+          </div>
+
+          <div class="clay-card" style="padding: 16px; text-align: center;">
+            <div style="font-size: 12px; color: var(--text-muted); font-weight: 700;">GOOGLE DNS (8.8.8.8)</div>
+            <div style="font-size: 26px; font-weight: 900; margin: 8px 0 4px; color: var(--surface-mint);" id="pingGoogleVal">-- ms</div>
+            <div style="font-size: 12px; font-family: var(--font-mono); color: var(--text-muted);">8.8.8.8:53 Global Anycast</div>
+          </div>
         </div>
       </div>
 
@@ -1352,6 +1672,27 @@
           </div>
         </div>
 
+                <!-- Multi-Site Static Host Directory Manager -->
+        <div class="clay-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div class="clay-icon-tile" style="background: var(--surface-mint);">🌍</div>
+              <h3 style="font-size: 18px; font-weight: 800;">Multi-Site Static Host Manager</h3>
+            </div>
+            <span class="clay-chip badge-online">Active</span>
+          </div>
+          <p style="font-size: 13.5px; color: var(--text-muted); font-weight: 600; margin-bottom: 14px;">Host independent landing pages, docs, or portfolios directly from sub-folders in <code>public_html/</code>.</p>
+
+          <div id="sitesListContainer" style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
+            <div style="font-size:12.5px; color:var(--text-muted);">Loading sites...</div>
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <button class="clay-btn clay-btn-sm" id="btnCreateSubSite">➕ New Sub-Site</button>
+            <a href="/site/" target="_blank" class="clay-btn clay-btn-sm" style="text-decoration:none;">🚀 Visit Main Site</a>
+          </div>
+        </div>
+
         <!-- Static Web Hosting Directory -->
         <div class="clay-card">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -1377,6 +1718,48 @@
          VIEW 4: AUTOMATIONS, CRON & WEBHOOK ALERTS
          ========================================================== -->
     <div id="viewAutomations" class="view-section">
+            <!-- External Cloud Backup Sync (Rclone / Google Drive / S3 / WebDAV) -->
+      <div class="clay-card" style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="clay-icon-tile" style="background: var(--surface-lavender);">☁️</div>
+            <div>
+              <h3 style="font-size: 20px; font-weight: 800;">External Cloud Backup Sync (Rclone)</h3>
+              <p style="font-size: 13.5px; color: var(--text-muted); font-weight: 600;">Automatically mirror your private cloud storage to Google Drive, Dropbox, Nextcloud, or S3</p>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <span class="clay-chip badge-offline" id="rcloneStatusBadge">Checking...</span>
+            <button class="clay-btn clay-btn-sm" id="btnSyncRcloneNow">🔄 Sync Now</button>
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-bottom:16px;">
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">CONFIGURED REMOTE</label>
+            <input type="text" id="rcloneRemoteInput" class="clay-input" placeholder="e.g. gdrive: or mywebdav:" style="width:100%;">
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">REMOTE TARGET FOLDER</label>
+            <input type="text" id="rclonePathInput" class="clay-input" placeholder="MobileServer_Backup" style="width:100%;">
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">SYNC MODE</label>
+            <select id="rcloneModeSelect" class="clay-input" style="width:100%;">
+              <option value="copy">copy (safe mirror, no remote deletion)</option>
+              <option value="sync">sync (exact replica)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div style="font-size:12.5px; color:var(--text-muted);" id="rcloneLastSyncText">Last sync: Never</div>
+          <button class="clay-btn clay-btn-sm" id="btnSaveRcloneConfig">💾 Save Cloud Sync Settings</button>
+        </div>
+
+        <div id="rcloneLogBox" style="margin-top:14px; display:none; background:var(--bg-app); padding:12px; border-radius:14px; font-family:var(--font-mono); font-size:12px; max-height:140px; overflow-y:auto; box-shadow:var(--shadow-input);"></div>
+      </div>
+
       <!-- Scheduled Tasks (Cron Jobs) -->
       <div class="clay-card" style="margin-bottom: 24px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
@@ -2240,6 +2623,29 @@ const categoryMap = {
   legLogs: ['log']
 };
 
+const selectedFilePaths = new Set();
+
+function updateBulkActionBar() {
+  const bar = document.getElementById('bulkActionBar');
+  const countBadge = document.getElementById('bulkSelectedCount');
+  if (!bar || !countBadge) return;
+  const count = selectedFilePaths.size;
+  if (count > 0) {
+    countBadge.textContent = `${count} Selected`;
+    bar.style.display = 'flex';
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+function clearBulkSelection() {
+  selectedFilePaths.clear();
+  document.querySelectorAll('.file-select-cb').forEach(cb => cb.checked = false);
+  const selectAll = document.getElementById('selectAllCb');
+  if (selectAll) selectAll.checked = false;
+  updateBulkActionBar();
+}
+
 function renderDirectoryEntries() {
   const container = document.getElementById('fileTable');
   if (!container) return;
@@ -2264,27 +2670,58 @@ function renderDirectoryEntries() {
           ${activeCategoryFilter ? 'No files match this category filter' : 'This directory is empty'}
         </h4>
         <p style="font-size: 13.5px; font-weight: 600;">
-          ${activeCategoryFilter ? 'Click the category pill above again to clear filter.' : 'Use the toolbar buttons above to upload files, folders, or ZIP archives.'}
+          ${activeCategoryFilter ? 'Click the category pill above again to clear filter.' : 'Use the toolbar buttons above or drag & drop files and folders here.'}
         </p>
       </div>`;
     return;
   }
 
-  container.innerHTML = '';
+  container.innerHTML = `
+    <div style="display:flex; align-items:center; padding: 6px 12px 10px; font-size: 12.5px; font-weight: 800; color: var(--text-muted); border-bottom: 1px solid var(--border-subtle); gap:12px;">
+      <input type="checkbox" id="selectAllCb" style="width:16px; height:16px; cursor:pointer;" title="Select All">
+      <span style="flex:1;">NAME</span>
+      <span style="width:80px; text-align:right;">SIZE</span>
+      <span style="width:240px; text-align:right;">ACTIONS</span>
+    </div>
+  `;
+
+  const selectAllCb = container.querySelector('#selectAllCb');
+  if (selectAllCb) {
+    selectAllCb.addEventListener('change', (e) => {
+      const checked = e.target.checked;
+      entries.forEach(item => {
+        const itemRelPath = currentPath ? `${currentPath}/${item.name}` : item.name;
+        if (checked) selectedFilePaths.add(itemRelPath);
+        else selectedFilePaths.delete(itemRelPath);
+      });
+      container.querySelectorAll('.file-select-cb').forEach(cb => cb.checked = checked);
+      updateBulkActionBar();
+    });
+  }
+
   entries.forEach(item => {
     const row = document.createElement('div');
     row.className = 'file-row-clay';
     const icon = item.is_dir ? '📁' : '📄';
     const sizeStr = item.size_bytes !== null ? `${Math.round(item.size_bytes / 1024)} KB` : '';
     const editable = !item.is_dir && isEditableFile(item.name);
+    const itemRelPath = currentPath ? `${currentPath}/${item.name}` : item.name;
+    const isSelected = selectedFilePaths.has(itemRelPath);
+
+    const ext = item.name.split('.').pop().toLowerCase();
+    const isMd = !item.is_dir && (ext === 'md' || ext === 'markdown');
+    const isPdf = !item.is_dir && ext === 'pdf';
 
     row.innerHTML = `
       <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
+        <input type="checkbox" class="file-select-cb" data-path="${itemRelPath}" ${isSelected ? 'checked' : ''} style="width:16px; height:16px; cursor:pointer;">
         <span style="font-size:22px;">${icon}</span>
         <span class="file-name-click ${item.is_dir ? 'is-dir' : ''}">${item.name}</span>
-        <span style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted); margin-left:8px;">${sizeStr}</span>
+        <span style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted); margin-left:auto; margin-right:12px;">${sizeStr}</span>
       </div>
       <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+        ${isMd ? `<button class="clay-btn clay-btn-sm" data-action="md">📖 Read</button>` : ''}
+        ${isPdf ? `<button class="clay-btn clay-btn-sm" data-action="pdf">📑 View</button>` : ''}
         ${item.previewable ? `<button class="clay-btn clay-btn-sm" data-action="preview">Preview</button>` : ''}
         ${editable ? `<button class="clay-btn clay-btn-sm" data-action="edit">📝 Edit</button>` : ''}
         ${!item.is_dir ? `<button class="clay-btn clay-btn-sm" data-action="share">🔗 Share</button>` : ''}
@@ -2294,13 +2731,36 @@ function renderDirectoryEntries() {
       </div>
     `;
 
+    const cb = row.querySelector('.file-select-cb');
+    cb.addEventListener('change', (e) => {
+      if (e.target.checked) selectedFilePaths.add(itemRelPath);
+      else selectedFilePaths.delete(itemRelPath);
+      updateBulkActionBar();
+    });
+
     if (item.is_dir) {
       row.querySelector('.file-name-click').addEventListener('click', () => {
+        clearBulkSelection();
         loadFiles(currentPath ? `${currentPath}/${item.name}` : item.name);
+      });
+    } else {
+      row.querySelector('.file-name-click').addEventListener('click', () => {
+        if (isMd) openMarkdownPreview(itemRelPath, item.name);
+        else if (isPdf) openPdfViewer(itemRelPath, item.name);
+        else if (item.previewable) window.open(`${API_BASE_URL}/api/files/stream?path=${encodeURIComponent(itemRelPath)}&token=${encodeURIComponent(apiToken)}`, '_blank');
+        else if (editable) openEditor(itemRelPath);
+        else window.open(`${API_BASE_URL}/api/files/download?path=${encodeURIComponent(itemRelPath)}&token=${encodeURIComponent(apiToken)}`, '_blank');
       });
     }
 
-    const itemRelPath = currentPath ? `${currentPath}/${item.name}` : item.name;
+    if (isMd) {
+      const mdBtn = row.querySelector('[data-action="md"]');
+      if (mdBtn) mdBtn.addEventListener('click', () => openMarkdownPreview(itemRelPath, item.name));
+    }
+    if (isPdf) {
+      const pdfBtn = row.querySelector('[data-action="pdf"]');
+      if (pdfBtn) pdfBtn.addEventListener('click', () => openPdfViewer(itemRelPath, item.name));
+    }
     const prevBtn = row.querySelector('[data-action="preview"]');
     if (prevBtn) {
       prevBtn.addEventListener('click', () => {
@@ -2337,6 +2797,8 @@ function renderDirectoryEntries() {
             headers: { ...authHeader(), 'Content-Type': 'application/json' },
             body: JSON.stringify({ path: itemRelPath })
           });
+          selectedFilePaths.delete(itemRelPath);
+          updateBulkActionBar();
           loadFiles(currentPath);
           fetchTelemetry();
           fetchStorageBreakdown();
@@ -2349,6 +2811,7 @@ function renderDirectoryEntries() {
     container.appendChild(row);
   });
 }
+
 
 // Wire up storage category pills for interactive filtering
 ['legMedia', 'legDocs', 'legArchives', 'legCode', 'legLogs'].forEach(id => {
@@ -3180,7 +3643,868 @@ document.getElementById('btnSaveManualToken').addEventListener('click', () => {
 /* ------------------------------------------------------------
    Master Refresh & Initial Load
 ------------------------------------------------------------ */
-async function refreshAll() {
+async 
+/* ============================================================
+   FEATURE 1: 5 CLAY ACCENT THEMES
+   ============================================================ */
+function setClayAccent(accent) {
+  document.documentElement.setAttribute('data-clay-accent', accent);
+  localStorage.setItem('clay_accent_theme', accent);
+  document.querySelectorAll('.theme-accent-dot').forEach(dot => {
+    dot.classList.toggle('active', dot.dataset.accent === accent);
+  });
+}
+document.querySelectorAll('.theme-accent-dot').forEach(dot => {
+  dot.addEventListener('click', () => setClayAccent(dot.dataset.accent));
+});
+const savedAccent = localStorage.getItem('clay_accent_theme') || 'terracotta';
+setClayAccent(savedAccent);
+
+/* ============================================================
+   FEATURE 2: PWA SERVICE WORKER & APP INSTALL PROMPT
+   ============================================================ */
+let deferredInstallPrompt = null;
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').then(reg => {
+    console.log('PWA ServiceWorker registered', reg);
+  }).catch(err => {
+    console.warn('PWA SW registration notice:', err);
+  });
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const btn = document.getElementById('btnInstallPwa');
+  if (btn) btn.style.display = 'flex';
+});
+
+const btnInstall = document.getElementById('btnInstallPwa');
+if (btnInstall) {
+  btnInstall.addEventListener('click', async () => {
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      const choice = await deferredInstallPrompt.userChoice;
+      if (choice.outcome === 'accepted') {
+        btnInstall.style.display = 'none';
+      }
+      deferredInstallPrompt = null;
+    }
+  });
+}
+
+/* ============================================================
+   FEATURE 3: DRAG AND DROP DIRECT UPLOAD (FILES & FOLDERS)
+   ============================================================ */
+const fileSection = document.getElementById('fileManagerSection');
+const dropOverlay = document.getElementById('dropZoneOverlay');
+
+if (fileSection && dropOverlay) {
+  let dragCounter = 0;
+  fileSection.addEventListener('dragenter', (e) => {
+    e.preventDefault();
+    dragCounter++;
+    dropOverlay.style.display = 'flex';
+  });
+  fileSection.addEventListener('dragover', (e) => {
+    e.preventDefault();
+  });
+  fileSection.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    dragCounter--;
+    if (dragCounter <= 0) {
+      dragCounter = 0;
+      dropOverlay.style.display = 'none';
+    }
+  });
+  fileSection.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    dragCounter = 0;
+    dropOverlay.style.display = 'none';
+    if (!ensureToken()) { openPairModal('pin'); return; }
+
+    const items = e.dataTransfer.items;
+    if (!items || items.length === 0) return;
+
+    const filesToUpload = [];
+
+    async function traverseEntry(entry, currentRel = '') {
+      if (entry.isFile) {
+        const file = await new Promise((resolve) => entry.file(resolve));
+        filesToUpload.push({ file, relativePath: currentRel ? `${currentRel}/${file.name}` : file.name });
+      } else if (entry.isDirectory) {
+        const dirReader = entry.createReader();
+        const readEntries = () => new Promise((resolve) => dirReader.readEntries(resolve));
+        let entries = await readEntries();
+        while (entries.length > 0) {
+          for (const child of entries) {
+            await traverseEntry(child, currentRel ? `${currentRel}/${entry.name}` : entry.name);
+          }
+          entries = await readEntries();
+        }
+      }
+    }
+
+    for (let i = 0; i < items.length; i++) {
+      const it = items[i];
+      if (it.webkitGetAsEntry) {
+        const entry = it.webkitGetAsEntry();
+        if (entry) await traverseEntry(entry);
+      } else {
+        const file = it.getAsFile();
+        if (file) filesToUpload.push({ file, relativePath: file.name });
+      }
+    }
+
+    if (filesToUpload.length === 0) return;
+    const progressEl = document.getElementById('uploadProgress');
+    progressEl.textContent = `Uploading ${filesToUpload.length} dropped files...`;
+
+    let successCount = 0;
+    for (let i = 0; i < filesToUpload.length; i++) {
+      const { file, relativePath } = filesToUpload[i];
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('path', currentPath);
+      formData.append('relative_path', relativePath);
+      try {
+        await fetch(`${API_BASE_URL}/api/files/upload`, {
+          method: 'POST',
+          headers: authHeader(),
+          body: formData
+        });
+        successCount++;
+        progressEl.textContent = `Uploaded ${successCount}/${filesToUpload.length} files...`;
+      } catch (err) {
+        console.warn('Drop upload failed for file:', relativePath, err);
+      }
+    }
+    progressEl.textContent = `Completed upload of ${successCount} files!`;
+    setTimeout(() => { progressEl.textContent = ''; }, 3500);
+    loadFiles(currentPath);
+    fetchStorageBreakdown();
+  });
+}
+
+/* ============================================================
+   FEATURE 4: RECURSIVE SEARCH & DEEP FILTERING
+   ============================================================ */
+let searchDebounceTimeout = null;
+const searchInput = document.getElementById('fileSearchInput');
+const btnClearSearch = document.getElementById('btnClearSearch');
+
+if (searchInput) {
+  searchInput.addEventListener('input', (e) => {
+    const val = e.target.value.trim();
+    if (btnClearSearch) btnClearSearch.style.display = val ? 'block' : 'none';
+    clearTimeout(searchDebounceTimeout);
+    if (!val) {
+      renderDirectoryEntries();
+      return;
+    }
+    searchDebounceTimeout = setTimeout(() => {
+      runFileSearch(val);
+    }, 280);
+  });
+}
+
+if (btnClearSearch) {
+  btnClearSearch.addEventListener('click', () => {
+    searchInput.value = '';
+    btnClearSearch.style.display = 'none';
+    renderDirectoryEntries();
+  });
+}
+
+async function runFileSearch(query) {
+  const container = document.getElementById('fileTable');
+  if (!container || !query) return;
+  container.innerHTML = '<div style="padding:28px; text-align:center; color:var(--text-muted); font-weight:600;">🔍 Searching files across all folders...</div>';
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/files/search?q=${encodeURIComponent(query)}&path=${encodeURIComponent(currentPath)}`, {
+      headers: authHeader()
+    });
+    const data = await res.json();
+    renderSearchResults(data.results || [], query);
+  } catch (err) {
+    container.innerHTML = `<div style="padding:20px; text-align:center; color:#FF7A6B;">Search error: ${err.message}</div>`;
+  }
+}
+
+function renderSearchResults(results, query) {
+  const container = document.getElementById('fileTable');
+  if (!container) return;
+  if (results.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+        <div style="font-size: 38px; margin-bottom: 8px;">🔍</div>
+        <h4 style="font-size: 16px; font-weight: 800; color: var(--text-strong); margin-bottom: 4px;">No files found matching "${query}"</h4>
+        <p style="font-size: 13.5px; font-weight: 600;">Try a different keyword or filename extension.</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <div style="padding: 6px 12px 10px; font-size: 13px; font-weight: 800; color: var(--text-muted); border-bottom: 1px solid var(--border-subtle); display:flex; justify-content:space-between;">
+      <span>Found ${results.length} results for "${query}"</span>
+      <span style="font-weight:600; font-size:12px;">Click filename to open/view</span>
+    </div>`;
+
+  results.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'file-row-clay';
+    const icon = item.is_dir ? '📁' : '📄';
+    const sizeStr = item.is_dir ? 'Folder' : `${Math.round(item.size_bytes / 1024)} KB`;
+    const ext = item.name.split('.').pop().toLowerCase();
+    const isMd = ext === 'md' || ext === 'markdown';
+    const isPdf = ext === 'pdf';
+
+    row.innerHTML = `
+      <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
+        <span style="font-size:20px;">${icon}</span>
+        <div style="min-width:0;">
+          <div class="file-name-click ${item.is_dir ? 'is-dir' : ''}" style="font-weight:800;">${item.name}</div>
+          <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--text-muted);">${item.path}</div>
+        </div>
+        <span style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted); margin-left:auto; margin-right:12px;">${sizeStr}</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+        ${isMd ? `<button class="clay-btn clay-btn-sm" data-action="md">📖 Read</button>` : ''}
+        ${isPdf ? `<button class="clay-btn clay-btn-sm" data-action="pdf">📑 View</button>` : ''}
+        ${item.previewable ? `<button class="clay-btn clay-btn-sm" data-action="preview">Preview</button>` : ''}
+        ${!item.is_dir ? `<button class="clay-btn clay-btn-sm" data-action="download">Download</button>` : ''}
+        ${item.is_dir ? `<button class="clay-btn clay-btn-sm" data-action="open-folder">Open Folder</button>` : ''}
+      </div>
+    `;
+
+    const nameEl = row.querySelector('.file-name-click');
+    if (item.is_dir) {
+      nameEl.addEventListener('click', () => {
+        searchInput.value = '';
+        if (btnClearSearch) btnClearSearch.style.display = 'none';
+        loadFiles(item.path);
+      });
+      const openBtn = row.querySelector('[data-action="open-folder"]');
+      if (openBtn) openBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        if (btnClearSearch) btnClearSearch.style.display = 'none';
+        loadFiles(item.path);
+      });
+    } else {
+      nameEl.addEventListener('click', () => {
+        if (isMd) openMarkdownPreview(item.path, item.name);
+        else if (isPdf) openPdfViewer(item.path, item.name);
+        else if (item.previewable) window.open(`${API_BASE_URL}/api/files/stream?path=${encodeURIComponent(item.path)}&token=${encodeURIComponent(apiToken)}`, '_blank');
+        else window.open(`${API_BASE_URL}/api/files/download?path=${encodeURIComponent(item.path)}&token=${encodeURIComponent(apiToken)}`, '_blank');
+      });
+    }
+
+    if (isMd) {
+      const mdBtn = row.querySelector('[data-action="md"]');
+      if (mdBtn) mdBtn.addEventListener('click', () => openMarkdownPreview(item.path, item.name));
+    }
+    if (isPdf) {
+      const pdfBtn = row.querySelector('[data-action="pdf"]');
+      if (pdfBtn) pdfBtn.addEventListener('click', () => openPdfViewer(item.path, item.name));
+    }
+    const prevBtn = row.querySelector('[data-action="preview"]');
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        window.open(`${API_BASE_URL}/api/files/stream?path=${encodeURIComponent(item.path)}&token=${encodeURIComponent(apiToken)}`, '_blank');
+      });
+    }
+    const dlBtn = row.querySelector('[data-action="download"]');
+    if (dlBtn) {
+      dlBtn.addEventListener('click', () => {
+        window.open(`${API_BASE_URL}/api/files/download?path=${encodeURIComponent(item.path)}&token=${encodeURIComponent(apiToken)}`, '_blank');
+      });
+    }
+
+    container.appendChild(row);
+  });
+}
+
+/* ============================================================
+   FEATURE 5: MULTI-SELECT & BULK ACTIONS
+   ============================================================ */
+const btnBulkCancel = document.getElementById('btnBulkCancel');
+if (btnBulkCancel) btnBulkCancel.addEventListener('click', clearBulkSelection);
+
+const btnBulkZip = document.getElementById('btnBulkZip');
+if (btnBulkZip) {
+  btnBulkZip.addEventListener('click', () => {
+    if (selectedFilePaths.size === 0) return;
+    const pathsArray = Array.from(selectedFilePaths);
+    const pathsParam = encodeURIComponent(pathsArray.join(','));
+    window.open(`${API_BASE_URL}/api/files/bulk-zip?paths=${pathsParam}&token=${encodeURIComponent(apiToken)}`, '_blank');
+  });
+}
+
+const btnBulkDelete = document.getElementById('btnBulkDelete');
+if (btnBulkDelete) {
+  btnBulkDelete.addEventListener('click', async () => {
+    if (selectedFilePaths.size === 0) return;
+    if (!confirm(`Move ${selectedFilePaths.size} selected items to the Trash Bin?`)) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/files/bulk-delete`, {
+        method: 'POST',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paths: Array.from(selectedFilePaths) })
+      });
+      const data = await res.json();
+      alert(`Moved ${data.deleted_count || 0} items to trash.`);
+      clearBulkSelection();
+      loadFiles(currentPath);
+      fetchStorageBreakdown();
+    } catch (err) {
+      alert('Bulk delete failed: ' + err.message);
+    }
+  });
+}
+
+const btnBulkMove = document.getElementById('btnBulkMove');
+if (btnBulkMove) {
+  btnBulkMove.addEventListener('click', () => {
+    if (selectedFilePaths.size === 0) return;
+    document.getElementById('bulkMoveCountLabel').textContent = `Moving ${selectedFilePaths.size} items from shared storage.`;
+    document.getElementById('bulkMoveDestInput').value = currentPath || '';
+    document.getElementById('bulkMoveModal').classList.add('active');
+  });
+}
+const btnCloseBulkMove = document.getElementById('btnCloseBulkMoveModal');
+if (btnCloseBulkMove) {
+  btnCloseBulkMove.addEventListener('click', () => {
+    document.getElementById('bulkMoveModal').classList.remove('active');
+  });
+}
+const btnConfirmBulkMove = document.getElementById('btnConfirmBulkMove');
+if (btnConfirmBulkMove) {
+  btnConfirmBulkMove.addEventListener('click', async () => {
+    const dest = document.getElementById('bulkMoveDestInput').value.trim();
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/files/bulk-move`, {
+        method: 'POST',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paths: Array.from(selectedFilePaths), dest_dir: dest })
+      });
+      const data = await res.json();
+      alert(`Moved ${data.moved_count || 0} items to "${dest || 'Root'}".`);
+      document.getElementById('bulkMoveModal').classList.remove('active');
+      clearBulkSelection();
+      loadFiles(currentPath);
+    } catch (err) {
+      alert('Bulk move failed: ' + err.message);
+    }
+  });
+}
+
+/* ============================================================
+   FEATURE 6: IN-BROWSER MARKDOWN & PDF VIEWERS
+   ============================================================ */
+function renderSimpleMarkdown(md) {
+  if (!md) return '';
+  let html = md
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // Code blocks ```lang ... ```
+  html = html.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, (match, lang, code) => {
+    return `<pre><code>${code.trim()}</code></pre>`;
+  });
+
+  // Inline code `code`
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  // Headings
+  html = html.replace(/^#### (.*$)/gim, '<h4>$1</h4>');
+  html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+  html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+  html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+  // Blockquotes
+  html = html.replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>');
+
+  // Bold & Italic
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  html = html.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+
+  // Links [text](url)
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" style="color:var(--action-primary); font-weight:700;">$1</a>');
+
+  // Horizontal Rules
+  html = html.replace(/^---$/gim, '<hr style="border:none; border-top:1px solid var(--border-subtle); margin:16px 0;">');
+
+  // Unordered list items
+  html = html.replace(/^\s*[-*]\s+(.*)$/gim, '<li>$1</li>');
+  html = html.replace(/(<li>.*<\/li>)/gim, '<ul>$1</ul>');
+
+  // Paragraphs
+  html = html.replace(/\n\n/g, '</p><p>');
+  html = `<p>${html}</p>`;
+  return html;
+}
+
+let activeMdPath = '';
+async function openMarkdownPreview(path, name) {
+  activeMdPath = path;
+  document.getElementById('mdModalTitle').textContent = `📖 ${name}`;
+  document.getElementById('mdModalPath').textContent = path;
+  document.getElementById('mdModalBody').innerHTML = 'Loading content...';
+  document.getElementById('markdownModal').classList.add('active');
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/files/content?path=${encodeURIComponent(path)}`, {
+      headers: authHeader()
+    });
+    const data = await res.json();
+    document.getElementById('mdModalBody').innerHTML = renderSimpleMarkdown(data.content || '');
+  } catch (err) {
+    document.getElementById('mdModalBody').innerHTML = `<div style="color:#FF7A6B;">Failed to load markdown: ${err.message}</div>`;
+  }
+}
+const btnCloseMd = document.getElementById('btnCloseMdModal');
+if (btnCloseMd) btnCloseMd.addEventListener('click', () => {
+  document.getElementById('markdownModal').classList.remove('active');
+});
+const btnMdEdit = document.getElementById('btnMdEditInEditor');
+if (btnMdEdit) btnMdEdit.addEventListener('click', () => {
+  document.getElementById('markdownModal').classList.remove('active');
+  if (activeMdPath) openEditor(activeMdPath);
+});
+
+function openPdfViewer(path, name) {
+  document.getElementById('pdfModalTitle').textContent = `📑 ${name}`;
+  document.getElementById('pdfModalPath').textContent = path;
+  const url = `${API_BASE_URL}/api/files/stream?path=${encodeURIComponent(path)}&token=${encodeURIComponent(apiToken)}`;
+  document.getElementById('pdfIframe').src = url;
+  document.getElementById('pdfModal').classList.add('active');
+}
+const btnClosePdf = document.getElementById('btnClosePdfModal');
+if (btnClosePdf) btnClosePdf.addEventListener('click', () => {
+  document.getElementById('pdfIframe').src = '';
+  document.getElementById('pdfModal').classList.remove('active');
+});
+
+/* ============================================================
+   FEATURE 7: NETWORK HEALTH & PING MONITOR
+   ============================================================ */
+async function fetchNetworkPing() {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/network/ping`);
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.gateway && data.gateway.latency_ms !== null) {
+      document.getElementById('pingGatewayVal').textContent = `${data.gateway.latency_ms} ms`;
+      document.getElementById('pingGatewayHost').textContent = data.gateway.host;
+    }
+    if (data.cloudflare && data.cloudflare.latency_ms !== null) {
+      document.getElementById('pingCfVal').textContent = `${data.cloudflare.latency_ms} ms`;
+    }
+    if (data.google && data.google.latency_ms !== null) {
+      document.getElementById('pingGoogleVal').textContent = `${data.google.latency_ms} ms`;
+    }
+    const statusEl = document.getElementById('networkOverallStatus');
+    if (statusEl) {
+      if (data.status === 'excellent') {
+        statusEl.className = 'clay-chip badge-online';
+        statusEl.textContent = `⚡ Latency: ${data.avg_latency_ms || 25} ms (Excellent)`;
+      } else if (data.status === 'good') {
+        statusEl.className = 'clay-chip badge-online';
+        statusEl.textContent = `📶 Latency: ${data.avg_latency_ms || 60} ms (Good)`;
+      } else {
+        statusEl.className = 'clay-chip badge-pending';
+        statusEl.textContent = `⚠️ Latency: ${data.avg_latency_ms || 150} ms (Degraded)`;
+      }
+    }
+  } catch (err) {
+    console.warn('Ping fetch failed:', err);
+  }
+}
+const btnPingNow = document.getElementById('btnPingNow');
+if (btnPingNow) btnPingNow.addEventListener('click', fetchNetworkPing);
+
+/* ============================================================
+   FEATURE 8: MULTI-SITE STATIC HOST DIRECTORY MANAGER
+   ============================================================ */
+async function loadSitesList() {
+  const container = document.getElementById('sitesListContainer');
+  if (!container) return;
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/sites`);
+    const data = await res.json();
+    const sites = data.sites || [];
+    container.innerHTML = '';
+    sites.forEach(s => {
+      const item = document.createElement('div');
+      item.className = 'clay-card';
+      item.style.padding = '12px 16px';
+      item.style.display = 'flex';
+      item.style.justifyContent = 'space-between';
+      item.style.alignItems = 'center';
+      const sizeStr = `${Math.round((s.size_bytes || 0) / 1024)} KB`;
+      item.innerHTML = `
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:20px;">${s.is_root ? '🏠' : '🌐'}</span>
+          <div>
+            <div style="font-weight:800; font-size:14.5px;">${s.name}</div>
+            <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted);">${s.url} (${s.file_count} files, ${sizeStr})</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <a href="${s.url}" target="_blank" class="clay-btn clay-btn-sm" style="text-decoration:none;">Open ↗</a>
+          ${!s.is_root ? `<button class="clay-btn clay-btn-sm clay-btn-danger" data-delete-site="${s.folder}">Delete</button>` : ''}
+        </div>
+      `;
+      if (!s.is_root) {
+        const delBtn = item.querySelector('[data-delete-site]');
+        if (delBtn) {
+          delBtn.addEventListener('click', async () => {
+            if (!confirm(`Delete sub-site "${s.name}" and all its files?`)) return;
+            try {
+              await fetch(`${API_BASE_URL}/api/sites/${encodeURIComponent(s.folder)}`, {
+                method: 'DELETE',
+                headers: authHeader()
+              });
+              loadSitesList();
+            } catch (err) {
+              alert('Delete site failed: ' + err.message);
+            }
+          });
+        }
+      }
+      container.appendChild(item);
+    });
+  } catch (err) {
+    container.innerHTML = `<div style="color:#FF7A6B;">Failed to load sites: ${err.message}</div>`;
+  }
+}
+
+const btnCreateSite = document.getElementById('btnCreateSubSite');
+if (btnCreateSite) {
+  btnCreateSite.addEventListener('click', () => {
+    document.getElementById('newSiteModal').classList.add('active');
+  });
+}
+const btnCloseNewSite = document.getElementById('btnCloseNewSiteModal');
+if (btnCloseNewSite) {
+  btnCloseNewSite.addEventListener('click', () => {
+    document.getElementById('newSiteModal').classList.remove('active');
+  });
+}
+const btnConfirmCreateSite = document.getElementById('btnConfirmCreateSite');
+if (btnConfirmCreateSite) {
+  btnConfirmCreateSite.addEventListener('click', async () => {
+    const name = document.getElementById('newSiteNameInput').value.trim();
+    if (!name) return alert('Enter a site name');
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/sites/create`, {
+        method: 'POST',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name })
+      });
+      const data = await res.json();
+      if (data.error) return alert(data.error);
+      alert(`Created sub-site at ${data.url}`);
+      document.getElementById('newSiteNameInput').value = '';
+      document.getElementById('newSiteModal').classList.remove('active');
+      loadSitesList();
+    } catch (err) {
+      alert('Create site failed: ' + err.message);
+    }
+  });
+}
+
+/* ============================================================
+   FEATURE 9: EXTERNAL CLOUD BACKUP SYNC (RCLONE)
+   ============================================================ */
+async function loadRcloneStatus() {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/rclone/status`, { headers: authHeader() });
+    if (!res.ok) return;
+    const data = await res.json();
+    const badge = document.getElementById('rcloneStatusBadge');
+    if (badge) {
+      if (data.installed) {
+        badge.className = 'clay-chip badge-online';
+        badge.textContent = `Installed (${data.remotes.length} remotes)`;
+      } else {
+        badge.className = 'clay-chip badge-offline';
+        badge.textContent = 'Not Installed (pkg install rclone)';
+      }
+    }
+    const cfg = data.config || {};
+    if (document.getElementById('rcloneRemoteInput') && cfg.remote_name) {
+      document.getElementById('rcloneRemoteInput').value = cfg.remote_name;
+    }
+    if (document.getElementById('rclonePathInput') && cfg.remote_path) {
+      document.getElementById('rclonePathInput').value = cfg.remote_path;
+    }
+    if (document.getElementById('rcloneModeSelect') && cfg.sync_mode) {
+      document.getElementById('rcloneModeSelect').value = cfg.sync_mode;
+    }
+    if (document.getElementById('rcloneLastSyncText')) {
+      const last = cfg.last_sync ? new Date(cfg.last_sync * 1000).toLocaleString() : 'Never';
+      document.getElementById('rcloneLastSyncText').textContent = `Last sync: ${last} — Status: ${cfg.last_status || 'idle'}`;
+    }
+    if (document.getElementById('rcloneLogBox') && cfg.last_log) {
+      const logBox = document.getElementById('rcloneLogBox');
+      logBox.style.display = 'block';
+      logBox.textContent = cfg.last_log;
+    }
+  } catch (err) {
+    console.warn('Rclone status fetch error:', err);
+  }
+}
+
+const btnSaveRclone = document.getElementById('btnSaveRcloneConfig');
+if (btnSaveRclone) {
+  btnSaveRclone.addEventListener('click', async () => {
+    const remote_name = document.getElementById('rcloneRemoteInput').value.trim();
+    const remote_path = document.getElementById('rclonePathInput').value.trim();
+    const sync_mode = document.getElementById('rcloneModeSelect').value;
+    try {
+      await fetch(`${API_BASE_URL}/api/rclone/config`, {
+        method: 'POST',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ remote_name, remote_path, sync_mode })
+      });
+      alert('Saved Rclone configuration!');
+      loadRcloneStatus();
+    } catch (err) {
+      alert('Save rclone config failed: ' + err.message);
+    }
+  });
+}
+
+const btnSyncRclone = document.getElementById('btnSyncRcloneNow');
+if (btnSyncRclone) {
+  btnSyncRclone.addEventListener('click', async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/rclone/sync`, {
+        method: 'POST',
+        headers: authHeader()
+      });
+      const data = await res.json();
+      if (data.error) return alert(data.error);
+      alert('Cloud backup sync triggered in background!');
+      setTimeout(loadRcloneStatus, 2000);
+    } catch (err) {
+      alert('Sync trigger failed: ' + err.message);
+    }
+  });
+}
+
+/* ============================================================
+   FEATURE 10: SCRATCHPAD & PERSONAL PASTEBIN
+   ============================================================ */
+let allNotes = [];
+let activeNotesFilter = 'all';
+
+async function loadNotes() {
+  const grid = document.getElementById('notesGrid');
+  if (!grid) return;
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/notes`, { headers: authHeader() });
+    const data = await res.json();
+    allNotes = data.notes || [];
+    renderNotesGrid();
+  } catch (err) {
+    grid.innerHTML = `<div style="color:#FF7A6B;">Failed to load notes: ${err.message}</div>`;
+  }
+}
+
+function renderNotesGrid() {
+  const grid = document.getElementById('notesGrid');
+  if (!grid) return;
+  const q = (document.getElementById('noteSearchInput')?.value || '').toLowerCase().trim();
+
+  let filtered = allNotes;
+  if (activeNotesFilter !== 'all') {
+    filtered = filtered.filter(n => n.type === activeNotesFilter);
+  }
+  if (q) {
+    filtered = filtered.filter(n => (n.title || '').toLowerCase().includes(q) || (n.content || '').toLowerCase().includes(q));
+  }
+
+  const countEl = document.getElementById('countAllNotes');
+  if (countEl) countEl.textContent = allNotes.length;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: var(--text-muted);">
+        <div style="font-size: 38px; margin-bottom: 8px;">📝</div>
+        <h4 style="font-size: 16px; font-weight: 800; color: var(--text-strong); margin-bottom: 4px;">No notes match your filter</h4>
+        <p style="font-size: 13.5px; font-weight: 600;">Click "New Note / Snippet" to save code, to-dos, or quick text.</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = '';
+  filtered.forEach(note => {
+    const card = document.createElement('div');
+    card.className = 'note-card-clay';
+    const typeIcon = note.type === 'code' ? '💻' : note.type === 'todo' ? '✅' : note.type === 'link' ? '🔗' : '📝';
+    const dateStr = note.updated_at ? new Date(note.updated_at * 1000).toLocaleDateString() : '';
+
+    let contentHtml = '';
+    if (note.type === 'code') {
+      contentHtml = `<pre style="background:var(--bg-app); padding:10px; border-radius:12px; font-family:var(--font-mono); font-size:12.5px; max-height:160px; overflow-y:auto; margin:10px 0; border:1px solid var(--border-subtle);"><code>${(note.content || '').replace(/</g, '&lt;')}</code></pre>`;
+    } else if (note.type === 'todo') {
+      const lines = (note.content || '').split('\n').filter(l => l.trim());
+      contentHtml = '<div style="margin:10px 0; display:flex; flex-direction:column; gap:6px;">';
+      lines.forEach(line => {
+        const isChecked = line.startsWith('[x] ') || line.startsWith('[X] ');
+        const text = line.replace(/^\[[ xX]\]\s*/, '');
+        contentHtml += `
+          <label style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600; cursor:pointer;">
+            <input type="checkbox" ${isChecked ? 'checked' : ''} style="width:15px; height:15px;" data-note-todo="${note.id}" data-item-text="${text.replace(/"/g, '&quot;')}">
+            <span style="${isChecked ? 'text-decoration:line-through; opacity:0.6;' : ''}">${text}</span>
+          </label>`;
+      });
+      contentHtml += '</div>';
+    } else if (note.type === 'link') {
+      contentHtml = `<div style="margin:10px 0;"><a href="${note.content}" target="_blank" style="color:var(--action-primary); font-weight:700; font-size:13.5px; word-break:break-all;">${note.content} ↗</a></div>`;
+    } else {
+      contentHtml = `<p style="margin:10px 0; font-size:13.5px; line-height:1.6; white-space:pre-wrap; max-height:160px; overflow-y:auto;">${(note.content || '').replace(/</g, '&lt;')}</p>`;
+    }
+
+    card.innerHTML = `
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:6px;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span>${typeIcon}</span>
+            <h4 style="font-size:16px; font-weight:800;">${note.title}</h4>
+          </div>
+          ${note.pinned ? `<span class="clay-chip" style="background:var(--surface-lemon); font-size:11px; padding:2px 8px;">📌 Pinned</span>` : ''}
+        </div>
+        ${contentHtml}
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; border-top:1px solid var(--border-subtle); padding-top:10px;">
+        <span style="font-size:11.5px; color:var(--text-muted);">${dateStr}</span>
+        <div style="display:flex; gap:6px;">
+          <button class="clay-btn clay-btn-sm" data-action="copy" title="Copy Content">📋 Copy</button>
+          <button class="clay-btn clay-btn-sm" data-action="edit">✏️ Edit</button>
+          <button class="clay-btn clay-btn-sm clay-btn-danger" data-action="delete">🗑️</button>
+        </div>
+      </div>
+    `;
+
+    card.querySelector('[data-action="copy"]').addEventListener('click', () => {
+      navigator.clipboard.writeText(note.content || '');
+      const btn = card.querySelector('[data-action="copy"]');
+      btn.textContent = '✅ Copied!';
+      setTimeout(() => { btn.textContent = '📋 Copy'; }, 2000);
+    });
+
+    card.querySelector('[data-action="edit"]').addEventListener('click', () => {
+      document.getElementById('noteModalId').value = note.id;
+      document.getElementById('noteTitleInput').value = note.title || '';
+      document.getElementById('noteTypeSelect').value = note.type || 'text';
+      document.getElementById('noteContentInput').value = note.content || '';
+      document.getElementById('notePinnedInput').checked = !!note.pinned;
+      document.getElementById('noteTagsInput').value = (note.tags || []).join(', ');
+      document.getElementById('noteModalHeader').textContent = '📝 Edit Note / Snippet';
+      document.getElementById('btnDeleteNoteFromModal').style.display = 'block';
+      document.getElementById('noteModal').classList.add('active');
+    });
+
+    card.querySelector('[data-action="delete"]').addEventListener('click', async () => {
+      if (!confirm(`Delete note "${note.title}"?`)) return;
+      try {
+        await fetch(`${API_BASE_URL}/api/notes/${encodeURIComponent(note.id)}`, {
+          method: 'DELETE',
+          headers: authHeader()
+        });
+        loadNotes();
+      } catch (err) {
+        alert('Delete note failed: ' + err.message);
+      }
+    });
+
+    grid.appendChild(card);
+  });
+}
+
+document.querySelectorAll('#notesFilterTabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#notesFilterTabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeNotesFilter = btn.dataset.filter;
+    renderNotesGrid();
+  });
+});
+
+const noteSearchInput = document.getElementById('noteSearchInput');
+if (noteSearchInput) noteSearchInput.addEventListener('input', renderNotesGrid);
+
+const btnNewNote = document.getElementById('btnNewNote');
+if (btnNewNote) {
+  btnNewNote.addEventListener('click', () => {
+    document.getElementById('noteModalId').value = '';
+    document.getElementById('noteTitleInput').value = '';
+    document.getElementById('noteTypeSelect').value = 'text';
+    document.getElementById('noteContentInput').value = '';
+    document.getElementById('notePinnedInput').checked = false;
+    document.getElementById('noteTagsInput').value = '';
+    document.getElementById('noteModalHeader').textContent = '➕ New Note / Snippet';
+    document.getElementById('btnDeleteNoteFromModal').style.display = 'none';
+    document.getElementById('noteModal').classList.add('active');
+  });
+}
+
+const btnCloseNoteModal = document.getElementById('btnCloseNoteModal');
+if (btnCloseNoteModal) btnCloseNoteModal.addEventListener('click', () => {
+  document.getElementById('noteModal').classList.remove('active');
+});
+
+const btnSaveNoteModal = document.getElementById('btnSaveNoteModal');
+if (btnSaveNoteModal) {
+  btnSaveNoteModal.addEventListener('click', async () => {
+    const id = document.getElementById('noteModalId').value;
+    const title = document.getElementById('noteTitleInput').value.trim() || 'Untitled';
+    const type = document.getElementById('noteTypeSelect').value;
+    const content = document.getElementById('noteContentInput').value;
+    const pinned = document.getElementById('notePinnedInput').checked;
+    const rawTags = document.getElementById('noteTagsInput').value;
+    const tags = rawTags.split(',').map(t => t.trim()).filter(Boolean);
+
+    try {
+      await fetch(`${API_BASE_URL}/api/notes`, {
+        method: 'POST',
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, title, type, content, pinned, tags })
+      });
+      document.getElementById('noteModal').classList.remove('active');
+      loadNotes();
+    } catch (err) {
+      alert('Save note failed: ' + err.message);
+    }
+  });
+}
+
+const btnDeleteNoteFromModal = document.getElementById('btnDeleteNoteFromModal');
+if (btnDeleteNoteFromModal) {
+  btnDeleteNoteFromModal.addEventListener('click', async () => {
+    const id = document.getElementById('noteModalId').value;
+    if (!id || !confirm('Delete this note?')) return;
+    try {
+      await fetch(`${API_BASE_URL}/api/notes/${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: authHeader()
+      });
+      document.getElementById('noteModal').classList.remove('active');
+      loadNotes();
+    } catch (err) {
+      alert('Delete note failed: ' + err.message);
+    }
+  });
+}
+const btnRefreshNotes = document.getElementById('btnRefreshNotes');
+if (btnRefreshNotes) btnRefreshNotes.addEventListener('click', loadNotes);
+
+
+function refreshAll() {
   await fetchTelemetry();
   await fetchServices();
   fetchStorageBreakdown();
@@ -3200,5 +4524,127 @@ if (urlParams.get('modal') === 'pair') setTimeout(() => openPairModal('qr'), 300
 setInterval(fetchTelemetry, REFRESH_INTERVAL_MS);
 refreshAll();
 </script>
+
+<!-- 7. Markdown Live Preview Modal -->
+<div class="modal-overlay" id="markdownModal">
+  <div class="modal-clay-sheet wide">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid var(--border-subtle); padding-bottom:12px;">
+      <div>
+        <h3 style="font-size: 20px; font-weight: 800;" id="mdModalTitle">📖 Markdown Preview</h3>
+        <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted);" id="mdModalPath">path/to/doc.md</div>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button class="clay-btn clay-btn-sm" id="btnMdEditInEditor">📝 Edit File</button>
+        <button class="clay-btn clay-btn-sm" id="btnCloseMdModal">Close</button>
+      </div>
+    </div>
+    <div class="md-preview-body" id="mdModalBody">
+      Loading preview...
+    </div>
+  </div>
+</div>
+
+<!-- 8. PDF In-Browser Viewer Modal -->
+<div class="modal-overlay" id="pdfModal">
+  <div class="modal-clay-sheet wide" style="max-width: 900px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <div>
+        <h3 style="font-size: 20px; font-weight: 800;" id="pdfModalTitle">📑 PDF Document</h3>
+        <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted);" id="pdfModalPath">document.pdf</div>
+      </div>
+      <button class="clay-btn clay-btn-sm" id="btnClosePdfModal">Close</button>
+    </div>
+    <div style="border-radius:18px; overflow:hidden; box-shadow:var(--shadow-input); background:#FFF;">
+      <iframe id="pdfIframe" src="" style="width:100%; height:75vh; border:none; display:block;"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- 9. Bulk Move Destination Modal -->
+<div class="modal-overlay" id="bulkMoveModal">
+  <div class="modal-clay-sheet">
+    <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 6px;">📂 Move Selected Files</h3>
+    <p style="color:var(--text-muted); font-size:13px; margin-bottom:16px;" id="bulkMoveCountLabel">Choose destination folder inside shared storage.</p>
+    
+    <div style="margin-bottom:16px;">
+      <label style="font-size:13px; font-weight:700; color:var(--text-strong); display:block; margin-bottom:6px;">Target Destination Path (leave empty for Root)</label>
+      <input type="text" id="bulkMoveDestInput" class="clay-input" placeholder="e.g. photos/vacation or documents" style="width:100%;">
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px;">
+      <button class="clay-btn" id="btnCloseBulkMoveModal">Cancel</button>
+      <button class="clay-btn-primary" id="btnConfirmBulkMove">Move Files</button>
+    </div>
+  </div>
+</div>
+
+<!-- 10. New Sub-Site Creator Modal -->
+<div class="modal-overlay" id="newSiteModal">
+  <div class="modal-clay-sheet">
+    <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 6px;">🌐 Create Static Sub-Site</h3>
+    <p style="color:var(--text-muted); font-size:13px; margin-bottom:16px;">Creates a new hosted static website directory with a starter template in <code>public_html/</code>.</p>
+    
+    <div style="margin-bottom:16px;">
+      <label style="font-size:13px; font-weight:700; color:var(--text-strong); display:block; margin-bottom:6px;">Site Name / URL Slug</label>
+      <input type="text" id="newSiteNameInput" class="clay-input" placeholder="e.g. portfolio, docs, gallery" style="width:100%;">
+      <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Will be hosted at <code>/site/&lt;name&gt;/</code></div>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px;">
+      <button class="clay-btn" id="btnCloseNewSiteModal">Cancel</button>
+      <button class="clay-btn-primary" id="btnConfirmCreateSite">Create Site</button>
+    </div>
+  </div>
+</div>
+
+<!-- 11. Note & Snippet Editor Modal -->
+<div class="modal-overlay" id="noteModal">
+  <div class="modal-clay-sheet wide" style="max-width: 650px;">
+    <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 6px;" id="noteModalHeader">📝 Edit Note / Snippet</h3>
+    <input type="hidden" id="noteModalId">
+
+    <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:18px;">
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <div style="flex:2; min-width:200px;">
+          <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TITLE</label>
+          <input type="text" id="noteTitleInput" class="clay-input" placeholder="Note Title or Snippet Name" style="width:100%; font-weight:700;">
+        </div>
+        <div style="flex:1; min-width:140px;">
+          <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">TYPE</label>
+          <select id="noteTypeSelect" class="clay-input" style="width:100%;">
+            <option value="text">📝 Plain Note</option>
+            <option value="code">💻 Code Snippet</option>
+            <option value="todo">✅ Checklist / To-Do</option>
+            <option value="link">🔗 Link / Bookmark</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">CONTENT</label>
+        <textarea id="noteContentInput" class="clay-input" rows="8" placeholder="Type text, paste code, or enter items (one per line for checklists)..." style="width:100%; font-family:var(--font-mono); font-size:13px; line-height:1.6; resize:vertical;"></textarea>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:700; font-size:13px;">
+          <input type="checkbox" id="notePinnedInput" style="width:16px; height:16px;">
+          <span>📌 Pin to Top</span>
+        </label>
+        <div>
+          <input type="text" id="noteTagsInput" class="clay-input" placeholder="Tags (comma separated)" style="width:200px; font-size:12px;">
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <button class="clay-btn clay-btn-danger" id="btnDeleteNoteFromModal" style="display:none;">Delete Note</button>
+      <div style="display:flex; gap:10px; margin-left:auto;">
+        <button class="clay-btn" id="btnCloseNoteModal">Cancel</button>
+        <button class="clay-btn-primary" id="btnSaveNoteModal">Save Note</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

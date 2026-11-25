@@ -90,6 +90,8 @@ TRASH_MANIFEST_FILE = os.path.join(TRASH_DIR, "manifest.json")
 DDNS_FILE = os.path.join(SERVER_DIR, ".ddns_config.json")
 CRON_FILE = os.path.join(SERVER_DIR, ".cron_tasks.json")
 ALERTS_FILE = os.path.join(SERVER_DIR, ".alerts_config.json")
+NOTES_FILE = os.path.join(SERVER_DIR, ".notes.json")
+RCLONE_CONFIG_FILE = os.path.join(SERVER_DIR, ".rclone_config.json")
 TELEMETRY_HISTORY_FILE = os.path.join(LOG_DIR, "telemetry_24h.json")
 DASHBOARD_PID_FILE = os.path.join(LOG_DIR, "dashboard.pid")
 
@@ -1225,6 +1227,31 @@ def dashboard_home():
     return jsonify({"message": "Mobile Hosted Server API is running"}), 200
 
 
+@app.route("/manifest.json", methods=["GET"])
+def pwa_manifest():
+    return send_from_directory(SERVER_DIR, "manifest.json", mimetype="application/manifest+json")
+
+
+@app.route("/sw.js", methods=["GET"])
+def pwa_sw():
+    return send_from_directory(SERVER_DIR, "sw.js", mimetype="application/javascript")
+
+
+@app.route("/favicon.ico", methods=["GET"])
+def pwa_favicon():
+    return send_from_directory(SERVER_DIR, "favicon.ico", mimetype="image/x-icon")
+
+
+@app.route("/icon-192.png", methods=["GET"])
+def pwa_icon192():
+    return send_from_directory(SERVER_DIR, "icon-192.png", mimetype="image/png")
+
+
+@app.route("/icon-512.png", methods=["GET"])
+def pwa_icon512():
+    return send_from_directory(SERVER_DIR, "icon-512.png", mimetype="image/png")
+
+
 @app.route("/api/status", methods=["GET"])
 def status():
     dev_meta = get_device_info_meta()
@@ -1357,6 +1384,62 @@ def network_info():
         "ssh_port": ssh_info["port"] or SSH_DEFAULT_PORT,
         "dashboard_reachable": check_port_open("127.0.0.1", DASHBOARD_PORT),
         "traffic": get_network_traffic(interface),
+    })
+
+
+@app.route("/api/network/ping", methods=["GET"])
+def network_ping():
+    def measure_tcp(host, port=53, timeout=1.2):
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(timeout)
+        t0 = time.perf_counter()
+        try:
+            err = s.connect_ex((host, port))
+            t1 = time.perf_counter()
+            s.close()
+            if err == 0:
+                return round((t1 - t0) * 1000.0, 1)
+            return None
+        except Exception:
+            return None
+
+    cf_ms = measure_tcp("1.1.1.1", 53)
+    goog_ms = measure_tcp("8.8.8.8", 53)
+
+    local_ip = get_local_ip() or "127.0.0.1"
+    gw_host = "127.0.0.1"
+    gw_ms = None
+    if local_ip and local_ip != "127.0.0.1" and "." in local_ip:
+        parts = local_ip.split(".")
+        cand_gw = f"{parts[0]}.{parts[1]}.{parts[2]}.1"
+        gw_ms = measure_tcp(cand_gw, 80, timeout=0.8) or measure_tcp(cand_gw, 53, timeout=0.8) or measure_tcp(cand_gw, 443, timeout=0.8)
+        if gw_ms is not None:
+            gw_host = cand_gw
+        else:
+            gw_ms = measure_tcp("127.0.0.1", API_PORT, timeout=0.5)
+            gw_host = f"{cand_gw} (LAN)"
+    else:
+        gw_ms = measure_tcp("127.0.0.1", API_PORT, timeout=0.5)
+
+    valid_pings = [p for p in (cf_ms, goog_ms) if p is not None]
+    avg_latency = round(sum(valid_pings) / len(valid_pings), 1) if valid_pings else None
+
+    if avg_latency is None:
+        status = "offline"
+    elif avg_latency < 45:
+        status = "excellent"
+    elif avg_latency < 120:
+        status = "good"
+    else:
+        status = "degraded"
+
+    return jsonify({
+        "status": status,
+        "gateway": {"host": gw_host, "latency_ms": gw_ms},
+        "cloudflare": {"host": "1.1.1.1", "latency_ms": cf_ms},
+        "google": {"host": "8.8.8.8", "latency_ms": goog_ms},
+        "avg_latency_ms": avg_latency,
+        "timestamp": int(time.time())
     })
 
 
@@ -1898,6 +1981,207 @@ def download_folder_zip():
     )
 
 
+@app.route("/api/files/search", methods=["GET"])
+@require_token
+def search_files():
+    q = (request.args.get("q") or "").strip().lower()
+    base_rel = (request.args.get("path") or "").strip()
+    if not q:
+        return jsonify({"query": "", "results": []})
+    try:
+        search_root = safe_join(FILE_ROOT, base_rel) if base_rel else FILE_ROOT
+    except ValueError:
+        return jsonify({"error": "Invalid path"}), 400
+    if not os.path.exists(search_root):
+        return jsonify({"error": "Directory not found"}), 404
+
+    results = []
+    MAX_RESULTS = 150
+    for root, dirs, files in os.walk(search_root):
+        dirs[:] = [d for d in dirs if not d.startswith(".")]
+        for d in dirs:
+            if q in d.lower():
+                full_d = os.path.join(root, d)
+                rel_d = to_relative(full_d)
+                results.append({
+                    "name": d,
+                    "path": rel_d,
+                    "is_dir": True,
+                    "size_bytes": 0,
+                    "modified": int(os.path.getmtime(full_d)),
+                    "previewable": False
+                })
+                if len(results) >= MAX_RESULTS:
+                    break
+        if len(results) >= MAX_RESULTS:
+            break
+        for f in files:
+            if f.startswith("."):
+                continue
+            if q in f.lower():
+                full_f = os.path.join(root, f)
+                rel_f = to_relative(full_f)
+                try:
+                    sz = os.path.getsize(full_f)
+                    mtime = int(os.path.getmtime(full_f))
+                except Exception:
+                    sz, mtime = 0, 0
+                ext = os.path.splitext(f)[1].lower()
+                results.append({
+                    "name": f,
+                    "path": rel_f,
+                    "is_dir": False,
+                    "size_bytes": sz,
+                    "modified": mtime,
+                    "previewable": ext in MEDIA_PREVIEW_EXTS
+                })
+                if len(results) >= MAX_RESULTS:
+                    break
+        if len(results) >= MAX_RESULTS:
+            break
+
+    return jsonify({"query": q, "count": len(results), "results": results})
+
+
+@app.route("/api/files/bulk-delete", methods=["POST"])
+@require_token
+def bulk_delete_files():
+    data = request.get_json(silent=True) or {}
+    paths = data.get("paths") or []
+    permanent = bool(data.get("permanent", False))
+    if not paths or not isinstance(paths, list):
+        return jsonify({"error": "List of paths required"}), 400
+
+    deleted = []
+    failed = []
+    trash_items = _load_trash()
+
+    for rel_path in paths:
+        try:
+            target = safe_join(FILE_ROOT, rel_path)
+            if target == os.path.realpath(FILE_ROOT):
+                failed.append({"path": rel_path, "error": "Cannot delete root directory"})
+                continue
+            if not os.path.exists(target):
+                failed.append({"path": rel_path, "error": "Not found"})
+                continue
+            if permanent:
+                if os.path.isdir(target):
+                    shutil.rmtree(target)
+                else:
+                    os.remove(target)
+                deleted.append(rel_path)
+            else:
+                trash_id = secrets.token_hex(6)
+                base_name = os.path.basename(target)
+                trash_name = f"{trash_id}_{base_name}"
+                dest = os.path.join(TRASH_DIR, trash_name)
+                is_dir = os.path.isdir(target)
+                sz = sum(os.path.getsize(os.path.join(dr, fl)) for dr, _, fls in os.walk(target) for fl in fls) if is_dir else os.path.getsize(target)
+                shutil.move(target, dest)
+                trash_items.append({
+                    "id": trash_id,
+                    "name": base_name,
+                    "trash_name": trash_name,
+                    "original_path": rel_path,
+                    "is_dir": is_dir,
+                    "size": sz,
+                    "deleted_at": int(time.time())
+                })
+                deleted.append(rel_path)
+        except Exception as err:
+            failed.append({"path": rel_path, "error": str(err)})
+
+    if not permanent and deleted:
+        _save_trash(trash_items)
+
+    log_event(f"Bulk delete: {len(deleted)} succeeded, {len(failed)} failed")
+    return jsonify({"status": "completed", "deleted_count": len(deleted), "deleted": deleted, "failed": failed})
+
+
+@app.route("/api/files/bulk-move", methods=["POST"])
+@require_token
+def bulk_move_files():
+    data = request.get_json(silent=True) or {}
+    paths = data.get("paths") or []
+    dest_dir = (data.get("dest_dir") or "").strip()
+    if not paths or not isinstance(paths, list):
+        return jsonify({"error": "List of paths required"}), 400
+
+    try:
+        dest_target = safe_join(FILE_ROOT, dest_dir)
+    except ValueError:
+        return jsonify({"error": "Invalid destination directory"}), 400
+    if not os.path.isdir(dest_target):
+        return jsonify({"error": "Destination folder does not exist"}), 404
+
+    moved = []
+    failed = []
+
+    for rel_path in paths:
+        try:
+            source = safe_join(FILE_ROOT, rel_path)
+            if source == os.path.realpath(FILE_ROOT):
+                failed.append({"path": rel_path, "error": "Cannot move root directory"})
+                continue
+            if not os.path.exists(source):
+                failed.append({"path": rel_path, "error": "Not found"})
+                continue
+            base_name = os.path.basename(source)
+            final_dest = os.path.join(dest_target, base_name)
+            if os.path.exists(final_dest):
+                failed.append({"path": rel_path, "error": "Target already exists in destination"})
+                continue
+            shutil.move(source, final_dest)
+            moved.append(rel_path)
+        except Exception as err:
+            failed.append({"path": rel_path, "error": str(err)})
+
+    log_event(f"Bulk move to '{dest_dir}': {len(moved)} succeeded, {len(failed)} failed")
+    return jsonify({"status": "completed", "moved_count": len(moved), "moved": moved, "failed": failed})
+
+
+@app.route("/api/files/bulk-zip", methods=["GET", "POST"])
+@require_token
+def bulk_zip_files():
+    if request.method == "POST":
+        data = request.get_json(silent=True) or {}
+        paths = data.get("paths") or []
+    else:
+        raw_paths = request.args.get("paths", "")
+        paths = [p.strip() for p in raw_paths.split(",") if p.strip()]
+
+    if not paths:
+        return jsonify({"error": "No paths provided"}), 400
+
+    mem_buf = io.BytesIO()
+    with zipfile.ZipFile(mem_buf, "w", zipfile.ZIP_DEFLATED) as zf:
+        for rel_path in paths:
+            try:
+                target = safe_join(FILE_ROOT, rel_path)
+                if not os.path.exists(target):
+                    continue
+                if os.path.isdir(target):
+                    for root, _, files in os.walk(target):
+                        for f in files:
+                            full_path = os.path.join(root, f)
+                            arcname = os.path.relpath(full_path, os.path.dirname(target))
+                            zf.write(full_path, arcname)
+                else:
+                    zf.write(target, os.path.basename(target))
+            except Exception:
+                continue
+
+    mem_buf.seek(0)
+    log_event(f"Generated bulk zip of {len(paths)} items")
+    return send_file(
+        mem_buf,
+        as_attachment=True,
+        download_name="selected_files.zip",
+        mimetype="application/zip"
+    )
+
+
 # ================================================================
 # ROUTES: SHAREABLE DOWNLOAD LINKS
 # ================================================================
@@ -2265,6 +2549,361 @@ def serve_static_site(subpath):
     if os.path.isdir(full_path):
         subpath = os.path.join(subpath, "index.html").replace("\\", "/")
     return send_from_directory(PUBLIC_HTML_DIR, subpath)
+
+
+# ================================================================
+# ROUTES: MULTI-SITE STATIC HOSTING & SITE MANAGER
+# ================================================================
+@app.route("/api/sites", methods=["GET"])
+def list_sites():
+    sites = []
+    root_index = os.path.join(PUBLIC_HTML_DIR, "index.html")
+    root_has_index = os.path.exists(root_index)
+    root_size = 0
+    root_files = 0
+    for r, _, files in os.walk(PUBLIC_HTML_DIR):
+        for f in files:
+            root_files += 1
+            try:
+                root_size += os.path.getsize(os.path.join(r, f))
+            except Exception:
+                pass
+
+    sites.append({
+        "name": "Main Site (Root)",
+        "folder": "",
+        "url": "/site/",
+        "has_index": root_has_index,
+        "is_root": True,
+        "file_count": root_files,
+        "size_bytes": root_size
+    })
+
+    try:
+        with os.scandir(PUBLIC_HTML_DIR) as it:
+            for entry in it:
+                if entry.is_dir() and not entry.name.startswith("."):
+                    sub_idx = os.path.join(entry.path, "index.html")
+                    sub_files = 0
+                    sub_size = 0
+                    for r, _, fls in os.walk(entry.path):
+                        for f in fls:
+                            sub_files += 1
+                            try:
+                                sub_size += os.path.getsize(os.path.join(r, f))
+                            except Exception:
+                                pass
+                    sites.append({
+                        "name": entry.name,
+                        "folder": entry.name,
+                        "url": f"/site/{entry.name}/",
+                        "has_index": os.path.exists(sub_idx),
+                        "is_root": False,
+                        "file_count": sub_files,
+                        "size_bytes": sub_size,
+                        "modified": int(entry.stat().st_mtime)
+                    })
+    except Exception as err:
+        log_event(f"List sites error: {err}", level="error")
+
+    return jsonify({"sites": sites})
+
+
+@app.route("/api/sites/create", methods=["POST"])
+@require_token
+def create_site():
+    data = request.get_json(silent=True) or {}
+    site_name = secure_filename(data.get("name", "").strip().lower().replace(" ", "-"))
+    if not site_name:
+        return jsonify({"error": "Site folder name is required"}), 400
+    site_dir = os.path.join(PUBLIC_HTML_DIR, site_name)
+    if os.path.exists(site_dir):
+        return jsonify({"error": f"Site '{site_name}' already exists"}), 409
+    try:
+        os.makedirs(site_dir, exist_ok=True)
+        starter_index = os.path.join(site_dir, "index.html")
+        with open(starter_index, "w", encoding="utf-8") as f:
+            f.write(f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{site_name.replace('-', ' ').title()} — Mobile Hosted Server</title>
+  <style>
+    body {{
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #F7F5FB;
+      color: #2E2A3F;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }}
+    .card {{
+      background: #FFFFFF;
+      padding: 40px;
+      border-radius: 28px;
+      box-shadow: 8px 8px 24px rgba(185, 172, 220, 0.28);
+      max-width: 500px;
+      text-align: center;
+    }}
+    h1 {{ color: #FF7A6B; margin-bottom: 12px; }}
+    p {{ color: #6B6580; line-height: 1.6; }}
+    .badge {{ background: #7DD4A8; color: #185437; padding: 4px 12px; border-radius: 999px; font-weight: 700; }}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">Static Site Active</span>
+    <h1>🌐 {site_name.replace('-', ' ').title()}</h1>
+    <p>This static website is hosted directly on your mobile device server from <code>public_html/{site_name}/</code>.</p>
+  </div>
+</body>
+</html>
+""")
+        log_event(f"Created static sub-site: {site_name}")
+        return jsonify({"status": "created", "name": site_name, "url": f"/site/{site_name}/"})
+    except Exception as err:
+        log_event(f"Create site failed: {err}", level="error")
+        return jsonify({"error": f"Could not create site: {err}"}), 500
+
+
+@app.route("/api/sites/<site_name>", methods=["DELETE"])
+@require_token
+def delete_site(site_name):
+    site_name = secure_filename(site_name.strip())
+    if not site_name:
+        return jsonify({"error": "Invalid site name"}), 400
+    site_dir = os.path.join(PUBLIC_HTML_DIR, site_name)
+    if not os.path.isdir(site_dir):
+        return jsonify({"error": "Site not found"}), 404
+    try:
+        shutil.rmtree(site_dir)
+        log_event(f"Deleted static sub-site: {site_name}")
+        return jsonify({"status": "deleted", "name": site_name})
+    except Exception as err:
+        log_event(f"Delete site failed: {err}", level="error")
+        return jsonify({"error": f"Could not delete site: {err}"}), 500
+
+
+# ================================================================
+# ROUTES: MICRO-NOTES & PERSONAL PASTEBIN
+# ================================================================
+def _load_notes():
+    if not os.path.exists(NOTES_FILE):
+        return []
+    try:
+        with open(NOTES_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return []
+
+def _save_notes(notes):
+    tmp = NOTES_FILE + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(notes, f, indent=2)
+    os.replace(tmp, NOTES_FILE)
+
+
+@app.route("/api/notes", methods=["GET"])
+@require_token
+def get_notes():
+    notes = _load_notes()
+    notes.sort(key=lambda n: (not n.get("pinned", False), -n.get("updated_at", 0)))
+    return jsonify({"notes": notes})
+
+
+@app.route("/api/notes", methods=["POST"])
+@require_token
+def save_note():
+    data = request.get_json(silent=True) or {}
+    note_id = data.get("id") or f"note_{secrets.token_hex(4)}"
+    title = (data.get("title") or "Untitled Note").strip()
+    content = data.get("content") or ""
+    note_type = data.get("type") or "text"
+    tags = data.get("tags") or []
+    pinned = bool(data.get("pinned", False))
+    now = int(time.time())
+
+    notes = _load_notes()
+    existing = next((n for n in notes if n.get("id") == note_id), None)
+    if existing:
+        existing["title"] = title
+        existing["content"] = content
+        existing["type"] = note_type
+        existing["tags"] = tags
+        existing["pinned"] = pinned
+        existing["updated_at"] = now
+    else:
+        new_note = {
+            "id": note_id,
+            "title": title,
+            "content": content,
+            "type": note_type,
+            "tags": tags,
+            "pinned": pinned,
+            "created_at": now,
+            "updated_at": now
+        }
+        notes.insert(0, new_note)
+
+    _save_notes(notes)
+    log_event(f"Saved note: '{title}' ({note_id})")
+    return jsonify({"status": "saved", "note_id": note_id})
+
+
+@app.route("/api/notes/<note_id>", methods=["DELETE"])
+@require_token
+def delete_note(note_id):
+    notes = _load_notes()
+    filtered = [n for n in notes if n.get("id") != note_id]
+    if len(filtered) == len(notes):
+        return jsonify({"error": "Note not found"}), 404
+    _save_notes(filtered)
+    log_event(f"Deleted note: {note_id}")
+    return jsonify({"status": "deleted", "note_id": note_id})
+
+
+# ================================================================
+# ROUTES: EXTERNAL CLOUD BACKUP SYNC (RCLONE)
+# ================================================================
+def _load_rclone_config():
+    default_cfg = {
+        "remote_name": "",
+        "remote_path": "MobileServer_Backup",
+        "sync_mode": "copy",
+        "interval_hours": 24,
+        "enabled": False,
+        "last_sync": None,
+        "last_status": "idle",
+        "last_log": "No syncs performed yet."
+    }
+    if not os.path.exists(RCLONE_CONFIG_FILE):
+        return default_cfg
+    try:
+        with open(RCLONE_CONFIG_FILE, "r", encoding="utf-8") as f:
+            cfg = json.load(f)
+            default_cfg.update(cfg)
+            return default_cfg
+    except Exception:
+        return default_cfg
+
+def _save_rclone_config(cfg):
+    tmp = RCLONE_CONFIG_FILE + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(cfg, f, indent=2)
+    os.replace(tmp, RCLONE_CONFIG_FILE)
+
+_rclone_lock = threading.Lock()
+_rclone_thread = None
+
+def _run_rclone_sync_thread():
+    cfg = _load_rclone_config()
+    remote = cfg.get("remote_name")
+    rpath = cfg.get("remote_path", "MobileServer_Backup")
+    mode = cfg.get("sync_mode", "copy")
+    if not remote:
+        cfg["last_status"] = "failed"
+        cfg["last_log"] = "No remote configured. Please set a remote in settings."
+        _save_rclone_config(cfg)
+        return
+
+    rclone_bin = shutil.which("rclone") or "/data/data/com.termux/files/usr/bin/rclone"
+    if not os.path.exists(rclone_bin) and not shutil.which("rclone"):
+        cfg["last_status"] = "failed"
+        cfg["last_log"] = "rclone command not found on system. Install with 'pkg install rclone' or download rclone binary."
+        _save_rclone_config(cfg)
+        return
+
+    dest = f"{remote.rstrip(':')}:{rpath.strip('/')}"
+    cmd = [rclone_bin, mode, FILE_ROOT, dest, "--stats", "5s", "--log-level", "INFO"]
+    cfg["last_status"] = "running"
+    _save_rclone_config(cfg)
+    log_event(f"Starting Rclone {mode} to {dest}")
+
+    try:
+        proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=300)
+        out = (proc.stdout or "") + "\n" + (proc.stderr or "")
+        cfg = _load_rclone_config()
+        cfg["last_sync"] = int(time.time())
+        if proc.returncode == 0:
+            cfg["last_status"] = "success"
+            cfg["last_log"] = out.strip() or "Sync completed successfully."
+            log_event(f"Rclone sync to {dest} completed successfully.")
+        else:
+            cfg["last_status"] = "failed"
+            cfg["last_log"] = out.strip() or f"Rclone exited with code {proc.returncode}"
+            log_event(f"Rclone sync failed: {cfg['last_log']}", level="error")
+        _save_rclone_config(cfg)
+    except subprocess.TimeoutExpired:
+        cfg = _load_rclone_config()
+        cfg["last_status"] = "failed"
+        cfg["last_log"] = "Rclone operation timed out after 5 minutes."
+        _save_rclone_config(cfg)
+        log_event("Rclone sync timed out", level="error")
+    except Exception as err:
+        cfg = _load_rclone_config()
+        cfg["last_status"] = "failed"
+        cfg["last_log"] = str(err)
+        _save_rclone_config(cfg)
+        log_event(f"Rclone sync error: {err}", level="error")
+
+
+@app.route("/api/rclone/status", methods=["GET"])
+@require_token
+def rclone_status():
+    rclone_bin = shutil.which("rclone") or "/data/data/com.termux/files/usr/bin/rclone"
+    installed = bool(shutil.which("rclone") or os.path.exists("/data/data/com.termux/files/usr/bin/rclone"))
+    remotes = []
+    if installed:
+        try:
+            res = subprocess.run([rclone_bin, "listremotes"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=5)
+            if res.returncode == 0:
+                remotes = [r.strip() for r in res.stdout.strip().splitlines() if r.strip()]
+        except Exception:
+            pass
+
+    cfg = _load_rclone_config()
+    return jsonify({
+        "installed": installed,
+        "binary": rclone_bin if installed else None,
+        "remotes": remotes,
+        "config": cfg
+    })
+
+
+@app.route("/api/rclone/config", methods=["POST"])
+@require_token
+def rclone_save_config():
+    data = request.get_json(silent=True) or {}
+    cfg = _load_rclone_config()
+    if "remote_name" in data:
+        cfg["remote_name"] = data["remote_name"].strip()
+    if "remote_path" in data:
+        cfg["remote_path"] = data["remote_path"].strip()
+    if "sync_mode" in data and data["sync_mode"] in ("copy", "sync"):
+        cfg["sync_mode"] = data["sync_mode"]
+    if "interval_hours" in data:
+        cfg["interval_hours"] = max(1, int(data["interval_hours"]))
+    if "enabled" in data:
+        cfg["enabled"] = bool(data["enabled"])
+
+    _save_rclone_config(cfg)
+    log_event("Saved Rclone cloud backup configuration")
+    return jsonify({"status": "saved", "config": cfg})
+
+
+@app.route("/api/rclone/sync", methods=["POST"])
+@require_token
+def rclone_trigger_sync():
+    global _rclone_thread
+    with _rclone_lock:
+        if _rclone_thread and _rclone_thread.is_alive():
+            return jsonify({"error": "Sync is already currently running"}), 409
+        _rclone_thread = threading.Thread(target=_run_rclone_sync_thread, daemon=True)
+        _rclone_thread.start()
+    return jsonify({"status": "started", "message": "Cloud backup sync started in background"})
 
 
 # ================================================================

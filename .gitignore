@@ -21,6 +21,8 @@ shared/*
 .cron_tasks.json
 .alerts_config.json
 .ddns_config.json
+.notes.json
+.rclone_config.json
 .telemetry_history.json
 backups/
 
